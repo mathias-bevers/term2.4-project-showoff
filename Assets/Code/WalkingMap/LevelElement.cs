@@ -9,6 +9,7 @@ public class LevelElement : MonoBehaviour
     const int stepAmount = (int)(1/stepCount);
 
     [SerializeField] LevelPoint startPoint;
+    [SerializeField] LevelPoint[] endPoints;
 
     int drawCount = 0;
 
@@ -54,7 +55,6 @@ public class LevelElement : MonoBehaviour
                 Vector3 point2 = CurveInterpolations.CubicBezier(stepCount * (i + 1), lastPoint.position, lastPoint.position + lastPoint.transform.forward * lastPoint.forwardStrength, point.position - point.transform.forward * point.forwardStrength, point.position);
                 Gizmos.DrawLine(point1, point2);
             }
-            //TODO: Implement smooth line!
         }
         else
         {
