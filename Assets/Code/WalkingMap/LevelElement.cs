@@ -5,13 +5,19 @@ using UnityEngine;
 
 public class LevelElement : MonoBehaviour
 {
+    [SerializeField] bool markAsProbableWaitingTile = false;
     const float stepCount = 0.05f;
-    const int stepAmount = (int)(1/stepCount);
+    const int stepAmount = (int)(1 / stepCount);
 
     [SerializeField] LevelPoint startPoint;
     [SerializeField] LevelPoint[] endPoints;
 
+    public LevelPoint[] EndPoints => endPoints;
+
     int drawCount = 0;
+
+    LevelPoint _takenLevelPoint;
+    public LevelPoint TakenLevelPoint => _takenLevelPoint;
 
 
     private void OnDrawGizmos()
@@ -24,9 +30,9 @@ public class LevelElement : MonoBehaviour
 
     void RecursiveDraw(LevelPoint point, LevelPoint lastPoint = null)
     {
-        if(drawCount == 0) DrawPointStart(point);
+        if (drawCount == 0) DrawPointStart(point);
         DrawPointForward(point);
-        if(lastPoint != null) DrawLine(point, lastPoint);
+        if (lastPoint != null) DrawLine(point, lastPoint);
         if (point.isEnd) DrawEnd(point);
         LoopThroughPoints(point);
         drawCount++;
@@ -47,19 +53,22 @@ public class LevelElement : MonoBehaviour
     void DrawLine(LevelPoint point, LevelPoint lastPoint)
     {
         Gizmos.color = new Color(0, 1, 0);
-        if (lastPoint.isSmooth)
-        {
-            for(int i = 0; i < stepAmount; i++)
-            {
-                Vector3 point1 = CurveInterpolations.CubicBezier(stepCount * i, lastPoint.position, lastPoint.position + lastPoint.transform.forward * lastPoint.forwardStrength, point.position - point.transform.forward * point.forwardStrength, point.position);
-                Vector3 point2 = CurveInterpolations.CubicBezier(stepCount * (i + 1), lastPoint.position, lastPoint.position + lastPoint.transform.forward * lastPoint.forwardStrength, point.position - point.transform.forward * point.forwardStrength, point.position);
-                Gizmos.DrawLine(point1, point2);
-            }
-        }
-        else
-        {
+        Vector3 lastPointPos = lastPoint.position;
+        Vector3 pointPosition = point.position;
+        Vector3 forwardPoint = point.transform.forward * point.forwardStrength;
+        Vector3 forwardLastPoint = lastPoint.transform.forward * lastPoint.forwardStrength;
+        Vector3 pointForward = pointPosition - forwardPoint;
+        Vector3 lastPointForward = lastPointPos + forwardLastPoint;
 
-            Gizmos.DrawLine(point.position, lastPoint.position);
+        Vector3 drawPoint1 = pointPosition;
+        Vector3 drawPoint2 = lastPointPos;
+
+        if (!lastPoint.isSmooth) Gizmos.DrawLine(drawPoint1, drawPoint2);
+        else for (int i = 0; i < stepAmount; i++)
+        {
+            Vector3 point1 = CurveInterpolations.CubicBezier(stepCount * i, lastPointPos, lastPointForward, pointForward, pointPosition);
+            Vector3 point2 = CurveInterpolations.CubicBezier(stepCount * (i + 1), lastPointPos, lastPointForward, pointForward, pointPosition);
+            Gizmos.DrawLine(point1, point2);
         }
     }
 

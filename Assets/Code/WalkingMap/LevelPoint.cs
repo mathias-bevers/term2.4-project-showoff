@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,9 @@ public class LevelPoint : MonoBehaviour
     Transform _transform;
     public new Transform transform => _transform;
     public Vector3 position => _transform.position;
+
+
+    
 
     private void Awake()
     {

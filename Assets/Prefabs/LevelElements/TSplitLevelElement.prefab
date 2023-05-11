@@ -326,6 +326,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPoint: {fileID: 1328490652874347339}
+  endPoints:
+  - {fileID: 1328490651822109198}
+  - {fileID: 1328490653316041453}
 --- !u!1 &1328490653222970852
 GameObject:
   m_ObjectHideFlags: 0
