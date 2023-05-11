@@ -1,6 +1,7 @@
 using CurveLib.Interpolation;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LevelElement : MonoBehaviour
@@ -19,6 +20,19 @@ public class LevelElement : MonoBehaviour
     LevelPoint _takenLevelPoint;
     public LevelPoint TakenLevelPoint => _takenLevelPoint;
 
+
+    private void Awake()
+    {
+        if(endPoints.Length == 1) _takenLevelPoint = endPoints[0];
+    }
+
+    public void ChoseSide(MapSides side)
+    {
+        foreach(LevelPoint p in endPoints)
+        {
+            if(p.winningSides.HasFlag(side)) _takenLevelPoint = p;
+        }
+    }
 
     private void OnDrawGizmos()
     {

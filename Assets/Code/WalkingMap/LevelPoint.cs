@@ -20,6 +20,9 @@ public class LevelPoint : MonoBehaviour
     public new Transform transform => _transform;
     public Vector3 position => _transform.position;
 
+    [InfoBox("Only applicable if there are multiple endpoints")]
+    [SerializeField] MapSides _winningSides;
+    public MapSides winningSides => _winningSides;
 
     
 

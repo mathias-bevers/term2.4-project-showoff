@@ -21,7 +21,6 @@ public static class MultiInput
     {
         ReadOnlyArray<InputDevice> inputDevices = InputSystem.devices;
         ReadOnlyArray<InputDevice> disconnectedDevices = InputSystem.disconnectedDevices;
-        Debug.Log("Update: " + inputDevices.Count +  " : " + disconnectedDevices.Count);
 
         if (inputDevices.Count == lastCount) return;
         lastCount = inputDevices.Count;
