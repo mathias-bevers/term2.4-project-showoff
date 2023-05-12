@@ -30,6 +30,7 @@ public class MapBuilder : MonoBehaviour
             foreach (LevelElement spawnedElement in spawnedLevelElements)
                 foreach (LevelPoint point in spawnedElement.EndPoints)
                 {
+                    if (point == null) continue;
                     LevelElement el = CreateLevelElement();
                     el.transform.position = point.position;
                     el.transform.rotation = point.transform.rotation;
@@ -64,11 +65,26 @@ public class MapBuilder : MonoBehaviour
         //TODO: When destroying an object with another path, uhh, walk down the other path and manually remove all the old stuffs as well. I think this causes the null errors and stuff
         Transform newActiveElementTrans = activeElement.TakenLevelPoint.transform.GetChild(0).transform;
         newActiveElementTrans.parent = null;
-        Destroy(activeElement.gameObject);
-        allSpawnedElements.Remove(activeElement);
+        DestroyRecursive(activeElement);
+
         activeElement = newActiveElementTrans.GetComponent<LevelElement>();
         activeElement.transform.position = transform.position;
-        activeElement.transform.rotation = transform.rotation;
+        //activeElement.transform.rotation = transform.rotation;
         activeElement.transform.parent = transform;
+    }
+
+    void DestroyRecursive(LevelElement element)
+    {
+        foreach(LevelPoint point in element.EndPoints)
+        {
+            if (element.TakenLevelPoint == point) continue;
+            Transform pTrans = point.transform.GetChild(0);
+            if (pTrans == null) continue;
+            LevelElement levelEl = pTrans.GetComponent<LevelElement>();
+            if (levelEl == null) continue;
+            DestroyRecursive(levelEl);
+        }
+        allSpawnedElements.Remove(element);
+        Destroy(element.gameObject);
     }
 }
