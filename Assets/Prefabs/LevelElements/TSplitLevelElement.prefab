@@ -328,11 +328,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5da04ad5a83ba14eb1ede3be93c1754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasSideToChose: 1
   markAsProbableWaitingTile: 0
   startPoint: {fileID: 1328490652874347339}
   endPoints:
   - {fileID: 1328490651822109198}
   - {fileID: 1328490653316041453}
+  chosenSide: 0
 --- !u!1 &1328490653222970852
 GameObject:
   m_ObjectHideFlags: 0
