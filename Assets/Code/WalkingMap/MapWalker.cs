@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class MapWalker : MonoBehaviour
 {
@@ -65,6 +66,9 @@ public class MapWalker : MonoBehaviour
     void HandleSingleDirection(LevelElement activeElement)
     {
         activePath = activeElement.GetPath();
+
+        if(activePath == null) return;
+        if (activePath.Count <= 1) return;
 
         for (int i = 0; i < activePath.Count - 1; i++)
         {
