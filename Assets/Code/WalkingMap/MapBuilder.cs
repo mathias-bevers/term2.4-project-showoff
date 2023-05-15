@@ -68,6 +68,7 @@ public class MapBuilder : MonoBehaviour
         Transform newActiveElementTrans = _activeElement.TakenLevelPoint.transform.GetChild(0);
         if(newActiveElementTrans == null) { Debug.Log("Null!"); return; }
         newActiveElementTrans.parent = null;
+        _activeElement.transform.parent = newActiveElementTrans;
         DestroyRecursive(_activeElement);
 
         _activeElement = newActiveElementTrans.GetComponent<LevelElement>();
@@ -88,6 +89,6 @@ public class MapBuilder : MonoBehaviour
             DestroyRecursive(levelEl);
         }
         allSpawnedElements.Remove(element);
-        Destroy(element.gameObject);
+        Destroy(element.gameObject, 0.5f);
     }
 }

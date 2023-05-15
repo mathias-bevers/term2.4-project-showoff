@@ -7,7 +7,7 @@ public class MapWalker : MonoBehaviour
 {
 
     [SerializeField] MapBuilder mapBuilder;
-    [SerializeField] CameraRig rig;
+    [SerializeField] PlayerRig rig;
 
     [Header("Speed & Timing")]
     [SerializeField] float startSpeed = 3;
