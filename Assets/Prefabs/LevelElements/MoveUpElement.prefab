@@ -60,7 +60,7 @@ Transform:
   m_GameObject: {fileID: 1304740140362464876}
   m_LocalRotation: {x: -0.09845133, y: 0, z: 0, w: 0.99514186}
   m_LocalPosition: {x: 0, y: 0.0104, z: 2.6001}
-  m_LocalScale: {x: 1, y: 1, z: 5.096236}
+  m_LocalScale: {x: 3, y: 1, z: 5.096236}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1304740139917889099}
@@ -180,7 +180,7 @@ MonoBehaviour:
   startPoint: {fileID: 1304740141091698627}
   endPoints:
   - {fileID: 1304740140786078244}
-  chosenSide: 0
+  lockInput: 0
 --- !u!1 &1304740140786078250
 GameObject:
   m_ObjectHideFlags: 0
