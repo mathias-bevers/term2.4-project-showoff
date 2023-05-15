@@ -7,7 +7,7 @@ public class LevelElement : MonoBehaviour
 {
     [SerializeField] bool hasSideToChose = false;
     [SerializeField] bool markAsProbableWaitingTile = false;
-    const float stepCount = 0.05f;
+    const float stepCount = 0.01f;
     const int stepAmount = (int)(1 / stepCount);
 
     [SerializeField] LevelPoint startPoint;

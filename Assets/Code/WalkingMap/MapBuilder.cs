@@ -77,13 +77,13 @@ public class MapBuilder : MonoBehaviour
 
     void DestroyRecursive(LevelElement element)
     {
-        foreach(LevelPoint point in element.EndPoints)
+        if (element == null) return;
+        foreach (LevelPoint point in element.EndPoints)
         {
             if (element.TakenLevelPoint == point) continue;
             Transform pTrans = point.transform.GetChild(0);
             if (pTrans == null) continue;
             LevelElement levelEl = pTrans.GetComponent<LevelElement>();
-            if (levelEl == null) continue;
             DestroyRecursive(levelEl);
         }
         allSpawnedElements.Remove(element);
