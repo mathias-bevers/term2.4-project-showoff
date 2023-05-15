@@ -71,10 +71,11 @@ public class LevelElement : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        return;
+       // return;
         if (startPoint == null) return;
 
         drawCount = 0;
+
         RecursiveDraw(startPoint);
     }
 
@@ -84,7 +85,10 @@ public class LevelElement : MonoBehaviour
         DrawPointForward(point);
         if (lastPoint != null) DrawLine(point, lastPoint);
         if (point.isEnd) DrawEnd(point);
-        LoopThroughPoints(point, (p, lp) => RecursiveDraw(p, lp), false, false);
+        for (int i = 0; i < point.connectionPoints.Length; i++)
+        {
+            RecursiveDraw(point.connectionPoints[i], point);
+        }
         drawCount++;
     }
 

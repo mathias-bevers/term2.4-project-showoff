@@ -89,7 +89,7 @@ public class MapWalker : MonoBehaviour
 
         if (activePath == null) return;
         if (activePath.Count <= 1) return;
-        DrawPath();
+        //DrawPath();
         WalkPath();
 
 
