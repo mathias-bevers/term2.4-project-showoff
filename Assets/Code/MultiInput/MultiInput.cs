@@ -8,7 +8,7 @@ public static class MultiInput
 {
    static Keyboard[] keyboardPool;
 
-    [RuntimeInitializeOnLoadMethod]
+    // [RuntimeInitializeOnLoadMethod]
     static void Setup()
     {
         InputSystem.onAfterUpdate -= OnBeforeUpdate;

@@ -1,14 +1,20 @@
 using System;
+using NaughtyAttributes;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PickupManager : MonoBehaviour
 {
-	public static PickupManager instance { get; private set; }
-
+	[SerializeField] private Transform spawnTarget;
 	[SerializeField] private PickupData[] pickups;
+	
+	public static PickupManager instance { get; private set; }
+	public Transform cachedTransform { get; private set; }
 
 	private void Awake()
 	{
+		cachedTransform = transform;
+
 		if (!instance.IsNull())
 		{
 			Destroy(gameObject);
@@ -17,12 +23,13 @@ public class PickupManager : MonoBehaviour
 
 		instance = this;
 	}
-
-	public void SpawnPickup()
+	
+	public void SpawnPickup(object obj = null)
 	{
-		PickupData data = pickups.GetRandomElement();
-		GameObject go = Instantiate(data.worldPrefab);
-		Pickup pickup = go.AddComponent<Pickup>();	
+		PickupData pickupData = pickups.GetRandomElement();
+		GameObject go = Instantiate(pickupData.worldPrefab, spawnTarget.position, quaternion.identity, cachedTransform);
+		Pickup pickup = go.AddComponent<Pickup>();
+		pickup.PickupEvent += () => pickupData.callback.Invoke(obj);
 	}
 }
 
@@ -32,5 +39,5 @@ public enum PickupIdentifier
 	Slowdown,
 	Speedup,
 	DoublePoints,
-	AddObstacle
+	AddObstacle,
 }

@@ -7,8 +7,7 @@ public struct PickupData
 {
 	[field: SerializeField] public PickupIdentifier identifier { get; private set; }
 	[field: SerializeField] public GameObject worldPrefab { get; private set; }
-	[field: SerializeField] public ObjectEvent onPickupEvent { get; private set; }
+	[field: SerializeField] public ObjectEvent callback { get; private set; }
 }
 
-[Serializable]
-public class ObjectEvent : UnityEvent<object> { }
+[Serializable] public class ObjectEvent : UnityEvent<object> { }
