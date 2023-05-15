@@ -61,11 +61,12 @@ public class MapBuilder : MonoBehaviour
 
     public void MoveOverElement()
     {
-        if (_activeElement == null) return;
+        if (_activeElement == null) { Debug.Log("Active element null!"); return; }
         if (_activeElement.TakenLevelPoint == null) { Debug.Log("Chose wrong side, probably should die!"); return; }
 
         _elementAmount--;
-        Transform newActiveElementTrans = _activeElement.TakenLevelPoint.transform.GetChild(0).transform;
+        Transform newActiveElementTrans = _activeElement.TakenLevelPoint.transform.GetChild(0);
+        if(newActiveElementTrans == null) { Debug.Log("Null!"); return; }
         newActiveElementTrans.parent = null;
         DestroyRecursive(_activeElement);
 

@@ -19,7 +19,13 @@ public class Path : IEnumerator
 
     public PathNode this[int index]
     {
-        get => nodes[index];
+        get
+        {
+            if (index >= Count)
+                return new PathNode();
+            else 
+         return   nodes[index];
+        }
     }
 
     public IEnumerator GetEnumerator()

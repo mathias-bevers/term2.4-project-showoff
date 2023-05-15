@@ -17,7 +17,7 @@ public class LevelElement : MonoBehaviour
 
     int drawCount = 0;
 
-    LevelPoint _takenLevelPoint;
+    LevelPoint _takenLevelPoint = null;
     public LevelPoint TakenLevelPoint => _takenLevelPoint;
 
     MapSides chosenSide;
