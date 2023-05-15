@@ -9,8 +9,7 @@ public class CameraRigSmoothFace : CameraRigModule
 
     private void Update()
     {
-
-
+       transform.LookAt(forwardHelper);
 
     }
 
