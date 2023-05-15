@@ -377,9 +377,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5da04ad5a83ba14eb1ede3be93c1754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasSideToChose: 0
+  markAsProbableWaitingTile: 0
   startPoint: {fileID: 2888634756395631650}
   endPoints:
   - {fileID: 2888634756678244625}
+  chosenSide: 0
 --- !u!1 &2888634756395631648
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,6 +432,7 @@ MonoBehaviour:
   _isEnd: 0
   _connectionPoints:
   - {fileID: 2888634756678244625}
+  _winningSides: 0
 --- !u!1 &2888634756622232359
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,6 +514,7 @@ MonoBehaviour:
   _smooth: 0
   _isEnd: 1
   _connectionPoints: []
+  _winningSides: 0
 --- !u!1 &2888634756867622259
 GameObject:
   m_ObjectHideFlags: 0

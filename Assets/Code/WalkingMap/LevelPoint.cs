@@ -16,10 +16,15 @@ public class LevelPoint : MonoBehaviour
     public bool isSmooth => _smooth;
     public bool isEnd => _isEnd;
 
+    public bool isChoiceNode => connectionPoints.Length > 1;
+
     Transform _transform;
     public new Transform transform => _transform;
     public Vector3 position => _transform.position;
 
+    [InfoBox("Only applicable if there are multiple endpoints")]
+    [SerializeField] MapSides _winningSides;
+    public MapSides winningSides => _winningSides;
 
     
 
