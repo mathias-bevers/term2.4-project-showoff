@@ -8,7 +8,7 @@ public class PlayerRig : MonoBehaviour
     [SerializeField] CameraRig cameraRig;
     [SerializeField] float maxToSide = 1.5f;
 
-    float currentToSide = 0;
+    float moveDelta = 0;
 
     private void Update()
     {
@@ -19,22 +19,25 @@ public class PlayerRig : MonoBehaviour
 
     void Move()
     {
-        player.transform.localPosition = new Vector3(currentToSide, player.transform.localPosition.y, player.transform.localPosition.z);
+        //player.transform.localPosition = new Vector3(currentToSide, player.transform.localPosition.y, player.transform.localPosition.z);
+
     }
 
     void HandleInput()
     {
+        moveDelta = 0;
         if (Input.GetKey(KeyCode.LeftArrow))
-            currentToSide -= (3.5f * Time.deltaTime);
+            moveDelta -= (3.5f * Time.deltaTime);
         if (Input.GetKey(KeyCode.RightArrow))
-            currentToSide += (3.5f * Time.deltaTime);
+            moveDelta += (3.5f * Time.deltaTime);
     }
 
     void Clampies()
     {
-        if (currentToSide > maxToSide)
-            currentToSide = maxToSide;
-        if (currentToSide < -maxToSide)
-            currentToSide = -maxToSide;
+        if (player == null) return;
+        Vector3 playerLocalPos = player.transform.localPosition;
+        if (playerLocalPos.x > maxToSide) playerLocalPos.x = maxToSide;
+        if (playerLocalPos.x < -maxToSide) playerLocalPos.x = -maxToSide;
+        player.transform.localPosition = playerLocalPos;
     }
 }

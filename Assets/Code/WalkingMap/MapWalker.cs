@@ -56,7 +56,7 @@ public class MapWalker : MonoBehaviour
 
     void HandleSpeedIncrease()
     {
-        accelerationTime += Time.deltaTime;
+        accelerationTimer += Time.deltaTime;
         if (accelerationTimer >= accelerationTime) accelerationTimer = accelerationTime;
         currentSpeed = Utils.Map(accelerationTimer, 0, accelerationTime, startSpeed, endSpeed);
     }
@@ -70,7 +70,9 @@ public class MapWalker : MonoBehaviour
     void HandleSingleDirection(LevelElement activeElement)
     {
         if (activeNode == null)
+        {
             activePath = activeElement.GetPath();
+        }
         else
         {
             if (activeNode.Value.shouldProbablyRequestPathUpdate)
@@ -78,7 +80,7 @@ public class MapWalker : MonoBehaviour
             if (activeNode.Value.isEnd)
             {
                 Debug.Log("ending!");
-                mapBuilder.MoveOverElement();
+                mapBuilder.MoveOverElement(rig);
                 metersRan = 0;
                 activeNode = null;
                 newActiveNode = null;

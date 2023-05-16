@@ -59,7 +59,7 @@ public class MapBuilder : MonoBehaviour
     }
 
 
-    public void MoveOverElement()
+    public void MoveOverElement(PlayerRig optionalRig = null)
     {
         if (_activeElement == null) { Debug.Log("Active element null!"); return; }
         if (_activeElement.TakenLevelPoint == null) { Debug.Log("Chose wrong side, probably should die!"); return; }
@@ -75,6 +75,11 @@ public class MapBuilder : MonoBehaviour
         _activeElement.transform.position = transform.position;
         //activeElement.transform.rotation = transform.rotation;
         _activeElement.transform.parent = transform;
+
+        if (optionalRig == null) return;
+
+        optionalRig.transform.position = _activeElement.StartPoint.position;
+
     }
 
     void DestroyRecursive(LevelElement element)

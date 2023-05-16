@@ -12,6 +12,7 @@ public class LevelElement : MonoBehaviour
     [SerializeField] LevelPoint startPoint;
     [SerializeField] LevelPoint[] endPoints;
 
+    public LevelPoint StartPoint => startPoint;
     public LevelPoint[] EndPoints => endPoints;
 
     int drawCount = 0;

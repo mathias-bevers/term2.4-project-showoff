@@ -22,7 +22,7 @@ public class Path : IEnumerator
         get
         {
             if (index >= Count)
-                return new PathNode();
+                return new PathNode(nodes[Count - 1].position);
             else 
          return   nodes[index];
         }

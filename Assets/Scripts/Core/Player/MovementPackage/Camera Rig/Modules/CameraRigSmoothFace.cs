@@ -5,9 +5,8 @@ using UnityEngine;
 public class CameraRigSmoothFace : CameraRigModule
 {
     [SerializeField] Transform forwardHelper;
-    [SerializeField] bool sanitize;
 
-    private void Update()
+    private void LateUpdate()
     {
        transform.LookAt(forwardHelper);
 
