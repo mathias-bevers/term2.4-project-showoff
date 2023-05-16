@@ -19,8 +19,8 @@ public class MapBuilder : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) BuildElement();
-        if (Input.GetKeyDown(KeyCode.Tab)) MoveOverElement();
+        //if (Input.GetKeyDown(KeyCode.Space)) BuildElement();
+        //if (Input.GetKeyDown(KeyCode.Tab)) MoveOverElement();
     }
 
     public void BuildElement()

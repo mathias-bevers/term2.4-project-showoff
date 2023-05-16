@@ -176,7 +176,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasSideToChose: 0
-  markAsProbableWaitingTile: 0
   startPoint: {fileID: 1304740141091698627}
   endPoints:
   - {fileID: 1304740140786078244}
