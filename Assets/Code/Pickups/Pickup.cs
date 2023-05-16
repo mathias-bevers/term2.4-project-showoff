@@ -4,16 +4,9 @@ using UnityEngine;
 
 public class Pickup : MonoBehaviour
 {
-	public event Action PickupEvent;
+	public event Action onPickupEvent;
 
-	private void OnTriggerEnter(Collider other)
-	{
-		//TODO: Add player check.
-		PickupEvent?.Invoke();
-		Destroy(gameObject);
-	}
+	private void OnDestroy() { onPickupEvent = null; }
 
-#if UNITY_EDITOR
-	[Button("FORCE PICKUP")] private void ForcePickup() { OnTriggerEnter(null); }
-#endif
+	private void OnTriggerEnter(Collider other) { onPickupEvent?.Invoke(); }
 }

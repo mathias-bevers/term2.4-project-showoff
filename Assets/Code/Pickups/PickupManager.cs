@@ -1,35 +1,23 @@
 using System;
 using NaughtyAttributes;
-using Unity.Mathematics;
 using UnityEngine;
 
-public class PickupManager : MonoBehaviour
+public class PickupManager : Singleton<PickupManager>
 {
-	[SerializeField] private Transform spawnTarget;
 	[SerializeField] private PickupData[] pickups;
-	
-	public static PickupManager instance { get; private set; }
-	public Transform cachedTransform { get; private set; }
 
-	private void Awake()
+	[Button("Spawn pickup")]
+	public void SpawnPickup()
 	{
-		cachedTransform = transform;
-
-		if (!instance.IsNull())
-		{
-			Destroy(gameObject);
-			return;
-		}
-
-		instance = this;
-	}
-	
-	public void SpawnPickup(object obj = null)
-	{
-		PickupData pickupData = pickups.GetRandomElement();
-		GameObject go = Instantiate(pickupData.worldPrefab, spawnTarget.position, quaternion.identity, cachedTransform);
+		PickupData data = pickups.GetRandomElement();
+		GameObject go = Instantiate(data.worldPrefab);
 		Pickup pickup = go.AddComponent<Pickup>();
-		pickup.PickupEvent += () => pickupData.callback.Invoke(obj);
+		pickup.onPickupEvent += () =>
+		{
+			data.onPickupEvent.Invoke(data.parameters);
+			
+			
+		};
 	}
 }
 
