@@ -6,13 +6,13 @@ using UnityEngine;
 public class LevelElement : MonoBehaviour
 {
     [SerializeField] bool hasSideToChose = false;
-    [SerializeField] bool markAsProbableWaitingTile = false;
     const float stepCount = 0.01f;
     const int stepAmount = (int)(1 / stepCount);
 
     [SerializeField] LevelPoint startPoint;
     [SerializeField] LevelPoint[] endPoints;
 
+    public LevelPoint StartPoint => startPoint;
     public LevelPoint[] EndPoints => endPoints;
 
     int drawCount = 0;

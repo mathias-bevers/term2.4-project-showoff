@@ -59,7 +59,7 @@ public class MapBuilder : MonoBehaviour
     }
 
 
-    public void MoveOverElement()
+    public void MoveOverElement(PlayerRig optionalRig = null)
     {
         if (_activeElement == null) { Debug.Log("Active element null!"); return; }
         if (_activeElement.TakenLevelPoint == null) { Debug.Log("Chose wrong side, probably should die!"); return; }
@@ -68,12 +68,18 @@ public class MapBuilder : MonoBehaviour
         Transform newActiveElementTrans = _activeElement.TakenLevelPoint.transform.GetChild(0);
         if(newActiveElementTrans == null) { Debug.Log("Null!"); return; }
         newActiveElementTrans.parent = null;
+        _activeElement.transform.parent = newActiveElementTrans;
         DestroyRecursive(_activeElement);
 
         _activeElement = newActiveElementTrans.GetComponent<LevelElement>();
         _activeElement.transform.position = transform.position;
         //activeElement.transform.rotation = transform.rotation;
         _activeElement.transform.parent = transform;
+
+        if (optionalRig == null) return;
+
+        optionalRig.transform.position = _activeElement.StartPoint.position;
+
     }
 
     void DestroyRecursive(LevelElement element)
@@ -88,6 +94,6 @@ public class MapBuilder : MonoBehaviour
             DestroyRecursive(levelEl);
         }
         allSpawnedElements.Remove(element);
-        Destroy(element.gameObject);
+        Destroy(element.gameObject, 0.5f);
     }
 }
