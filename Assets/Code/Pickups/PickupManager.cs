@@ -1,12 +1,11 @@
-using System;
-using NaughtyAttributes;
 using UnityEngine;
+using System;
 
 public class PickupManager : Singleton<PickupManager>
 {
 	[SerializeField] private PickupData[] pickups;
 
-	[Button("Spawn pickup")]
+	[NaughtyAttributes.Button("Spawn pickup")]
 	public void SpawnPickup()
 	{
 		PickupData data = pickups.GetRandomElement();
