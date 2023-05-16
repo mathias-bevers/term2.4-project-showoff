@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraRigSmoothFace : CameraRigModule
@@ -9,7 +7,5 @@ public class CameraRigSmoothFace : CameraRigModule
     private void LateUpdate()
     {
        transform.LookAt(forwardHelper);
-
     }
-
 }

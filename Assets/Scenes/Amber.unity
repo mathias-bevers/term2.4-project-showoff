@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 332579736}
   - component: {fileID: 332579739}
   - component: {fileID: 332579738}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +384,7 @@ GameObject:
   - component: {fileID: 631515936}
   - component: {fileID: 631515935}
   - component: {fileID: 631515934}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -627,7 +627,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelElements:
   - {fileID: 1328490653151211958, guid: 780be8d5177d1d8428f9a48a90856fd7, type: 3}
-  optionalRig: {fileID: 0}
 --- !u!4 &788314246
 Transform:
   m_ObjectHideFlags: 0
@@ -927,7 +926,6 @@ MonoBehaviour:
   - {fileID: 1304740140453615544, guid: 3c3b0d9a1101672479811c9167a1b408, type: 3}
   - {fileID: 979227085598233674, guid: 853f13c2f9d22b74b8a77d2632bfac87, type: 3}
   - {fileID: 979227085598233674, guid: a999d95b7b66f2e4c8fea8a877e04a18, type: 3}
-  optionalRig: {fileID: 1080175765}
 --- !u!4 &1365758622
 Transform:
   m_ObjectHideFlags: 0
