@@ -11,8 +11,23 @@ public class SideMovementModule : MotorModule
     {
         HandleInput();
         Clamper();
+        MoveForwardSlightly();
     }
 
+    public override void OnLateUpdate(MotorState state)
+    {
+        MoveBackwardsSlightly();
+    }
+
+    void MoveForwardSlightly()
+    {
+        motor.Move(motor.transform.forward * 0.1f);
+    }
+
+    void MoveBackwardsSlightly()
+    {
+        motor.Move(motor.transform.forward * -0.1f);
+    }
 
     void HandleInput()
     {

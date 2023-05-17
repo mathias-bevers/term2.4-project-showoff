@@ -384,8 +384,9 @@ GameObject:
   - component: {fileID: 631515936}
   - component: {fileID: 631515935}
   - component: {fileID: 631515937}
-  - component: {fileID: 631515938}
+  - component: {fileID: 631515941}
   - component: {fileID: 631515939}
+  - component: {fileID: 631515938}
   - component: {fileID: 631515940}
   m_Layer: 2
   m_Name: Player
@@ -450,8 +451,8 @@ CharacterController:
   serializedVersion: 2
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_SlopeLimit: 70
+  m_StepOffset: 0.1
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
@@ -496,7 +497,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enabledWhen: 1
-  useExtendedGroundedRange: 0
+  useExtendedGroundedRange: 1
   jumpHeight: 90
   debugJumpKey: 32
 --- !u!114 &631515940
@@ -516,6 +517,23 @@ MonoBehaviour:
   gravityPower: 3
   overrideGravity: 0
   gravityDirection: {x: 0, y: 0, z: 0}
+--- !u!114 &631515941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631515931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5050fd8db4e13cc4ead46685334aea6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabledWhen: 2
+  useExtendedGroundedRange: 0
+  collidesWith:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!1 &688429670
 GameObject:
   m_ObjectHideFlags: 0
@@ -977,6 +995,7 @@ MonoBehaviour:
   - {fileID: 1304740140453615544, guid: 3c3b0d9a1101672479811c9167a1b408, type: 3}
   - {fileID: 979227085598233674, guid: 853f13c2f9d22b74b8a77d2632bfac87, type: 3}
   - {fileID: 979227085598233674, guid: a999d95b7b66f2e4c8fea8a877e04a18, type: 3}
+  - {fileID: 979227085598233674, guid: ad6a61687d91068478922ffd0bb0b24e, type: 3}
 --- !u!4 &1365758622
 Transform:
   m_ObjectHideFlags: 0

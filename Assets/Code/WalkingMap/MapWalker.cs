@@ -42,8 +42,8 @@ public class MapWalker : MonoBehaviour
             lastActiveElement = activeElement;
             metersRan = 0;
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow)) activeElement?.ChoseSide(MapSides.Right);
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) activeElement?.ChoseSide(MapSides.Left);
+        //if (Input.GetKeyDown(KeyCode.RightArrow)) activeElement?.ChoseSide(MapSides.Right);
+        //if (Input.GetKeyDown(KeyCode.LeftArrow)) activeElement?.ChoseSide(MapSides.Left);
 
         HandleSingleDirection(activeElement);
     }
@@ -79,7 +79,6 @@ public class MapWalker : MonoBehaviour
                 activePath = activeElement.GetPath();
             if (activeNode.Value.isEnd)
             {
-                Debug.Log("ending!");
                 mapBuilder.MoveOverElement(rig);
                 metersRan = 0;
                 activeNode = null;
@@ -91,10 +90,7 @@ public class MapWalker : MonoBehaviour
 
         if (activePath == null) return;
         if (activePath.Count <= 1) return;
-        //DrawPath();
         WalkPath();
-
-
         metersRan += Time.deltaTime * currentSpeed;
     }
 

@@ -6,7 +6,7 @@ using UnityEngine;
 public class LevelElement : MonoBehaviour
 {
     [SerializeField] bool hasSideToChose = false;
-    const float stepCount = 0.01f;
+    const float stepCount = 0.001f;
     const int stepAmount = (int)(1 / stepCount);
 
     [SerializeField] LevelPoint startPoint;
