@@ -10,11 +10,11 @@ public class GravityModule : MotorModule
     {
         Vector3 gravity = Physics.gravity;
         if (overrideGravity) gravity = gravityDirection;
-        motor.AddVelocity(gravity * gravityPower * Time.deltaTime);       
+        registry.AddVelocity(gravity * gravityPower * Time.deltaTime);       
     }
 
     public override void ModuleEnable(MotorState state)
     {
-        if (state.IsInAir()) motor.RemoveFall();
+        if (state.IsInAir()) registry.RemoveFall();
     }
 }

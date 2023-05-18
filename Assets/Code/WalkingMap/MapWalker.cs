@@ -42,8 +42,8 @@ public class MapWalker : MonoBehaviour
             lastActiveElement = activeElement;
             metersRan = 0;
         }
-        //if (Input.GetKeyDown(KeyCode.RightArrow)) activeElement?.ChoseSide(MapSides.Right);
-        //if (Input.GetKeyDown(KeyCode.LeftArrow)) activeElement?.ChoseSide(MapSides.Left);
+        if (Input.GetKeyDown(KeyCode.D)) activeElement?.ChoseSide(MapSides.Right);
+        if (Input.GetKeyDown(KeyCode.A)) activeElement?.ChoseSide(MapSides.Left);
 
         HandleSingleDirection(activeElement);
     }
@@ -90,6 +90,7 @@ public class MapWalker : MonoBehaviour
 
         if (activePath == null) return;
         if (activePath.Count <= 1) return;
+        DrawPath();
         WalkPath();
         metersRan += Time.deltaTime * currentSpeed;
     }
@@ -125,8 +126,9 @@ public class MapWalker : MonoBehaviour
 
         Vector3 outcomePosition = activePos + directionMultiplied;
 
-        rig.transform.rotation = Quaternion.LookRotation(directionFlat, Vector3.up);
-
+        if (directionFlat.magnitude > float.Epsilon || direction.magnitude < -float.Epsilon)
+            rig.transform.rotation = Quaternion.LookRotation(directionFlat, Vector3.up);
+        
         rig.transform.position = outcomePosition;
     }
 
@@ -149,12 +151,15 @@ public class MapWalker : MonoBehaviour
                 removableDistance = currentDistance - distance;
                 return;
             }
-
         }
 
         activeNode = activePath[activePath.Count - 1];
         newActiveNode = activeNode;
         removableDistance = Vector3.Distance(activePath[0].position, activePath[activePath.Count - 1].position);
+        if (!activeNode.Value.isEnd)
+        {
+            Debug.Log("Death!");
+        }
     }
 
     void DrawPath()

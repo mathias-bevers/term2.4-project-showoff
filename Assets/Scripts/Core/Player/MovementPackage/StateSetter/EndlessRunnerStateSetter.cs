@@ -1,8 +1,8 @@
 public class EndlessRunnerStateSetter : StateSetterModule
 {
-    internal override void OnUpdate()
+    protected override void OnUpdate()
     {
-        if (motor.characterController.isGrounded) SetState(MotorState.Grounded);
+        if (registry.characterController.isGrounded) SetState(MotorState.Grounded);
         else SetState(MotorState.InAir);
     }
 }

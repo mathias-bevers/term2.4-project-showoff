@@ -497,8 +497,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enabledWhen: 1
-  useExtendedGroundedRange: 1
+  useExtendedGroundedRange: 0
   jumpHeight: 90
+  allowCoyoteTime: 1
+  coyoteSeconds: 0.2
   debugJumpKey: 32
 --- !u!114 &631515940
 MonoBehaviour:
@@ -697,6 +699,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelElements:
   - {fileID: 1328490653151211958, guid: 780be8d5177d1d8428f9a48a90856fd7, type: 3}
+  - {fileID: 979227085598233674, guid: 853f13c2f9d22b74b8a77d2632bfac87, type: 3}
+  - {fileID: 979227085598233674, guid: a999d95b7b66f2e4c8fea8a877e04a18, type: 3}
 --- !u!4 &788314246
 Transform:
   m_ObjectHideFlags: 0

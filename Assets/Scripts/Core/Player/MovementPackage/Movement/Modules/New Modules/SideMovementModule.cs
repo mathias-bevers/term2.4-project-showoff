@@ -18,27 +18,27 @@ public class SideMovementModule : MotorModule
 
     void MoveForwardSlightly()
     {
-        motor.Move(motor.transform.forward * 0.1f);
+        registry.Move(registry.transform.forward * 0.1f);
     }
 
     void MoveBackwardsSlightly()
     {
-        motor.Move(motor.transform.forward * -0.1f);
+        registry.Move(registry.transform.forward * -0.1f);
     }
 
     void HandleInput()
     {
         if (Input.GetKey(KeyCode.LeftArrow))
-            motor.Move(motor.transform.right * -speed);
+            registry.Move(registry.transform.right * -speed);
         if(Input.GetKey(KeyCode.RightArrow))
-            motor.Move(motor.transform.right * speed);
+            registry.Move(registry.transform.right * speed);
     }
 
     void Clamper()
     {
-        Vector3 playerLocalPos = motor.transform.localPosition;
+        Vector3 playerLocalPos = registry.transform.localPosition;
         if (playerLocalPos.x > maxStickOut) playerLocalPos.x = maxStickOut;
         if (playerLocalPos.x < -maxStickOut) playerLocalPos.x = -maxStickOut;
-        motor.transform.localPosition = playerLocalPos;
+        registry.transform.localPosition = playerLocalPos;
     }
 }
