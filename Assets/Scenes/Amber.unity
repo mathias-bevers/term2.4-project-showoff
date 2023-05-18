@@ -350,7 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d7683aaa22b3fc4fb00b47739499fcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapBuilder: {fileID: 1365758621}
+  mapBuilder: {fileID: 788314245}
   rig: {fileID: 1080175765}
   startSpeed: 3
   endSpeed: 7
@@ -388,6 +388,7 @@ GameObject:
   - component: {fileID: 631515939}
   - component: {fileID: 631515938}
   - component: {fileID: 631515940}
+  - component: {fileID: 631515942}
   m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
@@ -500,7 +501,7 @@ MonoBehaviour:
   useExtendedGroundedRange: 0
   jumpHeight: 90
   allowCoyoteTime: 1
-  coyoteSeconds: 0.2
+  coyoteSeconds: 0.4
   debugJumpKey: 32
 --- !u!114 &631515940
 MonoBehaviour:
@@ -536,6 +537,18 @@ MonoBehaviour:
   collidesWith:
     serializedVersion: 2
     m_Bits: 1
+--- !u!114 &631515942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631515931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8111017dd114e7b46ac6b3f174163f25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &688429670
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,7 +713,7 @@ MonoBehaviour:
   levelElements:
   - {fileID: 1328490653151211958, guid: 780be8d5177d1d8428f9a48a90856fd7, type: 3}
   - {fileID: 979227085598233674, guid: 853f13c2f9d22b74b8a77d2632bfac87, type: 3}
-  - {fileID: 979227085598233674, guid: a999d95b7b66f2e4c8fea8a877e04a18, type: 3}
+  - {fileID: 4554156186127338077, guid: 56ebe8d37e7bad543a1e4ee13ad4daf2, type: 3}
 --- !u!4 &788314246
 Transform:
   m_ObjectHideFlags: 0
