@@ -20,15 +20,17 @@ public class LevelElement : MonoBehaviour
     LevelPoint _takenLevelPoint = null;
     public LevelPoint TakenLevelPoint => _takenLevelPoint;
 
-    MapSides chosenSide;
+    MapSides chosenSide = 0;
     bool hasChosenSide = false;
 
     [HideInInspector]
     public bool lockInput = false;
 
     private void Awake()
-    { 
+    {
         if (endPoints.Length == 1) _takenLevelPoint = endPoints[0];
+
+        ChoseSide(0);
     }
 
     public void ChoseSide(MapSides side)
@@ -36,11 +38,22 @@ public class LevelElement : MonoBehaviour
         if (lockInput) return;
         if (!hasSideToChose) return;
         chosenSide = side;
-        hasChosenSide = true;
-        /*foreach (LevelPoint p in endPoints)
-            if (p.winningSides.HasFlag(side)) 
-                _takenLevelPoint = p;*/
+        if(side != 0) hasChosenSide = true;
+        else hasChosenSide = false; 
+
+        LoopThroughPoints(startPoint, (p, lp) =>
+        {
+            if (!p.isChoiceNode) return;
+            foreach (ConnectionPoint cp in p.connectionPoints)
+                if (cp.requiredSides.HasFlag(chosenSide))
+                {
+                    _takenLevelPoint = cp.nextPoint;
+                    return;
+                }
+        }, true, false, null);
     }
+
+
 
     public Path GetPath()
     {
@@ -71,14 +84,14 @@ public class LevelElement : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        
+
         if (startPoint == null) return;
 
         drawCount = 0;
 
         RecursiveDraw(startPoint);
     }
-    
+
 
     void RecursiveDraw(LevelPoint point, LevelPoint lastPoint = null)
     {
@@ -95,29 +108,80 @@ public class LevelElement : MonoBehaviour
 
     void LoopThroughPoints(LevelPoint point, Action<LevelPoint, LevelPoint> callback, bool recursive = false, bool stopIfNotChosen = true, LevelPoint lastPoint = null)
     {
-        if(HandleStop(stopIfNotChosen, lastPoint, point))
-        HandleDefault(point, callback, recursive, stopIfNotChosen, lastPoint);
+        //if(HandleStop(stopIfNotChosen, lastPoint, point) != null)
+        //HandleDefault(point, callback, recursive, stopIfNotChosen, lastPoint);
+
+        List<ConnectionPoint> connections = new List<ConnectionPoint>();
+        foreach (ConnectionPoint conPoint in point.connectionPoints)
+            connections.Add(conPoint);
+
+        if (!stopIfNotChosen) callback(point, lastPoint);
+        else
+        {
+            Debug.Log("oofies:" + chosenSide);
+            if (lastPoint == null) callback(point, lastPoint);
+            else
+            {
+                Debug.Log("oofies2:" + chosenSide);
+                if (!lastPoint.isChoiceNode) callback(point, lastPoint);
+                else
+                {
+                    Debug.Log("oofies3:" + chosenSide);
+                    Debug.Log("Connections: " + connections.Count);
+                    for (int i = lastPoint.connectionPoints.Length - 1; i >= 0; i--)
+                    {
+                        ConnectionPoint conPoint = lastPoint.connectionPoints[i];
+
+                        if (conPoint.nextPoint == point)
+                        {
+                            Debug.Log(conPoint.requiredSides + " : " + chosenSide + " : " + ((chosenSide != MapSides.Nothing && conPoint.requiredSides.HasFlag(chosenSide)) || (conPoint.requiredSides == MapSides.Nothing && !hasChosenSide)));
+                            if (((chosenSide != MapSides.Nothing && conPoint.requiredSides.HasFlag(chosenSide)) || (conPoint.requiredSides == MapSides.Nothing && !hasChosenSide)))
+                                callback(point, lastPoint);
+                            else { Debug.Log("Removed!"); connections.Remove(conPoint); }
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+        if (!recursive) return;
+
+        foreach (ConnectionPoint p in connections)
+            LoopThroughPoints(p.nextPoint, callback, recursive, stopIfNotChosen, point);
     }
 
-    bool HandleStop(bool stopIfNotChosen, LevelPoint lastPoint, LevelPoint point)
+    List<ConnectionPoint> HandleStop(bool stopIfNotChosen, LevelPoint lastPoint, LevelPoint point)
     {
-        if (!stopIfNotChosen) return true;
-        if (lastPoint == null) return true;
-        if (!lastPoint.isChoiceNode) return true;
-        if (!hasChosenSide && hasSideToChose) return false; //TODO: causes all the issues
-        else
-            foreach (ConnectionPoint conPoint in point.connectionPoints)
-                if (conPoint.requiredSides.HasFlag(chosenSide)) return true;
-        return false;
+        List<ConnectionPoint> connections = new List<ConnectionPoint>();
+        if (!stopIfNotChosen) return connections;
+        if (lastPoint == null) return connections;
+        if (!lastPoint.isChoiceNode) return connections;
+        if (!hasSideToChose) return connections;
+        foreach (ConnectionPoint conPoint in lastPoint.connectionPoints)
+            if (conPoint.nextPoint == point)
+                if (conPoint.requiredSides.HasFlag(chosenSide)) return connections;
+        return null;
     }
 
     void HandleDefault(LevelPoint point, Action<LevelPoint, LevelPoint> callback, bool recursive, bool stopIfNotChosen, LevelPoint lastPoint)
     {
-        callback(point, lastPoint);
+        List<ConnectionPoint> points = new List<ConnectionPoint>();
+
+        if (!stopIfNotChosen)
+            callback(point, lastPoint);
+        else
+        {
+            //if (point.requiredSides.HasFlag(chosenSide)) callback(point, lastPoint);
+        }
 
         if (!recursive) return;
+
         foreach (ConnectionPoint p in point.connectionPoints)
+        {
             LoopThroughPoints(p.nextPoint, callback, recursive, stopIfNotChosen, point);
+        }
     }
 
     List<Vector3> GetBezierPoints(LevelPoint point, LevelPoint lastPoint)
