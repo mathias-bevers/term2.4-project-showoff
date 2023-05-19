@@ -69,6 +69,7 @@ public class MapWalker : MonoBehaviour
 
     void HandleSingleDirection(LevelElement activeElement)
     {
+        if (activeElement != null) if (activeElement.forceRequestNewPath) activePath = activeElement.GetPath();
         if (activeNode == null)
         {
             activePath = activeElement.GetPath();
@@ -77,6 +78,7 @@ public class MapWalker : MonoBehaviour
         {
             if (activeNode.Value.shouldProbablyRequestPathUpdate)
                 activePath = activeElement.GetPath();
+
             if (activeNode.Value.isEnd)
             {
                 mapBuilder.MoveOverElement(rig);

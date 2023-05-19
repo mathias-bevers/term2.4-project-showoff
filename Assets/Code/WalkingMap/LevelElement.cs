@@ -26,11 +26,19 @@ public class LevelElement : MonoBehaviour
     [HideInInspector]
     public bool lockInput = false;
 
+    bool _forceRequestNewPath = false;
+    public bool forceRequestNewPath => _forceRequestNewPath;
+
     private void Awake()
     {
         if (endPoints.Length == 1) _takenLevelPoint = endPoints[0];
 
         ChoseSide(0);
+    }
+
+    public void LockInput()
+    {
+        lockInput = true;
     }
 
     public void ChoseSide(MapSides side)
@@ -51,12 +59,15 @@ public class LevelElement : MonoBehaviour
                     return;
                 }
         }, true, false, null);
+
+        _forceRequestNewPath = true;
     }
 
 
 
     public Path GetPath()
     {
+        _forceRequestNewPath = false;
         Path path = new Path();
         LoopThroughPoints(startPoint, (p, lp) =>
         {
@@ -64,6 +75,7 @@ public class LevelElement : MonoBehaviour
             node.isEnd = p.isEnd;
             node.shouldProbablyRequestPathUpdate = true;
             node.position = p.position;
+            node.choiceNode = p.isChoiceNode;
 
             if (lp != null)
                 if (lp.isSmooth)
@@ -108,9 +120,6 @@ public class LevelElement : MonoBehaviour
 
     void LoopThroughPoints(LevelPoint point, Action<LevelPoint, LevelPoint> callback, bool recursive = false, bool stopIfNotChosen = true, LevelPoint lastPoint = null)
     {
-        //if(HandleStop(stopIfNotChosen, lastPoint, point) != null)
-        //HandleDefault(point, callback, recursive, stopIfNotChosen, lastPoint);
-
         List<ConnectionPoint> connections = new List<ConnectionPoint>();
         foreach (ConnectionPoint conPoint in point.connectionPoints)
             connections.Add(conPoint);
@@ -118,28 +127,22 @@ public class LevelElement : MonoBehaviour
         if (!stopIfNotChosen) callback(point, lastPoint);
         else
         {
-            Debug.Log("oofies:" + chosenSide);
             if (lastPoint == null) callback(point, lastPoint);
             else
             {
-                Debug.Log("oofies2:" + chosenSide);
                 if (!lastPoint.isChoiceNode) callback(point, lastPoint);
                 else
                 {
-                    Debug.Log("oofies3:" + chosenSide);
-                    Debug.Log("Connections: " + connections.Count);
                     for (int i = lastPoint.connectionPoints.Length - 1; i >= 0; i--)
                     {
                         ConnectionPoint conPoint = lastPoint.connectionPoints[i];
 
                         if (conPoint.nextPoint == point)
                         {
-                            Debug.Log(conPoint.requiredSides + " : " + chosenSide + " : " + ((chosenSide != MapSides.Nothing && conPoint.requiredSides.HasFlag(chosenSide)) || (conPoint.requiredSides == MapSides.Nothing && !hasChosenSide)));
                             if (((chosenSide != MapSides.Nothing && conPoint.requiredSides.HasFlag(chosenSide)) || (conPoint.requiredSides == MapSides.Nothing && !hasChosenSide)))
                                 callback(point, lastPoint);
-                            else { Debug.Log("Removed!"); connections.Remove(conPoint); }
+                            else connections.Remove(conPoint); 
                         }
-
                     }
                 }
             }
@@ -150,38 +153,6 @@ public class LevelElement : MonoBehaviour
 
         foreach (ConnectionPoint p in connections)
             LoopThroughPoints(p.nextPoint, callback, recursive, stopIfNotChosen, point);
-    }
-
-    List<ConnectionPoint> HandleStop(bool stopIfNotChosen, LevelPoint lastPoint, LevelPoint point)
-    {
-        List<ConnectionPoint> connections = new List<ConnectionPoint>();
-        if (!stopIfNotChosen) return connections;
-        if (lastPoint == null) return connections;
-        if (!lastPoint.isChoiceNode) return connections;
-        if (!hasSideToChose) return connections;
-        foreach (ConnectionPoint conPoint in lastPoint.connectionPoints)
-            if (conPoint.nextPoint == point)
-                if (conPoint.requiredSides.HasFlag(chosenSide)) return connections;
-        return null;
-    }
-
-    void HandleDefault(LevelPoint point, Action<LevelPoint, LevelPoint> callback, bool recursive, bool stopIfNotChosen, LevelPoint lastPoint)
-    {
-        List<ConnectionPoint> points = new List<ConnectionPoint>();
-
-        if (!stopIfNotChosen)
-            callback(point, lastPoint);
-        else
-        {
-            //if (point.requiredSides.HasFlag(chosenSide)) callback(point, lastPoint);
-        }
-
-        if (!recursive) return;
-
-        foreach (ConnectionPoint p in point.connectionPoints)
-        {
-            LoopThroughPoints(p.nextPoint, callback, recursive, stopIfNotChosen, point);
-        }
     }
 
     List<Vector3> GetBezierPoints(LevelPoint point, LevelPoint lastPoint)
