@@ -27,7 +27,7 @@ public class LevelElement : MonoBehaviour
     public bool lockInput = false;
 
     private void Awake()
-    {
+    { 
         if (endPoints.Length == 1) _takenLevelPoint = endPoints[0];
     }
 
@@ -37,9 +37,9 @@ public class LevelElement : MonoBehaviour
         if (!hasSideToChose) return;
         chosenSide = side;
         hasChosenSide = true;
-        foreach (LevelPoint p in endPoints)
+        /*foreach (LevelPoint p in endPoints)
             if (p.winningSides.HasFlag(side)) 
-                _takenLevelPoint = p;
+                _takenLevelPoint = p;*/
     }
 
     public Path GetPath()
@@ -71,13 +71,14 @@ public class LevelElement : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-       // return;
+        
         if (startPoint == null) return;
 
         drawCount = 0;
 
         RecursiveDraw(startPoint);
     }
+    
 
     void RecursiveDraw(LevelPoint point, LevelPoint lastPoint = null)
     {
@@ -87,7 +88,7 @@ public class LevelElement : MonoBehaviour
         if (point.isEnd) DrawEnd(point);
         for (int i = 0; i < point.connectionPoints.Length; i++)
         {
-            RecursiveDraw(point.connectionPoints[i], point);
+            RecursiveDraw(point.connectionPoints[i].nextPoint, point);
         }
         drawCount++;
     }
@@ -103,9 +104,11 @@ public class LevelElement : MonoBehaviour
         if (!stopIfNotChosen) return true;
         if (lastPoint == null) return true;
         if (!lastPoint.isChoiceNode) return true;
-        if (!hasChosenSide && hasSideToChose) return false;
-        else if (!point.winningSides.HasFlag(chosenSide)) return false;
-        return true;
+        if (!hasChosenSide && hasSideToChose) return false; //TODO: causes all the issues
+        else
+            foreach (ConnectionPoint conPoint in point.connectionPoints)
+                if (conPoint.requiredSides.HasFlag(chosenSide)) return true;
+        return false;
     }
 
     void HandleDefault(LevelPoint point, Action<LevelPoint, LevelPoint> callback, bool recursive, bool stopIfNotChosen, LevelPoint lastPoint)
@@ -113,8 +116,8 @@ public class LevelElement : MonoBehaviour
         callback(point, lastPoint);
 
         if (!recursive) return;
-        foreach (LevelPoint p in point.connectionPoints)
-            LoopThroughPoints(p, callback, recursive, stopIfNotChosen, point);
+        foreach (ConnectionPoint p in point.connectionPoints)
+            LoopThroughPoints(p.nextPoint, callback, recursive, stopIfNotChosen, point);
     }
 
     List<Vector3> GetBezierPoints(LevelPoint point, LevelPoint lastPoint)

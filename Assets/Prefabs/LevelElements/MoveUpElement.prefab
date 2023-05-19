@@ -228,7 +228,7 @@ MonoBehaviour:
   _smooth: 0
   _isEnd: 1
   _connectionPoints: []
-  _winningSides: 0
+  isChoiceNode: 0
 --- !u!1 &1304740141091698625
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,8 +277,9 @@ MonoBehaviour:
   _smooth: 0
   _isEnd: 0
   _connectionPoints:
-  - {fileID: 1304740140786078244}
-  _winningSides: 0
+  - nextPoint: {fileID: 1304740140786078244}
+    requiredSides: 0
+  isChoiceNode: 0
 --- !u!1 &1304740141100614406
 GameObject:
   m_ObjectHideFlags: 0
