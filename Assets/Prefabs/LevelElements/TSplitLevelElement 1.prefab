@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _forwardStrenth: 0.25
-  _smooth: 1
+  _smooth: 0
   _isEnd: 0
   _connectionPoints:
   - nextPoint: {fileID: 1328490651822109198}

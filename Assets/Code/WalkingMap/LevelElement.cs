@@ -46,14 +46,18 @@ public class LevelElement : MonoBehaviour
         if (lockInput) return;
         if (!hasSideToChose) return;
         chosenSide = side;
-        if(side != 0) hasChosenSide = true;
-        else hasChosenSide = false; 
+        if (side != 0) hasChosenSide = true;
+        else hasChosenSide = false;
 
         LoopThroughPoints(startPoint, (p, lp) =>
         {
             if (!p.isChoiceNode) return;
             foreach (ConnectionPoint cp in p.connectionPoints)
-                if (cp.requiredSides.HasFlag(chosenSide))
+                if (cp.requiredSides.HasFlag(chosenSide) && cp.requiredSides != MapSides.Nothing && chosenSide != MapSides.Nothing)
+                {
+                    _takenLevelPoint = cp.nextPoint;
+                    return;
+                }else if(cp.requiredSides == MapSides.Nothing &&  cp.requiredSides == MapSides.Nothing)
                 {
                     _takenLevelPoint = cp.nextPoint;
                     return;
@@ -85,6 +89,7 @@ public class LevelElement : MonoBehaviour
                     {
                         PathNode internalNode = new PathNode();
                         internalNode.position = points[i];
+                        internalNode.choiceNode = lp.isChoiceNode;
                         path.nodes.Add(internalNode);
                     }
                 }
@@ -141,7 +146,7 @@ public class LevelElement : MonoBehaviour
                         {
                             if (((chosenSide != MapSides.Nothing && conPoint.requiredSides.HasFlag(chosenSide)) || (conPoint.requiredSides == MapSides.Nothing && !hasChosenSide)))
                                 callback(point, lastPoint);
-                            else connections.Remove(conPoint); 
+                            else connections.Remove(conPoint);
                         }
                     }
                 }

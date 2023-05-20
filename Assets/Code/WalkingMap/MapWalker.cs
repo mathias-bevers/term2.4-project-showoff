@@ -28,12 +28,14 @@ public class MapWalker : MonoBehaviour
     LevelElement lastActiveElement = null;
     float metersRan = 0;
 
+    LevelElement activeElement;
+
     private void Update()
     {
         if (mapBuilder == null) return;
         BuildElements();
 
-        LevelElement activeElement = mapBuilder.activeElement;
+        activeElement = mapBuilder.activeElement;
 
         if (activeElement == null) return;
         HandleSpeedIncrease();
@@ -140,7 +142,8 @@ public class MapWalker : MonoBehaviour
         newActiveNode = null;
         removableDistance = 0;
         float currentDistance = 0;
-         
+        
+
         for (int i = 0; i < activePath.Count; i++)
         {
             float distance = Vector3.Distance(activePath[i].position, activePath[i + 1].position);
@@ -151,6 +154,8 @@ public class MapWalker : MonoBehaviour
                 activeNode = activePath[i];
                 newActiveNode = activePath[i + 1];
                 removableDistance = currentDistance - distance;
+                if (activeNode.Value.choiceNode)
+                    activeElement.LockInput();
                 return;
             }
         }
