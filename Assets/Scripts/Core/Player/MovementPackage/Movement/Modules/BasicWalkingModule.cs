@@ -14,7 +14,7 @@ public class BasicWalkingModule : MotorModule
 
     public override void OnUpdate(MotorState state)
     {
-        CameraRig rig = motor.cameraRig;
+        CameraRig rig = registry.cameraRig;
         if (rig == null) return;
 
         Vector3 forw = rig.forward;
@@ -35,7 +35,7 @@ public class BasicWalkingModule : MotorModule
 
         Vector2 speedInput = input * speed;
 
-        motor.AddVelocity(forw * speedInput.y);
-        motor.AddVelocity(right * speedInput.x);
+        registry.AddVelocity(forw * speedInput.y);
+        registry.AddVelocity(right * speedInput.x);
     }
 }

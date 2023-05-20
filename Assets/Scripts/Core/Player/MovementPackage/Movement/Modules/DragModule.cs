@@ -10,7 +10,7 @@ public class DragModule : MotorModule
 
     public override void OnLateUpdate(MotorState state)
     {
-        if (state.IsGrounded())     motor.AddDrag(groundDrag);
-        else if (state.IsInAir())   motor.AddDrag(airDrag);
+        if (state.IsGrounded())     registry.AddDrag(groundDrag);
+        else if (state.IsInAir())   registry.AddDrag(airDrag);
     }
 }

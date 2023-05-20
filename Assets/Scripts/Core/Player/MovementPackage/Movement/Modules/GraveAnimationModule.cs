@@ -8,6 +8,6 @@ public class GraveAnimationModule : MotorModule
 
     public override void OnUpdate(MotorState state)
     {
-        animator?.SetFloat("WalkingSpeed", motor.charVelocity.magnitude);
+        animator?.SetFloat("WalkingSpeed", registry.charVelocity.magnitude);
     }
 }

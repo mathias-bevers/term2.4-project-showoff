@@ -19,8 +19,8 @@ public class MapBuilder : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) BuildElement();
-        if (Input.GetKeyDown(KeyCode.Tab)) MoveOverElement();
+        //if (Input.GetKeyDown(KeyCode.Space)) BuildElement();
+        //if (Input.GetKeyDown(KeyCode.Tab)) MoveOverElement();
     }
 
     public void BuildElement()
@@ -88,6 +88,7 @@ public class MapBuilder : MonoBehaviour
         foreach (LevelPoint point in element.EndPoints)
         {
             if (element.TakenLevelPoint == point) continue;
+            if (point.transform.childCount <= 0) continue;
             Transform pTrans = point.transform.GetChild(0);
             if (pTrans == null) continue;
             LevelElement levelEl = pTrans.GetComponent<LevelElement>();

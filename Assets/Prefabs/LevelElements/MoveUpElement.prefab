@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1304740139917889098}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -176,7 +176,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasSideToChose: 0
-  markAsProbableWaitingTile: 0
   startPoint: {fileID: 1304740141091698627}
   endPoints:
   - {fileID: 1304740140786078244}
@@ -229,7 +228,7 @@ MonoBehaviour:
   _smooth: 0
   _isEnd: 1
   _connectionPoints: []
-  _winningSides: 0
+  isChoiceNode: 0
 --- !u!1 &1304740141091698625
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,8 +277,9 @@ MonoBehaviour:
   _smooth: 0
   _isEnd: 0
   _connectionPoints:
-  - {fileID: 1304740140786078244}
-  _winningSides: 0
+  - nextPoint: {fileID: 1304740140786078244}
+    requiredSides: 0
+  isChoiceNode: 0
 --- !u!1 &1304740141100614406
 GameObject:
   m_ObjectHideFlags: 0

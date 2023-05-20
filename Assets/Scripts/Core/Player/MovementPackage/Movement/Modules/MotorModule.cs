@@ -1,12 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Motor))]
-public class MotorModule : MonoBehaviour
+public class MotorModule : RegistryHelper<MotorModule, Motor>
 {
-    internal Motor motor;
     [SerializeField] MotorState enabledWhen;
     MotorState lastEnabled = 0;
 
@@ -16,46 +11,22 @@ public class MotorModule : MonoBehaviour
     ExtendedGroundedModule extendedGroundedModule = null;
     bool hasModule = false;
 
-    private void Awake()
-    {
-        HandleMotor();
-    }
-
-    void HandleMotor()
-    {
-        motor = GetComponent<Motor>();
-    }
-
-    private void OnEnable()
-    {
-        if (motor == null) HandleMotor();
-        motor.Register<MotorModule>(this);
-    }
-
-    private void OnDisable()
-    {
-        if (motor == null) HandleMotor();
-        motor.Deregister(this);
-    }
-
-    public void DoUpdate()
+    protected sealed override void OnUpdate()
     {
         HandleExtended();
         TickFlag(false);
     }
 
-    public void DoLateUpdate()
+    protected sealed override void OnLateUpdate()
     {
         HandleExtended();
         TickFlag(true);
     }
 
-
-
     void TickFlag(bool asLate)
     {
         bool hasFlag = HasFlag();
-        MotorState motorState = motor.motorState;
+        MotorState motorState = registry.motorState;
         if (lastEnabled != motorState)
         {
             lastEnabled = motorState;
@@ -70,7 +41,7 @@ public class MotorModule : MonoBehaviour
 
     bool HasFlag()
     {
-        bool hasFlag = enabledWhen.HasFlag(motor.motorState);
+        bool hasFlag = enabledWhen.HasFlag(registry.motorState);
         if (hasFlag) return hasFlag;
         if (enabledWhen.HasFlag(MotorState.Grounded) && IsOnExtendedGround()) hasFlag = true;
         return hasFlag;

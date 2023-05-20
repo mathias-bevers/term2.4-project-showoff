@@ -11,6 +11,6 @@ public class ExtendedGroundedModule : MotorModule
 
     public override void OnUpdate(MotorState state)
     {
-        _extendedGround = Physics.SphereCast(transform.position, motor.characterController.radius, Vector3.down, out RaycastHit hit, motor.characterController.stepOffset, collidesWith, QueryTriggerInteraction.Collide);
+        _extendedGround = Physics.SphereCast(transform.position, registry.characterController.radius, Vector3.down, out RaycastHit hit, registry.characterController.stepOffset, collidesWith, QueryTriggerInteraction.Collide);
     }
 }

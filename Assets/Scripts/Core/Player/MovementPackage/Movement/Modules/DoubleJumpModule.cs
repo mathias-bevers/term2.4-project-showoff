@@ -20,8 +20,8 @@ public class DoubleJumpModule : MotorModule
 
     public void Jump()
     {
-        motor.ResetYVel();
-        motor.AddVelocity(new Vector3(0, Mathf.Sqrt(jumpHeight), 0));
+        registry.ResetYVel();
+        registry.AddVelocity(new Vector3(0, Mathf.Sqrt(jumpHeight), 0));
     }
 
     public override void ModuleEnable(MotorState state)

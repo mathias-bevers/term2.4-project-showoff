@@ -19,7 +19,7 @@ public class JumpModule : MotorModule
     [@Button]
     public void Jump()
     {
-        motor.ResetYVel();
-        motor.AddVelocity(new Vector3(0, Mathf.Sqrt(jumpHeight), 0));
+        registry.ResetYVel();
+        registry.AddVelocity(new Vector3(0, Mathf.Sqrt(jumpHeight), 0));
     }
 }

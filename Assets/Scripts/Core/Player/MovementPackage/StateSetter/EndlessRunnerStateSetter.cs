@@ -1,4 +1,4 @@
-public class BasicStateSetterModule : StateSetterModule
+public class EndlessRunnerStateSetter : StateSetterModule
 {
     protected override void OnUpdate()
     {

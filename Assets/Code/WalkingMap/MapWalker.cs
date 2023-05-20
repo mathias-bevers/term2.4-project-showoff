@@ -28,12 +28,14 @@ public class MapWalker : MonoBehaviour
     LevelElement lastActiveElement = null;
     float metersRan = 0;
 
+    LevelElement activeElement;
+
     private void Update()
     {
         if (mapBuilder == null) return;
         BuildElements();
 
-        LevelElement activeElement = mapBuilder.activeElement;
+        activeElement = mapBuilder.activeElement;
 
         if (activeElement == null) return;
         HandleSpeedIncrease();
@@ -42,8 +44,8 @@ public class MapWalker : MonoBehaviour
             lastActiveElement = activeElement;
             metersRan = 0;
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow)) activeElement?.ChoseSide(MapSides.Right);
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) activeElement?.ChoseSide(MapSides.Left);
+        if (Input.GetKeyDown(KeyCode.D)) activeElement?.ChoseSide(MapSides.Right);
+        if (Input.GetKeyDown(KeyCode.A)) activeElement?.ChoseSide(MapSides.Left);
 
         HandleSingleDirection(activeElement);
     }
@@ -69,6 +71,7 @@ public class MapWalker : MonoBehaviour
 
     void HandleSingleDirection(LevelElement activeElement)
     {
+        if (activeElement != null) if (activeElement.forceRequestNewPath) activePath = activeElement.GetPath();
         if (activeNode == null)
         {
             activePath = activeElement.GetPath();
@@ -77,9 +80,9 @@ public class MapWalker : MonoBehaviour
         {
             if (activeNode.Value.shouldProbablyRequestPathUpdate)
                 activePath = activeElement.GetPath();
+
             if (activeNode.Value.isEnd)
             {
-                Debug.Log("ending!");
                 mapBuilder.MoveOverElement(rig);
                 metersRan = 0;
                 activeNode = null;
@@ -91,10 +94,8 @@ public class MapWalker : MonoBehaviour
 
         if (activePath == null) return;
         if (activePath.Count <= 1) return;
-        //DrawPath();
+        DrawPath();
         WalkPath();
-
-
         metersRan += Time.deltaTime * currentSpeed;
     }
 
@@ -129,8 +130,9 @@ public class MapWalker : MonoBehaviour
 
         Vector3 outcomePosition = activePos + directionMultiplied;
 
-        rig.transform.rotation = Quaternion.LookRotation(directionFlat, Vector3.up);
-
+        if (directionFlat.magnitude > float.Epsilon || direction.magnitude < -float.Epsilon)
+            rig.transform.rotation = Quaternion.LookRotation(directionFlat, Vector3.up);
+        
         rig.transform.position = outcomePosition;
     }
 
@@ -140,7 +142,8 @@ public class MapWalker : MonoBehaviour
         newActiveNode = null;
         removableDistance = 0;
         float currentDistance = 0;
-         
+        
+
         for (int i = 0; i < activePath.Count; i++)
         {
             float distance = Vector3.Distance(activePath[i].position, activePath[i + 1].position);
@@ -151,14 +154,19 @@ public class MapWalker : MonoBehaviour
                 activeNode = activePath[i];
                 newActiveNode = activePath[i + 1];
                 removableDistance = currentDistance - distance;
+                if (activeNode.Value.choiceNode)
+                    activeElement.LockInput();
                 return;
             }
-
         }
 
         activeNode = activePath[activePath.Count - 1];
         newActiveNode = activeNode;
         removableDistance = Vector3.Distance(activePath[0].position, activePath[activePath.Count - 1].position);
+        if (!activeNode.Value.isEnd)
+        {
+            Debug.Log("Death!");
+        }
     }
 
     void DrawPath()
