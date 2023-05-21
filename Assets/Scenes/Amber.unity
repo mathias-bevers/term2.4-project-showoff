@@ -350,7 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d7683aaa22b3fc4fb00b47739499fcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapBuilder: {fileID: 788314245}
+  mapBuilder: {fileID: 1365758621}
   rig: {fileID: 1080175765}
   startSpeed: 3
   endSpeed: 7
@@ -711,9 +711,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelElements:
-  - {fileID: 1328490653151211958, guid: 780be8d5177d1d8428f9a48a90856fd7, type: 3}
-  - {fileID: 979227085598233674, guid: 853f13c2f9d22b74b8a77d2632bfac87, type: 3}
-  - {fileID: 4554156186127338077, guid: 56ebe8d37e7bad543a1e4ee13ad4daf2, type: 3}
   - {fileID: 1328490653151211958, guid: a4c0932c24c6b1342abdacc2594d9945, type: 3}
 --- !u!4 &788314246
 Transform:
