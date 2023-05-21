@@ -350,7 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d7683aaa22b3fc4fb00b47739499fcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapBuilder: {fileID: 788314245}
+  mapBuilder: {fileID: 1365758621}
   rig: {fileID: 1080175765}
   startSpeed: 3
   endSpeed: 7
