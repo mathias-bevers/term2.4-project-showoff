@@ -109,8 +109,7 @@ public class MapWalker : MonoBehaviour
     {
         if (activeNode == null || newActiveNode == null)
         {
-            Debug.Log("This is probably useful for the future, but not a good thing right now!");
-            Debug.Log("Something like death!");
+            FindObjectOfType<Player>()?.Kill();
             return;
         }
         Vector3 activePos = activeNode.Value.position;
@@ -165,7 +164,7 @@ public class MapWalker : MonoBehaviour
         removableDistance = Vector3.Distance(activePath[0].position, activePath[activePath.Count - 1].position);
         if (!activeNode.Value.isEnd)
         {
-            Debug.Log("Death!");
+            FindObjectOfType<Player>()?.Kill();
         }
     }
 
