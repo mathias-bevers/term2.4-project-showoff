@@ -15,11 +15,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (transform.localPosition.z <= -1)
+        if (transform.localPosition.z <= -1 || transform.localPosition.y <= -1)
             Kill();
 
         if (!_dead) return;
-        Debug.Log("DOOD!");
+        DeathEffect.Instance.Death();
     }
 
 }

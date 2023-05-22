@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerRig : MonoBehaviour
 {
-    [SerializeField] Player player;
+    [SerializeField] public Player player;
     [SerializeField] CameraRig cameraRig;
   
 }
