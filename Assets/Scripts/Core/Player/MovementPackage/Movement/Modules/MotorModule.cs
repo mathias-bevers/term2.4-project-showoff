@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class MotorModule : RegistryHelper<MotorModule, Motor>
 {
+    protected Motor motor => _registry;
+
     [SerializeField] MotorState enabledWhen;
     MotorState lastEnabled = 0;
 
