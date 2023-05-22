@@ -129,8 +129,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de845d2576e3c49458ef52ce81a9b1e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _forwardStrenth: 0.25
-  _smooth: 0
+  _forwardStrenth: 0.48
+  _smooth: 1
   _isEnd: 0
   _connectionPoints:
   - nextPoint: {fileID: 1328490651822109198}
