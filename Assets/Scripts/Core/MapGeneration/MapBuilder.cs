@@ -17,13 +17,8 @@ public class MapBuilder : MonoBehaviour
     LevelElement _activeElement = null;
     public LevelElement activeElement => _activeElement;
 
-    private void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.Space)) BuildElement();
-        //if (Input.GetKeyDown(KeyCode.Tab)) MoveOverElement();
-    }
 
-    public void BuildElement()
+    public virtual void BuildElement()
     {
         _elementAmount++;
         if (spawnedLevelElements.Count == 0)
