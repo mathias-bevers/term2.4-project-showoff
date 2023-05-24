@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 
 public class MapWalker : MonoBehaviour
 {
+    public bool run = false;
 
     [SerializeField] MapBuilder mapBuilder;
     [SerializeField] PlayerRig rig;
@@ -26,11 +27,25 @@ public class MapWalker : MonoBehaviour
     }
 
     LevelElement lastActiveElement = null;
+
     float metersRan = 0;
+
+    float totalMetersRan = 0;
+    float metersRan250 = 0;
+    int meterCount = 0;
 
     LevelElement activeElement;
 
+
+
     private void Update()
+    {
+        if (rig.player.dead) { run = false; MeterDisplayer.Instance.DisplayMeters((int)totalMetersRan, 10000); }
+        if(run)
+        OnUpdate();
+    }
+
+    void OnUpdate()
     {
         if (mapBuilder == null) return;
         BuildElements();
@@ -42,6 +57,7 @@ public class MapWalker : MonoBehaviour
         if (activeElement != lastActiveElement)
         {
             lastActiveElement = activeElement;
+
             metersRan = 0;
         }
         if (Input.GetKeyDown(KeyCode.D)) activeElement?.ChoseSide(MapSides.Right);
@@ -97,6 +113,15 @@ public class MapWalker : MonoBehaviour
         DrawPath();
         WalkPath();
         metersRan += Time.deltaTime * currentSpeed;
+        totalMetersRan += Time.deltaTime * currentSpeed;
+        metersRan250 += Time.deltaTime * currentSpeed;
+
+        if(metersRan250 >= 100)
+        {
+            metersRan250 = 0;
+            meterCount++;
+            MeterDisplayer.Instance.DisplayMeters(meterCount * 100);
+        }
     }
 
     void WalkPath()
@@ -109,8 +134,7 @@ public class MapWalker : MonoBehaviour
     {
         if (activeNode == null || newActiveNode == null)
         {
-            Debug.Log("This is probably useful for the future, but not a good thing right now!");
-            Debug.Log("Something like death!");
+            FindObjectOfType<Player>()?.Kill();
             return;
         }
         Vector3 activePos = activeNode.Value.position;
@@ -165,7 +189,7 @@ public class MapWalker : MonoBehaviour
         removableDistance = Vector3.Distance(activePath[0].position, activePath[activePath.Count - 1].position);
         if (!activeNode.Value.isEnd)
         {
-            Debug.Log("Death!");
+            FindObjectOfType<Player>()?.Kill();
         }
     }
 

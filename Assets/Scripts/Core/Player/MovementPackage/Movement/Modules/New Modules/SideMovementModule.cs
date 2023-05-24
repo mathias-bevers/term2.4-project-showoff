@@ -23,6 +23,7 @@ public class SideMovementModule : MotorModule
 
     void MoveBackwardsSlightly()
     {
+        if(motor.transform.localPosition.z >= 0)
         registry.Move(registry.transform.forward * -0.1f);
     }
 
