@@ -8,7 +8,7 @@ public class PickupManager : Singleton<PickupManager>
 	[NaughtyAttributes.Button("Spawn pickup")]
 	public void SpawnPickup()
 	{
-		PickupData data = pickups.GetRandomElement();
+		PickupData data = pickups.GetRandomElementStruct();
 		GameObject go = Instantiate(data.worldPrefab);
 		Pickup pickup = go.AddComponent<Pickup>();
 		pickup.onPickupEvent += () =>
