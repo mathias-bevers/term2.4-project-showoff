@@ -80,7 +80,6 @@ public class MapBuilder : MonoBehaviour
 
         _activeElement = newActiveElementTrans.GetComponent<LevelElement>();
         _activeElement.transform.position = transform.position;
-        //activeElement.transform.rotation = transform.rotation;
         _activeElement.transform.parent = transform;
 
         if (optionalRig == null) return;

@@ -7,7 +7,7 @@ public class MapWalker : MonoBehaviour
 {
     public bool run = false;
 
-    [SerializeField] MapBuilder mapBuilder;
+    [SerializeField] NewMapBuilder mapBuilder;
     [SerializeField] PlayerRig rig;
 
     [Header("Speed & Timing")]
@@ -40,7 +40,8 @@ public class MapWalker : MonoBehaviour
 
     private void Update()
     {
-        if (rig.player.dead) { run = false; MeterDisplayer.Instance.DisplayMeters((int)totalMetersRan, 10000); }
+        if (rig.player.dead) { run = false; //MeterDisplayer.Instance.DisplayMeters((int)totalMetersRan, 10000);
+                                            }
         if(run)
         OnUpdate();
     }
@@ -50,7 +51,7 @@ public class MapWalker : MonoBehaviour
         if (mapBuilder == null) return;
         BuildElements();
 
-        activeElement = mapBuilder.activeElement;
+        activeElement = mapBuilder.activeElement.baseElement;
 
         if (activeElement == null) return;
         HandleSpeedIncrease();
@@ -69,7 +70,7 @@ public class MapWalker : MonoBehaviour
     void BuildElements()
     {
         if (mapBuilder.elementAmount > minSpawnAmount) return;
-        else mapBuilder.BuildElement();
+        else mapBuilder.BuildLevelElement();
     }
 
     void HandleSpeedIncrease()

@@ -417,7 +417,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &473837548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,7 +431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   run: 1
-  mapBuilder: {fileID: 1365758621}
+  mapBuilder: {fileID: 1581505917}
   rig: {fileID: 1080175765}
   startSpeed: 4.5
   endSpeed: 7
@@ -861,7 +861,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &738317458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248,7 +1248,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1080175764
 Transform:
   m_ObjectHideFlags: 0
@@ -1649,6 +1649,9 @@ MonoBehaviour:
   startGroup: {fileID: 11400000, guid: ea6d164271568e64aad8512f5493fbdc, type: 2}
   starterElement: {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0,
     type: 3}
+  allSpawnedElements: []
+  spawnedLevelElements: []
+  newSpawnedElements: []
 --- !u!114 &1581505918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1757,7 +1760,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1698723082
 MonoBehaviour:
   m_ObjectHideFlags: 0

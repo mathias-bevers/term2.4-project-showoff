@@ -10,19 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 745337a4bff039342a0b60f3b9a6567a, type: 3}
-  m_Name: TestMapGroup
+  m_Name: CircleGroup
   m_EditorClassIdentifier: 
   overrideContinuousSupport: 0
-  minRange: 10
-  maxRange: 20
+  minRange: 4
+  maxRange: 8
   startElements:
-  - {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0, type: 3}
-  randomSelectableElements:
-  - {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0, type: 3}
   - {fileID: 3794884456335368583, guid: a68eddc01a9e48740a994f5dfc7fb272, type: 3}
-  - {fileID: 4540894168752332749, guid: 6203a0b5b3cd94c44af465c55fc630ae, type: 3}
+  randomSelectableElements:
+  - {fileID: 3794884456335368583, guid: a68eddc01a9e48740a994f5dfc7fb272, type: 3}
   endElements:
-  - {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0, type: 3}
+  - {fileID: 3794884456335368583, guid: a68eddc01a9e48740a994f5dfc7fb272, type: 3}
   continuousSupports: []
   nextMapGroups:
-  - {fileID: 11400000, guid: 9aa4c12645be130408a15f39383efaab, type: 2}
+  - {fileID: 11400000, guid: ea6d164271568e64aad8512f5493fbdc, type: 2}

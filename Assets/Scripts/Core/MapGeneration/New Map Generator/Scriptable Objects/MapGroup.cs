@@ -11,8 +11,8 @@ public class MapGroup : ScriptableObject
         "If overrideContinuousSupport is false then this gets completely ignored, unless the spawned element is NOT present in the continousSupports list.\n\n" +
         "If overrideContinuousSupport is true it will still try to get the elements from the list UNTIL it hits the specified random range. Then it will automatically get an end element")]
     public bool overrideContinuousSupport = false;
-    public int minRange = 4;
-    public int maxRange = 10;
+    public int minRange;
+    public int maxRange;
 
     int currentRange = 0;
 
@@ -40,25 +40,30 @@ public class MapGroup : ScriptableObject
     public void DeclareRange()
     {
         currentRange = Random.Range(minRange, maxRange + 1);
+        WriteDebug("Current Range: " + currentRange + " [" + minRange + "] [" + maxRange + "]");
     }
 
-    public MapGroupElement GetElement(int aliveCount, MapGroupElement lastElement)
+    public ElementData GetElement(int aliveCount, MapGroupElement lastElement)
     {
-        if (aliveCount == 0) return GetRandomStart();
+        if (aliveCount == 0) { WriteDebug("Random Start!"); return new ElementData(GetRandomStart(), false); }
+
+        MapGroupElement el = GetFromContinuedSupport(lastElement);
 
         if (aliveCount > currentRange)
             if (overrideContinuousSupport)
-                return GetFromContinuedSupport(lastElement, endElements);
+            {
+                WriteDebug("Got Continued Support early!");
+                return new ElementData(GetFromContinuedSupport(lastElement, endElements), true);
+            }
             else
             {
-                MapGroupElement elem = GetFromContinuedSupport(lastElement);
-                if (elem == null) return GetRandomEnd();
+                if (el == null) { WriteDebug("Got End"); return new ElementData(GetRandomEnd(), true); }
             }
 
-        MapGroupElement el = GetFromContinuedSupport(lastElement);
-        if (el != null) return el;
+        if (el != null) { WriteDebug("Got continued support!"); return new ElementData(el, false); }
 
-        return GetRandomMiddle();
+        WriteDebug("Get random mid!");
+        return new ElementData(GetRandomMiddle(), false);
     }
 
     MapGroupElement GetFromContinuedSupport(MapGroupElement lastElement, List<MapGroupElement> mustBeInThis = null)
@@ -88,6 +93,24 @@ public class MapGroup : ScriptableObject
     MapGroupElement GetRandomStart() => startElements.GetRandomElement();
     MapGroupElement GetRandomMiddle() => randomSelectableElements.GetRandomElement();
     MapGroupElement GetRandomEnd() => endElements.GetRandomElement();
+
+    void WriteDebug(string line)
+    {
+        return;
+        Debug.Log(line);
+    }
+}
+
+public struct ElementData
+{
+    public MapGroupElement mapGroupElement;
+    public bool isEnd;
+
+    public ElementData(MapGroupElement mapGroupElement, bool isEnd)
+    {
+        this.mapGroupElement = mapGroupElement;
+        this.isEnd = isEnd;
+    }
 }
 
 [System.Serializable]
