@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using UnityEngine;
 
 public class JumpModule : MotorModule
@@ -16,7 +17,7 @@ public class JumpModule : MotorModule
     }
 #endif
 
-    [@Button]
+    [Button]
     public void Jump()
     {
         registry.ResetYVel();
