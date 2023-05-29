@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class EraObject : MonoBehaviour
 {
+    [SerializeField] bool chanceToSpawnNothing = false;
+    [Range(1, 100)]
+    [SerializeField] int noSpawnChance = 25;
     [SerializeField] List<EraList> spawnableObjects = new List<EraList>();
 
     public void Display(Era era)
     {
+        if (chanceToSpawnNothing && Random.Range(0, 100) <= noSpawnChance) return;
         List<SpawnableEraElement> spawnableEraElements = new List<SpawnableEraElement>();
 
         foreach(EraList eraList in spawnableObjects)

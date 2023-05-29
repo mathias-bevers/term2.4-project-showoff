@@ -94,11 +94,13 @@ public class MapGroup : ScriptableObject
     MapGroupElement GetRandomMiddle() => randomSelectableElements.GetRandomElement();
     MapGroupElement GetRandomEnd() => endElements.GetRandomElement();
 
+#pragma warning disable CS0162
     void WriteDebug(string line)
     {
         return;
         Debug.Log(line);
     }
+#pragma warning restore CS0162
 }
 
 public struct ElementData
