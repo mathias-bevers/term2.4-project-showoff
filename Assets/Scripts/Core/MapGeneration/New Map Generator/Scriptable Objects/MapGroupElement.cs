@@ -17,6 +17,10 @@ public class MapGroupElement : MonoBehaviour
             element.gameObject.SetActive(true);
             element.modelHelper?.Display(element.era == era);
         }
+
+        EraObject[] eraObjects = transform.GetComponentsInChildren<EraObject>(true);
+        foreach(EraObject eraObject in eraObjects)
+            eraObject.Display(era);
     }
 
     public MapElement GetEraModel(Era era)
