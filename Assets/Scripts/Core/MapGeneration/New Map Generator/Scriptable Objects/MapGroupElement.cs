@@ -2,20 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Custom/Map Generation/Map Group Element", fileName = "MapGroupElement", order = 12)]
-public class MapGroupElement : ScriptableObject
+public class MapGroupElement : MonoBehaviour
 {
-    public List<EraElement> eraElementList = new List<EraElement>();
+    public List<MapElement> eraElementList = new List<MapElement>();
 
-    public LevelElement GetElement(Era forEra)
+    public LevelElement baseElement;
+
+    public ModelHelper baseModelParent;
+
+    public void Display(Era era)
     {
-        foreach(EraElement el in eraElementList)
+        foreach (MapElement element in eraElementList)
         {
-            if (el.era == forEra)
-                return el.levelElement.levelElement;
+            element.gameObject.SetActive(true);
+            element.modelHelper?.Display(element.era == era);
         }
+
+        EraObject[] eraObjects = transform.GetComponentsInChildren<EraObject>(true);
+        foreach(EraObject eraObject in eraObjects)
+            eraObject.Display(era);
+    }
+
+    public MapElement GetEraModel(Era era)
+    {
+        foreach (MapElement element in eraElementList)
+            if (element.era == era)
+                return element;
         return null;
     }
+
+    public bool ValidForEra(Era era)
+    {
+        foreach (MapElement element in eraElementList)
+            if (element.era == era)
+                return true;
+        return false;
+    }
+
 }
 
 [System.Serializable]
