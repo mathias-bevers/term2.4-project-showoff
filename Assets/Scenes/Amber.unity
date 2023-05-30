@@ -470,6 +470,7 @@ GameObject:
   - component: {fileID: 631515938}
   - component: {fileID: 631515940}
   - component: {fileID: 631515942}
+  - component: {fileID: 631515943}
   m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
@@ -630,6 +631,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8111017dd114e7b46ac6b3f174163f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &631515943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631515931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36b6fd70faee18bda84c48f9960589b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickups:
+  - <identifier>k__BackingField: 1
+    <worldPrefab>k__BackingField: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
+      type: 3}
+    <onPickupEvent>k__BackingField:
+      m_PersistentCalls:
+        m_Calls: []
+    <parameters>k__BackingField:
+      <wholeNumber>k__BackingField: 0
+      <decimalNumber>k__BackingField: 0
+      <message>k__BackingField: 
+      <toggle>k__BackingField: 0
 --- !u!1 &688429670
 GameObject:
   m_ObjectHideFlags: 0
