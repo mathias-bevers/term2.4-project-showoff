@@ -496,7 +496,7 @@ GameObject:
   - component: {fileID: 3794884456335368580}
   - component: {fileID: 3794884456335368583}
   m_Layer: 0
-  m_Name: CornerElement
+  m_Name: CornerRightElement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
