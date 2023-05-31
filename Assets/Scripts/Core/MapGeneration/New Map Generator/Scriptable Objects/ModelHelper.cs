@@ -12,6 +12,7 @@ public class ModelHelper : MonoBehaviour
     List<MeshRenderer> allMeshes = new List<MeshRenderer>();
     List<MeshFilter> meshFilters = new List<MeshFilter>();
     List<Collider> colliders = new List<Collider>();
+    List<GapFiller> gapFiller = new List<GapFiller>();
 
     private void Awake()
     {
