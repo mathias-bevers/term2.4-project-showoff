@@ -135,15 +135,7 @@ public class MapWalker : MonoBehaviour
     {
         if (activeNode == null || newActiveNode == null)
         {
-            if (Player.Instance.EffectIsActive(PickupIdentifier.Speedup))
-            {
-                List<MapSides> winningSides = activeElement.GetWinningSides();
-                activeElement.ChoseSide(winningSides.GetRandomElementStruct());
-            }
-            else
-            {
-                FindObjectOfType<Player>()?.Kill();
-            }
+            FindObjectOfType<Player>()?.Kill();
             return;
         }
         Vector3 activePos = activeNode.Value.position;
@@ -198,7 +190,15 @@ public class MapWalker : MonoBehaviour
         removableDistance = Vector3.Distance(activePath[0].position, activePath[activePath.Count - 1].position);
         if (!activeNode.Value.isEnd)
         {
-            FindObjectOfType<Player>()?.Kill();
+            if (Player.Instance.EffectIsActive(PickupIdentifier.Speedup))
+            {
+                List<MapSides> winningSides = activeElement.GetWinningSides();
+                activeElement.ChoseSide(winningSides.GetRandomElementStruct());
+            }
+            else
+            {
+                FindObjectOfType<Player>()?.Kill();
+            }
         }
     }
 
