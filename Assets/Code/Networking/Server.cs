@@ -1,57 +1,82 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
+using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
 
-public class Server
+public class Server : Singleton<Server>
 {
+	private bool isRunning;
+	private int currentID = -1;
 	private List<TcpClient> clients;
 	private TcpListener listener;
 
 
-	private bool shouldClose;
+	public void Update()
+	{
+		if (!isRunning) { return; }
 
-	public Server(IPAddress ip, int port)
+		ProcessNewClients();
+		ProcessExistingClients();
+	}
+
+	public void Initialize(IPAddress ip, int port)
 	{
 		listener = new TcpListener(ip, port);
 		clients = new List<TcpClient>(2);
 		listener.Start();
 
-		Run();
+		isRunning = true;
+
+		Debug.Log("Started new server!");
 	}
 
-	private void Run()
-	{
-		while (true)
-		{
-			if (shouldClose) { break; }
-
-			//TODO: process clients etc....
-			ProcessNewClients();
-
-			Thread.Sleep(100);
-		}
-	}
 
 	private void ProcessNewClients()
 	{
 		while (listener.Pending())
 		{
-			if (clients.Count < 2)
+			Packet packet = new();
+
+			if (clients.Count >= 2)
 			{
-				TcpClient accepted = listener.AcceptTcpClient();
-				clients.Add(accepted);
-				Debug.Log("Accepted client");
+				TcpClient rejected = listener.AcceptTcpClient();
+				packet.Write(false);
+				WriteToClient(rejected, packet);
+				rejected.Close();
+				Debug.LogWarning("Refused client, server is full");
 				continue;
 			}
 
-			TcpClient rejected = listener.AcceptTcpClient();
-			Packet packet = new();
-			packet.Write("REJECTED");
-			StreamUtil.Write(rejected.GetStream(), packet.GetBytes());
-			rejected.Close();
+			TcpClient accepted = listener.AcceptTcpClient();
+			clients.Add(accepted);
+			++currentID;
+
+			packet.Write(true);
+			packet.Write(currentID);
+			WriteToClient(accepted, packet);
+			Debug.Log($"Accepted new client with id: {currentID}");
 		}
 	}
+
+	private void ProcessExistingClients()
+	{
+		foreach (TcpClient client in clients)
+		{
+			if (client.Available == 0) { continue; }
+
+			byte[] inBytes = StreamUtil.Read(client.GetStream());
+		}
+	}
+
+	private void WriteToClient(TcpClient receiver, Packet data)
+	{
+		//TODO: add try catch etc
+		StreamUtil.Write(receiver.GetStream(), data.GetBytes());
+	}
+
+#if UNITY_EDITOR
+	[Button("Initialize")] private void ForceInit() { Initialize(Settings.SERVER_IP, Settings.SERVER_PORT); }
+#endif
 }
