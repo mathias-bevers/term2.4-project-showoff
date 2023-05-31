@@ -7,7 +7,6 @@ using UnityEngine.Events;
 public struct PickupData
 {
 	[field: SerializeField] public PickupIdentifier identifier { get; private set; }
-	[field: SerializeField] public GameObject worldPrefab { get; private set; }
 	[field: SerializeField] public PickupEvent onPickupEvent { get; private set; }
 	[field: SerializeField] public Parameters parameters { get; private set; }
 

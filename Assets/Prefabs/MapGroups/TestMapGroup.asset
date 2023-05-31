@@ -21,8 +21,14 @@ MonoBehaviour:
   - {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0, type: 3}
   - {fileID: 3794884456335368583, guid: a68eddc01a9e48740a994f5dfc7fb272, type: 3}
   - {fileID: 4540894168752332749, guid: 6203a0b5b3cd94c44af465c55fc630ae, type: 3}
+  - {fileID: 3398807621037779704, guid: f8c8d8c4b424dd7429c4fabf38e33400, type: 3}
+  - {fileID: 3398807621037779704, guid: 4b189336bcaf1f842ba9e454645866d7, type: 3}
   endElements:
   - {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0, type: 3}
-  continuousSupports: []
+  continuousSupports:
+  - lastElement: {fileID: 3398807621037779704, guid: f8c8d8c4b424dd7429c4fabf38e33400,
+      type: 3}
+    canTransformInto:
+    - {fileID: 3398807621037779704, guid: 4b189336bcaf1f842ba9e454645866d7, type: 3}
   nextMapGroups:
   - {fileID: 11400000, guid: 9aa4c12645be130408a15f39383efaab, type: 2}

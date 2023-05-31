@@ -29,6 +29,23 @@ public class LevelElement : MonoBehaviour
     bool _forceRequestNewPath = false;
     public bool forceRequestNewPath => _forceRequestNewPath;
 
+    public List<MapSides> GetWinningSides()
+    {
+        List<MapSides> sides = new List<MapSides>();
+        LoopThroughPoints(startPoint, (p, lp) =>
+        {
+            if (p.isChoiceNode)
+            {
+               foreach(ConnectionPoint pp in p.connectionPoints)
+                {
+                    sides.Add(pp.requiredSides);
+                }
+            }
+        }, true, false, null);
+
+        return sides;
+    }
+
     private void Awake()
     {
         if (endPoints.Length == 1) _takenLevelPoint = endPoints[0];

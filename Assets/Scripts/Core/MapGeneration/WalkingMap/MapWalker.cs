@@ -135,7 +135,15 @@ public class MapWalker : MonoBehaviour
     {
         if (activeNode == null || newActiveNode == null)
         {
-            FindObjectOfType<Player>()?.Kill();
+            if (Player.Instance.EffectIsActive(PickupIdentifier.Speedup))
+            {
+                List<MapSides> winningSides = activeElement.GetWinningSides();
+                activeElement.ChoseSide(winningSides.GetRandomElementStruct());
+            }
+            else
+            {
+                FindObjectOfType<Player>()?.Kill();
+            }
             return;
         }
         Vector3 activePos = activeNode.Value.position;
