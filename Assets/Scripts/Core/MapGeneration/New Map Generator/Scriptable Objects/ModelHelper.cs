@@ -20,6 +20,7 @@ public class ModelHelper : MonoBehaviour
         allMeshes = GetComponentsInChildren<MeshRenderer>(true).ToList();
         meshFilters = GetComponentsInChildren<MeshFilter>(true).ToList();
         colliders = GetComponentsInChildren<Collider>(true).ToList();
+        gapFiller = GetComponentsInChildren<GapFiller>(true).ToList();
     }
 
     private void OnDrawGizmos()
@@ -32,12 +33,29 @@ public class ModelHelper : MonoBehaviour
         }
     }
 
+    bool wasActive = true;
+
     private void Update()
     {
         if (lastIsEditorVisual != isEditorVisual)
         {
             lastIsEditorVisual = isEditorVisual;
             OnChange();
+        }
+
+        if (Player.Instance.EffectIsActive(PickupIdentifier.Speedup))
+        {
+            foreach(GapFiller filler in gapFiller)
+                filler.Display(true);
+            wasActive = true;
+        }else
+        {
+            if (wasActive)
+            {
+                foreach (GapFiller filler in gapFiller)
+                    filler.Display(false);
+                wasActive = false;
+            }
         }
     }
 

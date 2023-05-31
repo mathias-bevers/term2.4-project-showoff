@@ -433,8 +433,8 @@ MonoBehaviour:
   run: 1
   mapBuilder: {fileID: 1581505917}
   rig: {fileID: 1080175765}
-  startSpeed: 4.5
-  endSpeed: 7
+  startSpeed: 5
+  endSpeed: 20
   accelerationTime: 120
   minSpawnAmount: 3
 --- !u!4 &473837549
@@ -506,6 +506,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd2e6f2f7dac5a439c0dd7ad6e17b57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  effectTimes:
+  - pickupIdentifier: 1
+    time: 10
+  activeEvents: []
 --- !u!114 &631515935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -645,11 +649,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickups:
   - <identifier>k__BackingField: 1
-    <worldPrefab>k__BackingField: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
-      type: 3}
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 631515933}
+          m_TargetAssemblyTypeName: Player, Assembly-CSharp
+          m_MethodName: AddPickup
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     <parameters>k__BackingField:
       <wholeNumber>k__BackingField: 0
       <decimalNumber>k__BackingField: 0
