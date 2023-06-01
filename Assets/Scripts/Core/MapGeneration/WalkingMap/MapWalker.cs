@@ -18,6 +18,17 @@ public class MapWalker : MonoBehaviour
     [SerializeField] int minSpawnAmount = 3;
 
     float currentSpeed = 0;
+    float afterCalcCurrentSpeed 
+    { 
+        get 
+        {
+            if (Player.Instance.EffectIsActive(PickupIdentifier.SlowdownRework))
+                return currentSpeed - 2;
+            else if (Player.Instance.EffectIsActive(PickupIdentifier.SpeedupRework))
+                return currentSpeed + 2;
+            return currentSpeed; 
+        } 
+    }
     float accelerationTimer = 0;
 
     private void Start()
@@ -88,6 +99,15 @@ public class MapWalker : MonoBehaviour
 
     void HandleSingleDirection(LevelElement activeElement)
     {
+        if (rig.player.oopsIDied)
+        {
+            mapBuilder.MoveOverElement(rig);
+            rig.player.transform.localPosition = Vector3.zero;
+            rig.player.oopsIDied = false;
+            if(!rig.player.EffectIsActive(PickupIdentifier.Speedup))
+            rig.player.AddPickup((int)PickupIdentifier.Speedup);
+        }
+
         if (activeElement != null) if (activeElement.forceRequestNewPath) activePath = activeElement.GetPath();
         if (activeNode == null)
         {
@@ -113,9 +133,9 @@ public class MapWalker : MonoBehaviour
         if (activePath.Count <= 1) return;
         DrawPath();
         WalkPath();
-        metersRan += Time.deltaTime * currentSpeed;
-        totalMetersRan += Time.deltaTime * currentSpeed;
-        metersRan250 += Time.deltaTime * currentSpeed;
+        metersRan += Time.deltaTime * afterCalcCurrentSpeed;
+        totalMetersRan += Time.deltaTime * afterCalcCurrentSpeed;
+        metersRan250 += Time.deltaTime * afterCalcCurrentSpeed;
 
         if(metersRan250 >= 100)
         {
@@ -135,15 +155,7 @@ public class MapWalker : MonoBehaviour
     {
         if (activeNode == null || newActiveNode == null)
         {
-            if (Player.Instance.EffectIsActive(PickupIdentifier.Speedup))
-            {
-                List<MapSides> winningSides = activeElement.GetWinningSides();
-                activeElement.ChoseSide(winningSides.GetRandomElementStruct());
-            }
-            else
-            {
-                FindObjectOfType<Player>()?.Kill();
-            }
+            FindObjectOfType<Player>()?.Kill();
             return;
         }
         Vector3 activePos = activeNode.Value.position;
@@ -198,7 +210,15 @@ public class MapWalker : MonoBehaviour
         removableDistance = Vector3.Distance(activePath[0].position, activePath[activePath.Count - 1].position);
         if (!activeNode.Value.isEnd)
         {
-            FindObjectOfType<Player>()?.Kill();
+            if (Player.Instance.EffectIsActive(PickupIdentifier.Speedup))
+            {
+                List<MapSides> winningSides = activeElement.GetWinningSides();
+                activeElement.ChoseSide(winningSides.GetRandomElementStruct());
+            }
+            else
+            {
+                FindObjectOfType<Player>()?.Kill();
+            }
         }
     }
 

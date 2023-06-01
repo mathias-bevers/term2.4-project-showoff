@@ -74,6 +74,27 @@ public class Player : Singleton<Player>
         return false;
     }
 
+
+    [SerializeField]int maxHearts = 3;
+    int _currentHearts;
+    public int hearts { get => _currentHearts; private set => _currentHearts = value; }
+
+    public override void Awake()
+    {
+        hearts = maxHearts;
+    }
+
+    public void AddHeart()
+    {
+        _currentHearts++;
+    }
+
+    public void RemoveHeart(bool destructive = false)
+    {
+        if (_currentHearts == 1 && !destructive) return;
+        _currentHearts--;
+    }
+
     public void AddPickup(int idd)
     {
         PickupIdentifier id = (PickupIdentifier)idd;
@@ -134,10 +155,29 @@ public class Player : Singleton<Player>
         }
 
         if (transform.localPosition.z <= -1 || transform.localPosition.y <= -1)
-            Kill();
+        {
+            if (EffectIsActive(PickupIdentifier.Invincible))
+            {
+                FakeDeath();
+                return;
+            }
+
+            if (!EffectIsActive(PickupIdentifier.Speedup))
+                _currentHearts--;
+            if(_currentHearts <= 0) Kill();
+            else FakeDeath();
+        }
 
         if (!_dead) return;
         DeathEffect.Instance.Death();
+    }
+
+    [HideInInspector]
+    public bool oopsIDied = false;
+
+    void FakeDeath()
+    {
+        oopsIDied = true;
     }
 }
 
