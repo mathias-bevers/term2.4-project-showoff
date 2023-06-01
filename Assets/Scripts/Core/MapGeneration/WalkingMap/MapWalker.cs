@@ -104,6 +104,7 @@ public class MapWalker : MonoBehaviour
             mapBuilder.MoveOverElement(rig);
             rig.player.transform.localPosition = Vector3.zero;
             rig.player.oopsIDied = false;
+            if(!rig.player.EffectIsActive(PickupIdentifier.Speedup))
             rig.player.AddPickup((int)PickupIdentifier.Speedup);
         }
 

@@ -162,7 +162,8 @@ public class Player : Singleton<Player>
                 return;
             }
 
-            _currentHearts--;
+            if (!EffectIsActive(PickupIdentifier.Speedup))
+                _currentHearts--;
             if(_currentHearts <= 0) Kill();
             else FakeDeath();
         }
