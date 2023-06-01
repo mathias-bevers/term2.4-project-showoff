@@ -8,8 +8,10 @@ using Random = UnityEngine.Random;
 
 public class Client : MonoBehaviour
 {
+	public int id { get; private set; } = -1;
+	public bool isInitialized => id >= 0;
+
 	private bool isAccepted;
-	private int id = -1;
 	private TcpClient client;
 
 	public void Update()
@@ -27,6 +29,14 @@ public class Client : MonoBehaviour
 		}
 	}
 
+	private void OnDestroy()
+	{
+		Debug.LogWarning("Destroying client instance...");
+		client?.Close();
+	}
+
+	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
+
 	public void Connect(IPAddress ip, int port, int attempts = 0)
 	{
 		if (isAccepted) { return; }
@@ -42,8 +52,8 @@ public class Client : MonoBehaviour
 		{
 			if (se.SocketErrorCode == SocketError.ConnectionRefused)
 			{
-				Server.Instance.Initialize(Settings.SERVER_IP, Settings.SERVER_PORT);
-				Connect(Settings.SERVER_IP, Settings.SERVER_PORT, attempts + 1);
+				Server.Instance.Initialize(ip, port);
+				Connect(ip, port, attempts + 1);
 				Debug.LogWarning($"Retrying connection attempt: {attempts}");
 				return;
 			}
@@ -59,13 +69,14 @@ public class Client : MonoBehaviour
 			Debug.LogWarning("Cannot send data if there is no client connected");
 			return;
 		}
-		
+
 		if (packet == null)
 		{
 			Debug.LogWarning("Trying to send null");
 			return;
 		}
 
+		Debug.Log($"Client#{id} is sending data to the server!");
 		StreamUtil.Write(client.GetStream(), packet.GetBytes());
 	}
 
@@ -82,7 +93,8 @@ public class Client : MonoBehaviour
 		ISerializable serializable = packet.ReadObject();
 		switch (serializable)
 		{
-			case PlayerDistance playerDistance: Debug.Log($"Received player#{playerDistance.id}'s distance of: {playerDistance.distance}");
+			case PlayerDistance playerDistance:
+				Debug.Log($"Received player#{playerDistance.id}'s distance of: {playerDistance.distance}");
 				break;
 			case HeartBeat: break;
 		}
@@ -98,11 +110,6 @@ public class Client : MonoBehaviour
 		}
 
 		id = callback.id;
-	}
-
-	private void OnDestroy()
-	{
-		client.Close();
 	}
 
 #if UNITY_EDITOR

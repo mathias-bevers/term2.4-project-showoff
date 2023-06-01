@@ -73,7 +73,7 @@ public class Server : Singleton<Server>
 		{
 			if (idClient.Value.Available == 0) { continue; }
 
-			Debug.Log($"Client#{idClient.Key} is sending data");
+			Debug.Log($"Server received data from Client#{idClient.Key}");
 			byte[] inBytes = StreamUtil.Read(idClient.Value.GetStream());
 
 			foreach (KeyValuePair<int, TcpClient> idReceiver in clients)
