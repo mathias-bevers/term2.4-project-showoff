@@ -4,10 +4,11 @@ using System.Net.Sockets;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Client : MonoBehaviour
 {
-	private bool? isAccepted;
+	private bool isAccepted = false;
 	private int id;
 	private TcpClient client;
 
@@ -15,7 +16,7 @@ public class Client : MonoBehaviour
 	{
 		if (client == null) { return; }
 
-		if (isAccepted.HasValue && !isAccepted.Value) { return; }
+		if (isAccepted) { return; }
 
 		try
 		{
@@ -30,7 +31,7 @@ public class Client : MonoBehaviour
 
 	public void Connect(IPAddress ip, int port, int attempts = 0)
 	{
-		if (isAccepted.HasValue) { return; }
+		if (isAccepted) { return; }
 
 		if (attempts >= 5) { throw new Exception("FAILED TO CONNECT TO SERVER"); }
 
@@ -53,26 +54,53 @@ public class Client : MonoBehaviour
 		}
 	}
 
+	public void SendData(Packet packet)
+	{
+		if (packet == null)
+		{
+			Debug.LogWarning("Trying to send null");
+			return;
+		}
+
+		StreamUtil.Write(client.GetStream(), packet.GetBytes());
+	}
+
 	private void ProcessData(byte[] dataInBytes)
 	{
 		Packet packet = new(dataInBytes);
-		if (!isAccepted.HasValue)
+		if (!isAccepted)
 		{
-			isAccepted = packet.ReadBool();
-			if (!isAccepted.Value)
+			AccessCallback callback = packet.Read<AccessCallback>();
+			isAccepted = callback.accepted;
+			if (!isAccepted)
 			{
 				Destroy(this);
 				return;
 			}
-
-			id = packet.ReadInt();
+			
+			id = callback.id;
 			return;
 		}
 
-		throw new NotImplementedException();
+		throw new NotImplementedException("Cannot process data yet");
 	}
 
 #if UNITY_EDITOR
 	[Button("Initialize")] private void ForceInit() { Connect(Settings.SERVER_IP, Settings.SERVER_PORT); }
+	[Button("Send fake data")]
+	private void SetData()
+	{
+		PlayerDistance dst = new PlayerDistance
+		{
+			id = id,
+			distance = Random.Range(0, 11),
+		};
+
+		Debug.Log($"Client#{dst.id} is sending a distance of: {dst.distance}");
+		Packet packet = new();
+		packet.Write(dst);
+
+		SendData(packet);
+	}
 #endif
 }

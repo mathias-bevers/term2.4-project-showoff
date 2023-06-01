@@ -30,11 +30,12 @@ public class Server : Singleton<Server>
 	{
 		listener = new TcpListener(ip, port);
 		clients = new Dictionary<int, TcpClient>(2);
+		badClients = new List<int>();
 		listener.Start();
 
 		isRunning = true;
 
-		Debug.Log("Started new server!");
+		Debug.Log($"Started new server on <b>{listener.LocalEndpoint}</b>!");
 	}
 
 
@@ -43,14 +44,16 @@ public class Server : Singleton<Server>
 		while (listener.Pending())
 		{
 			Packet packet = new();
+			AccessCallback callback;
 
 			if (clients.Count >= 2)
 			{
+				Debug.LogWarning("Refused client, server is full");
 				TcpClient rejected = listener.AcceptTcpClient();
-				packet.Write(false);
+				callback = new AccessCallback(false);
+				packet.Write(callback);
 				WriteToClient((-1, rejected), packet);
 				rejected.Close();
-				Debug.LogWarning("Refused client, server is full");
 				continue;
 			}
 
@@ -58,8 +61,8 @@ public class Server : Singleton<Server>
 			++currentID;
 			clients.Add(currentID, accepted);
 
-			packet.Write(true);
-			packet.Write(currentID);
+			callback = new AccessCallback(true, currentID);
+			packet.Write(callback);
 			WriteToClient((currentID, accepted), packet);
 			Debug.Log($"Accepted new client with id: {currentID}");
 		}
@@ -72,10 +75,10 @@ public class Server : Singleton<Server>
 			if (idClient.Value.Available == 0) { continue; }
 
 			byte[] inBytes = StreamUtil.Read(idClient.Value.GetStream());
+			Packet packet = new(inBytes);
 
 			foreach (KeyValuePair<int, TcpClient> idReceiver in clients.Where(c => c.Key != idClient.Key))
 			{
-				Packet packet = new(inBytes);
 				WriteToClient((idClient.Key, idReceiver.Value), packet);
 			}
 		}
@@ -85,7 +88,7 @@ public class Server : Singleton<Server>
 	{
 		//TODO: Add heartbeat.
 
-		if (badClients.Count < 1) { return; }
+		if (badClients.IsNullOrEmpty()) { return; }
 
 		foreach (int badClientID in badClients) { clients.Remove(badClientID); }
 
@@ -94,7 +97,10 @@ public class Server : Singleton<Server>
 
 	private  void WriteToClient((int, TcpClient) idReceiver, Packet data)
 	{
-		try { StreamUtil.Write(idReceiver.Item2.GetStream(), data.GetBytes()); }
+		try
+		{
+			StreamUtil.Write(idReceiver.Item2.GetStream(), data.GetBytes());
+		}
 		catch (System.IO.IOException)
 		{
 			Debug.Log($"Marking client#{idReceiver.Item1}");

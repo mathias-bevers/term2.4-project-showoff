@@ -3,7 +3,7 @@ using saxion_provided;
 public class PlayerDistance : ISerializable
 {
 	public int id { get; set; }
-	private int distance { get; set; }
+	public int distance { get; set; }
 	
 	public void Serialize(Packet packet)
 	{
