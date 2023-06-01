@@ -25,4 +25,10 @@ public enum PickupIdentifier
     Speedup,
     DoublePoints,
     AddObstacle,
+    AddHeart,
+    RemoveHeart, 
+    SpeedupRework,
+    SlowdownRework,
+    Slippery,
+    Invincible
 }

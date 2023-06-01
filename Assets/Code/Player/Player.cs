@@ -74,6 +74,27 @@ public class Player : Singleton<Player>
         return false;
     }
 
+
+    [SerializeField]int maxHearts = 3;
+    int _currentHearts;
+    public int hearts { get => _currentHearts; private set => _currentHearts = value; }
+
+    public override void Awake()
+    {
+        hearts = maxHearts;
+    }
+
+    public void AddHeart()
+    {
+        _currentHearts++;
+    }
+
+    public void RemoveHeart(bool destructive = false)
+    {
+        if (_currentHearts == 1 && !destructive) return;
+        _currentHearts--;
+    }
+
     public void AddPickup(int idd)
     {
         PickupIdentifier id = (PickupIdentifier)idd;
