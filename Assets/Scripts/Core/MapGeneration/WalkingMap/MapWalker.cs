@@ -18,6 +18,17 @@ public class MapWalker : MonoBehaviour
     [SerializeField] int minSpawnAmount = 3;
 
     float currentSpeed = 0;
+    float afterCalcCurrentSpeed 
+    { 
+        get 
+        {
+            if (Player.Instance.EffectIsActive(PickupIdentifier.SlowdownRework))
+                return currentSpeed - 2;
+            else if (Player.Instance.EffectIsActive(PickupIdentifier.SpeedupRework))
+                return currentSpeed + 2;
+            return currentSpeed; 
+        } 
+    }
     float accelerationTimer = 0;
 
     private void Start()
@@ -113,9 +124,9 @@ public class MapWalker : MonoBehaviour
         if (activePath.Count <= 1) return;
         DrawPath();
         WalkPath();
-        metersRan += Time.deltaTime * currentSpeed;
-        totalMetersRan += Time.deltaTime * currentSpeed;
-        metersRan250 += Time.deltaTime * currentSpeed;
+        metersRan += Time.deltaTime * afterCalcCurrentSpeed;
+        totalMetersRan += Time.deltaTime * afterCalcCurrentSpeed;
+        metersRan250 += Time.deltaTime * afterCalcCurrentSpeed;
 
         if(metersRan250 >= 100)
         {
