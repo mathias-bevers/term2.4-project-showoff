@@ -44,6 +44,8 @@ public class NewMapBuilder : MonoBehaviour
         else
         {
             foreach (ElementRefs spawnedElement in spawnedLevelElements)
+            {
+                int sillyCounter = 0;
                 foreach (LevelPoint point in spawnedElement.spawnedElement.baseElement.EndPoints)
                 {
                     if (point == null) continue;
@@ -57,8 +59,10 @@ public class NewMapBuilder : MonoBehaviour
                     el.spawnedElement.transform.position = point.position - el.spawnedElement.baseElement.transform.position;
                     el.spawnedElement.transform.rotation = point.transform.rotation;
                     el.spawnedElement.transform.parent = point.transform;
-
+                    el.spawnedElement.gameObject.SetActive(sillyCounter == 0);
+                    sillyCounter++;
                 }
+            }
         }
 
         allSpawnedElements.AddRange(spawnedLevelElements);
@@ -123,6 +127,7 @@ public class NewMapBuilder : MonoBehaviour
 
         _activeElement.Value.spawnedElement.transform.position = transform.position;
         _activeElement.Value.spawnedElement.transform.parent = transform;
+        _activeElement.Value.spawnedElement.gameObject.SetActive(true);
 
         if (optionalRig == null) return;
 
