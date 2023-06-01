@@ -8,6 +8,7 @@ public class MapBuilder : MonoBehaviour
     int _elementAmount = 0;
     public int elementAmount => _elementAmount;
 
+    [SerializeField] LevelElement startElement;
     [SerializeField] LevelElement[] levelElements;
 
     List<LevelElement> allSpawnedElements = new List<LevelElement>();
@@ -17,10 +18,12 @@ public class MapBuilder : MonoBehaviour
     LevelElement _activeElement = null;
     public LevelElement activeElement => _activeElement;
 
+    int totalCount = 0;
 
     public virtual void BuildElement()
     {
         _elementAmount++;
+
         if (spawnedLevelElements.Count == 0)
         {
             CreateLevelElement();
@@ -43,12 +46,21 @@ public class MapBuilder : MonoBehaviour
         spawnedLevelElements.Clear();
         spawnedLevelElements.AddRange(newSpawnedElements);
         newSpawnedElements.Clear();
+        totalCount++;
     }
 
     LevelElement CreateLevelElement()
     {
         LevelElement el;
-        newSpawnedElements.Add(el = Instantiate(levelElements[Random.Range(0, levelElements.Length)]));
+        if(totalCount <= 3)
+        {
+            newSpawnedElements.Add(el = Instantiate(startElement));
+        }
+        else
+        {
+            newSpawnedElements.Add(el = Instantiate(levelElements[Random.Range(0, levelElements.Length)]));
+        }
+       
         if (_activeElement == null) _activeElement = el;
         return el;
     }
@@ -68,7 +80,6 @@ public class MapBuilder : MonoBehaviour
 
         _activeElement = newActiveElementTrans.GetComponent<LevelElement>();
         _activeElement.transform.position = transform.position;
-        //activeElement.transform.rotation = transform.rotation;
         _activeElement.transform.parent = transform;
 
         if (optionalRig == null) return;
