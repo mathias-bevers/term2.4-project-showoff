@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using NaughtyAttributes;
@@ -74,19 +73,26 @@ public class Server : Singleton<Server>
 		{
 			if (idClient.Value.Available == 0) { continue; }
 
+			Debug.Log($"Client#{idClient.Key} is sending data");
 			byte[] inBytes = StreamUtil.Read(idClient.Value.GetStream());
-			Packet packet = new(inBytes);
 
-			foreach (KeyValuePair<int, TcpClient> idReceiver in clients.Where(c => c.Key != idClient.Key))
+			foreach (KeyValuePair<int, TcpClient> idReceiver in clients)
 			{
-				WriteToClient((idClient.Key, idReceiver.Value), packet);
+				if (idReceiver.Key == idClient.Key) { continue; }
+
+				WriteToClient((idClient.Key, idReceiver.Value), inBytes);
 			}
 		}
 	}
 
 	private void ProcessBadClients()
 	{
-		//TODO: Add heartbeat.
+		foreach (KeyValuePair<int, TcpClient> idClient in clients)
+		{
+			Packet packet = new();
+			packet.Write(new HeartBeat());
+			WriteToClient((idClient.Key, idClient.Value), packet);
+		}
 
 		if (badClients.IsNullOrEmpty()) { return; }
 
@@ -95,15 +101,14 @@ public class Server : Singleton<Server>
 		badClients.Clear();
 	}
 
-	private  void WriteToClient((int, TcpClient) idReceiver, Packet data)
+	private void WriteToClient((int, TcpClient) idReceiver, Packet packet) { WriteToClient(idReceiver, packet.GetBytes()); }
+
+	private void WriteToClient((int, TcpClient) idReceiver, byte[] data)
 	{
-		try
-		{
-			StreamUtil.Write(idReceiver.Item2.GetStream(), data.GetBytes());
-		}
+		try { StreamUtil.Write(idReceiver.Item2.GetStream(), data); }
 		catch (System.IO.IOException)
 		{
-			Debug.Log($"Marking client#{idReceiver.Item1}");
+			Debug.Log($"Marking client#{idReceiver.Item1} as bad client");
 			badClients.Add(idReceiver.Item1);
 		}
 	}

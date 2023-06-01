@@ -8,15 +8,13 @@ using Random = UnityEngine.Random;
 
 public class Client : MonoBehaviour
 {
-	private bool isAccepted = false;
-	private int id;
+	private bool isAccepted;
+	private int id = -1;
 	private TcpClient client;
 
 	public void Update()
 	{
 		if (client == null) { return; }
-
-		if (isAccepted) { return; }
 
 		try
 		{
@@ -56,6 +54,12 @@ public class Client : MonoBehaviour
 
 	public void SendData(Packet packet)
 	{
+		if (client == null)
+		{
+			Debug.LogWarning("Cannot send data if there is no client connected");
+			return;
+		}
+		
 		if (packet == null)
 		{
 			Debug.LogWarning("Trying to send null");
@@ -71,18 +75,34 @@ public class Client : MonoBehaviour
 		if (!isAccepted)
 		{
 			AccessCallback callback = packet.Read<AccessCallback>();
-			isAccepted = callback.accepted;
-			if (!isAccepted)
-			{
-				Destroy(this);
-				return;
-			}
-			
-			id = callback.id;
+			HandleAccessCallback(callback);
 			return;
 		}
 
-		throw new NotImplementedException("Cannot process data yet");
+		ISerializable serializable = packet.ReadObject();
+		switch (serializable)
+		{
+			case PlayerDistance playerDistance: Debug.Log($"Received player#{playerDistance.id}'s distance of: {playerDistance.distance}");
+				break;
+			case HeartBeat: break;
+		}
+	}
+
+	private void HandleAccessCallback(AccessCallback callback)
+	{
+		isAccepted = callback.accepted;
+		if (!isAccepted)
+		{
+			Destroy(this);
+			return;
+		}
+
+		id = callback.id;
+	}
+
+	private void OnDestroy()
+	{
+		client.Close();
 	}
 
 #if UNITY_EDITOR

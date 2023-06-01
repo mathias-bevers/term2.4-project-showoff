@@ -38,7 +38,7 @@ namespace saxion_provided
 		public void Write (int pInt)							{		writer.Write(pInt);			}
 		public void Write (string pString)						{		writer.Write(pString);		}
 		public void Write (bool pBool)							{		writer.Write(pBool);		}
-		
+
 		public void Write (ISerializable pSerializable)			{
 			Write(pSerializable.GetType().FullName);
 			pSerializable.Serialize(this); 
