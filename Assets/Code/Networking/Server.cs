@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Code.Networking;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
 
 public class Server : Singleton<Server>
 {
+	private const int MAX_PLAYERS = 2;
 	private bool isRunning;
 
-	private Dictionary<int, TcpClient> clients;
 	private int currentID = -1;
 	private List<int> badClients;
+	private List<ReceivedPacket> receivedPackets;
+	private List<ServerClient> clients;
 
 	private TcpListener listener;
 
@@ -27,11 +30,12 @@ public class Server : Singleton<Server>
 
 	public void Initialize(IPAddress ip, int port)
 	{
-		listener = new TcpListener(ip, port);
-		clients = new Dictionary<int, TcpClient>(2);
+		clients = new List<ServerClient>(MAX_PLAYERS);
 		badClients = new List<int>();
-		listener.Start();
+		receivedPackets = new List<ReceivedPacket>();
 
+		listener = new TcpListener(ip, port);
+		listener.Start();
 		isRunning = true;
 
 		Debug.Log($"Started new server on <b>{listener.LocalEndpoint}</b>!");
@@ -44,72 +48,81 @@ public class Server : Singleton<Server>
 		{
 			Packet packet = new();
 			AccessCallback callback;
+			TcpClient client = listener.AcceptTcpClient();
 
 			if (clients.Count >= 2)
 			{
 				Debug.LogWarning("Refused client, server is full");
-				TcpClient rejected = listener.AcceptTcpClient();
 				callback = new AccessCallback(false);
 				packet.Write(callback);
-				WriteToClient((-1, rejected), packet);
-				rejected.Close();
+				
+				try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
+				catch (System.IO.IOException e) { }
+
+				client.Close();
 				continue;
 			}
 
-			TcpClient accepted = listener.AcceptTcpClient();
-			++currentID;
-			clients.Add(currentID, accepted);
 
+			++currentID;
+			ServerClient serverClient = new (currentID, client);
+			clients.Add(serverClient);
+			
 			callback = new AccessCallback(true, currentID);
 			packet.Write(callback);
-			WriteToClient((currentID, accepted), packet);
+			WriteToClient(serverClient, packet);
+			
 			Debug.Log($"Accepted new client with id: {currentID}");
 		}
 	}
 
 	private void ProcessExistingClients()
 	{
-		foreach (KeyValuePair<int, TcpClient> idClient in clients)
+		foreach (ServerClient client in clients)
 		{
-			if (idClient.Value.Available == 0) { continue; }
+			if (client.available == 0) { continue; }
 
-			Debug.Log($"Server received data from Client#{idClient.Key}");
-			byte[] inBytes = StreamUtil.Read(idClient.Value.GetStream());
+			Debug.Log($"Server received data from Client#{client.id}");
+			byte[] inBytes = StreamUtil.Read(client.stream);
 
-			foreach (KeyValuePair<int, TcpClient> idReceiver in clients)
+			foreach (ServerClient receiver in clients)
 			{
-				if (idReceiver.Key == idClient.Key) { continue; }
+				if (receiver.id == client.id) { continue; }
 
-				WriteToClient((idClient.Key, idReceiver.Value), inBytes);
+				WriteToClient(receiver, inBytes);
 			}
 		}
 	}
 
 	private void ProcessBadClients()
 	{
-		foreach (KeyValuePair<int, TcpClient> idClient in clients)
+		foreach (ServerClient client in clients)
 		{
 			Packet packet = new();
 			packet.Write(new HeartBeat());
-			WriteToClient((idClient.Key, idClient.Value), packet);
+			WriteToClient(client, packet);
 		}
 
 		if (badClients.IsNullOrEmpty()) { return; }
 
-		foreach (int badClientID in badClients) { clients.Remove(badClientID); }
+		foreach (int badClientID in badClients)
+		{
+			ServerClient badClient = clients.Find(client => client.id == badClientID);
+			clients.Remove(badClient);
+		}
 
 		badClients.Clear();
 	}
 
-	private void WriteToClient((int, TcpClient) idReceiver, Packet packet) { WriteToClient(idReceiver, packet.GetBytes()); }
+	private void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
 
-	private void WriteToClient((int, TcpClient) idReceiver, byte[] data)
+	private void WriteToClient(ServerClient receiver, byte[] data)
 	{
-		try { StreamUtil.Write(idReceiver.Item2.GetStream(), data); }
+		try { StreamUtil.Write(receiver.stream, data); }
 		catch (System.IO.IOException)
 		{
-			Debug.Log($"Marking client#{idReceiver.Item1} as bad client");
-			badClients.Add(idReceiver.Item1);
+			Debug.Log($"Marking client#{receiver.id} as bad client");
+			badClients.Add(receiver.id);
 		}
 	}
 
