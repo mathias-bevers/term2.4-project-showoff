@@ -48,7 +48,7 @@ public class LevelElement : MonoBehaviour
 
     private void Awake()
     {
-        if (endPoints.Length == 1) _takenLevelPoint = endPoints[0];
+        if (endPoints.Length == 1) SetTakenPoint(endPoints[0]);
 
         ChoseSide(0);
     }
@@ -72,11 +72,11 @@ public class LevelElement : MonoBehaviour
             foreach (ConnectionPoint cp in p.connectionPoints)
                 if (cp.requiredSides.HasFlag(chosenSide) && cp.requiredSides != MapSides.Nothing && chosenSide != MapSides.Nothing)
                 {
-                    _takenLevelPoint = cp.nextPoint;
+                    SetTakenPoint(cp.nextPoint);
                     return;
                 }else if(cp.requiredSides == MapSides.Nothing &&  cp.requiredSides == MapSides.Nothing)
                 {
-                    _takenLevelPoint = cp.nextPoint;
+                    SetTakenPoint(cp.nextPoint);
                     return;
                 }
         }, true, false, null);
@@ -84,7 +84,17 @@ public class LevelElement : MonoBehaviour
         _forceRequestNewPath = true;
     }
 
-
+    void SetTakenPoint(LevelPoint point)
+    {
+        _takenLevelPoint = point;
+        if (_takenLevelPoint == null) return;
+        if (_takenLevelPoint.transform == null) return;
+        Transform pTrans = _takenLevelPoint.transform.GetChild(0);
+        if (pTrans == null) return;
+        LevelElement levelEl = pTrans.GetComponent<LevelElement>();
+        if (levelEl == null) return;
+        levelEl.gameObject.SetActive(true);
+    }
 
     public Path GetPath()
     {
