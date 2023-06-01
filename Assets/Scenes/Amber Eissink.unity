@@ -509,6 +509,8 @@ MonoBehaviour:
   effectTimes:
   - pickupIdentifier: 1
     time: 10
+    startupTime: 0
+    breakoutTime: 0
   activeEvents: []
 --- !u!114 &631515935
 MonoBehaviour:
@@ -1685,7 +1687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildForEra: 0
-  startGroup: {fileID: 11400000, guid: ea6d164271568e64aad8512f5493fbdc, type: 2}
+  startGroup: {fileID: 11400000, guid: 3e0f098491d478a48b02c6e24e451c0f, type: 2}
   starterElement: {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0,
     type: 3}
   allSpawnedElements: []

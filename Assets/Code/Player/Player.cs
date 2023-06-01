@@ -155,10 +155,29 @@ public class Player : Singleton<Player>
         }
 
         if (transform.localPosition.z <= -1 || transform.localPosition.y <= -1)
-            Kill();
+        {
+            if (EffectIsActive(PickupIdentifier.Invincible))
+            {
+                FakeDeath();
+                return;
+            }
+
+            if (!EffectIsActive(PickupIdentifier.Speedup))
+                _currentHearts--;
+            if(_currentHearts <= 0) Kill();
+            else FakeDeath();
+        }
 
         if (!_dead) return;
         DeathEffect.Instance.Death();
+    }
+
+    [HideInInspector]
+    public bool oopsIDied = false;
+
+    void FakeDeath()
+    {
+        oopsIDied = true;
     }
 }
 

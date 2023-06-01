@@ -99,6 +99,15 @@ public class MapWalker : MonoBehaviour
 
     void HandleSingleDirection(LevelElement activeElement)
     {
+        if (rig.player.oopsIDied)
+        {
+            mapBuilder.MoveOverElement(rig);
+            rig.player.transform.localPosition = Vector3.zero;
+            rig.player.oopsIDied = false;
+            if(!rig.player.EffectIsActive(PickupIdentifier.Speedup))
+            rig.player.AddPickup((int)PickupIdentifier.Speedup);
+        }
+
         if (activeElement != null) if (activeElement.forceRequestNewPath) activePath = activeElement.GetPath();
         if (activeNode == null)
         {
