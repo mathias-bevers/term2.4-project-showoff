@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
 
 public static partial class Utils
@@ -18,5 +20,16 @@ public static partial class Utils
     {
         int randomIndex = Random.Range(0, collection.Count);
         return collection[randomIndex];
+    }
+
+    public static string GetIP4Address()
+    {
+	    IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+	    foreach (IPAddress ip in host.AddressList)
+	    {
+		    if (ip.AddressFamily == AddressFamily.InterNetwork) { return ip.ToString(); }
+	    }
+
+	    return string.Empty;
     }
 }

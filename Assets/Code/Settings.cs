@@ -5,6 +5,6 @@ using UnityEngine;
 
 public static class Settings
 {
-	public static readonly IPAddress SERVER_IP = IPAddress.Loopback;
+	public static IPAddress SERVER_IP = IPAddress.Loopback;
 	public const int SERVER_PORT = 55555;
 }
