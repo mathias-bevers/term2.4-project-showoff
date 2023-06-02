@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using Code.Networking;
+using System.Threading;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
@@ -18,6 +20,12 @@ public class Server : Singleton<Server>
 
 	private TcpListener listener;
 
+	public override void Awake()
+	{
+		base.Awake();
+		DontDestroyOnLoad(gameObject);
+	}
+
 
 	public void Update()
 	{
@@ -26,6 +34,16 @@ public class Server : Singleton<Server>
 		ProcessNewClients();
 		ProcessBadClients();
 		ProcessExistingClients();
+
+		if (receivedPackets.Count < 1) { return; }
+
+		for (int i = receivedPackets.Count - 1; i >= 0; --i)
+		{
+			ReceivedPacket receivedPacket = receivedPackets[i];
+			
+			WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
+			receivedPackets.RemoveAt(i);
+		}
 	}
 
 	public void Initialize(IPAddress ip, int port)
@@ -46,18 +64,17 @@ public class Server : Singleton<Server>
 	{
 		while (listener.Pending())
 		{
-			Packet packet = new();
-			AccessCallback callback;
 			TcpClient client = listener.AcceptTcpClient();
+			Packet packet = new();
 
 			if (clients.Count >= 2)
 			{
 				Debug.LogWarning("Refused client, server is full");
-				callback = new AccessCallback(false);
-				packet.Write(callback);
-				
+				AccessCallback rejectedCB = new (false);
+				packet.Write(rejectedCB);
+
 				try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
-				catch (System.IO.IOException e) { }
+				catch (Exception e) { Debug.LogError(e.Message); }
 
 				client.Close();
 				continue;
@@ -65,11 +82,22 @@ public class Server : Singleton<Server>
 
 
 			++currentID;
-			ServerClient serverClient = new (currentID, client);
+			ServerClient serverClient = new(currentID, client);
+
+			// if (clients.Count > 0)
+			// {
+			// 	foreach (ServerClient other in clients)
+			// 	{
+			// 		Packet notify = new();
+			// 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Joined));
+			// 		StreamUtil.Write(serverClient.stream, packet.GetBytes());
+			// 	}
+			// }
+
 			clients.Add(serverClient);
-			
-			callback = new AccessCallback(true, currentID);
-			packet.Write(callback);
+
+			AccessCallback acceptedCB = new (true, currentID);
+			packet.Write(acceptedCB);
 			WriteToClient(serverClient, packet);
 			
 			Debug.Log($"Accepted new client with id: {currentID}");
@@ -82,14 +110,20 @@ public class Server : Singleton<Server>
 		{
 			if (client.available == 0) { continue; }
 
-			Debug.Log($"Server received data from Client#{client.id}");
-			byte[] inBytes = StreamUtil.Read(client.stream);
-
-			foreach (ServerClient receiver in clients)
+			try
 			{
-				if (receiver.id == client.id) { continue; }
-
-				WriteToClient(receiver, inBytes);
+				new Thread(() =>
+				{
+					byte[] inBytes = StreamUtil.Read(client.stream);
+					Packet packet = new(inBytes);
+					SeverObject obj = packet.ReadObject();
+					receivedPackets.Add(new ReceivedPacket(client, obj));
+				}).Start();
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(e.Message + $"\nAdding client {client.id} to bad clients");
+				badClients.Add(client.id);
 			}
 		}
 	}
@@ -114,12 +148,29 @@ public class Server : Singleton<Server>
 		badClients.Clear();
 	}
 
-	private void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
+	private void WriteToOthers(ServerClient sender, Packet packet)
+	{
+		foreach (ServerClient receiver in clients)
+		{
+			if (receiver.id == sender.id) { continue; }
+
+			WriteToClient(receiver, packet);
+		}
+	}
+
+	private void WriteToClient(ServerClient receiver, Packet packet)
+	{
+		WriteToClient(receiver, packet.GetBytes());
+	}
 
 	private void WriteToClient(ServerClient receiver, byte[] data)
 	{
-		try { StreamUtil.Write(receiver.stream, data); }
-		catch (System.IO.IOException)
+		try
+		{
+			StreamUtil.Write(receiver.stream, data);
+			/*new Thread(() => {  }).Start();*/
+		}
+		catch (Exception)
 		{
 			Debug.Log($"Marking client#{receiver.id} as bad client");
 			badClients.Add(receiver.id);
@@ -128,5 +179,7 @@ public class Server : Singleton<Server>
 
 #if UNITY_EDITOR
 	[Button("Initialize")] private void ForceInit() { Initialize(Settings.SERVER_IP, Settings.SERVER_PORT); }
+
+	private void OnGUI() { GUI.Label(new Rect(10, 10, 160, 30), $"connected clients: {clients.Count}"); }
 #endif
 }

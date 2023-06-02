@@ -1,7 +1,7 @@
 ﻿using saxion_provided;
 
-public class HeartBeat : ISerializable
+public class HeartBeat : SeverObject
 {
-	public void Serialize(Packet pPacket) { }
-	public void Deserialize(Packet pPacket) { }
+	public override void Serialize(Packet packet) { }
+	public override void Deserialize(Packet packet) { }
 }

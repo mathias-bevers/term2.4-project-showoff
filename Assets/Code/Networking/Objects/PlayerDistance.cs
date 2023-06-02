@@ -1,19 +1,13 @@
 using saxion_provided;
 
-public class PlayerDistance : ISerializable
+public class PlayerDistance : SeverObject
 {
-	public int id { get; set; }
-	public int distance { get; set; }
-	
-	public void Serialize(Packet packet)
-	{
-		packet.Write(id);
-		packet.Write(distance);
-	}
+	public PlayerDistance() { }
+	public PlayerDistance(float distance) { this.distance = distance; }
 
-	public void Deserialize(Packet packet)
-	{
-		id = packet.ReadInt();
-		distance = packet.ReadInt();
-	}
+	public float distance { get; private set; }
+
+	public override void Serialize(Packet packet) { packet.Write(distance); }
+
+	public override void Deserialize(Packet packet) { distance = packet.ReadFloat(); }
 }

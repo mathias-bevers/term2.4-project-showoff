@@ -38,10 +38,11 @@ namespace saxion_provided
 		public void Write (int pInt)							{		writer.Write(pInt);			}
 		public void Write (string pString)						{		writer.Write(pString);		}
 		public void Write (bool pBool)							{		writer.Write(pBool);		}
+		public void Write (float pFloat)						{		writer.Write(pFloat);		}
 
-		public void Write (ISerializable pSerializable)			{
-			Write(pSerializable.GetType().FullName);
-			pSerializable.Serialize(this); 
+		public void Write (SeverObject pSeverObject)			{
+			Write(pSeverObject.GetType().FullName);
+			pSeverObject.Serialize(this); 
 		}
 
 		/// READ METHODS
@@ -49,16 +50,24 @@ namespace saxion_provided
 		public int ReadInt() { return reader.ReadInt32(); }
 		public string ReadString() { return reader.ReadString(); }
 		public bool ReadBool() { return reader.ReadBoolean(); }
+		public float ReadFloat() { return reader.ReadSingle(); }
 
-		public ISerializable ReadObject() 
+		public SeverObject ReadObject()
 		{
-			Type type = Type.GetType(ReadString());
-			ISerializable obj = (ISerializable)Activator.CreateInstance(type);
+			string typeName = ReadString();
+			Type type = Type.GetType(typeName);
+
+			if (type == null)
+			{
+				throw new ArgumentNullException($"Could not find class of type {typeName}");
+			}
+			
+			SeverObject obj = (SeverObject)Activator.CreateInstance(type);
 			obj.Deserialize(this);
 			return obj;
 		}
 
-		public T Read<T>() where T:ISerializable
+		public T Read<T>() where T:SeverObject
 		{
 			return (T)ReadObject();
 		}

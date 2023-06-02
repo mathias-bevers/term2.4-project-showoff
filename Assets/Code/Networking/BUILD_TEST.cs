@@ -21,11 +21,7 @@ public class BUILD_TEST : MonoBehaviour
 		if (client == null || !client.isInitialized) { Debug.LogError("Client is not ready to send data"); }
 
 		int distance = Random.Range(0, 1001);
-		PlayerDistance playerDistance = new()
-		{
-			id = client.id,
-			distance = distance,
-		};
+		PlayerDistance playerDistance = new(distance);
 
 		Packet packet = new();
 		packet.Write(playerDistance);

@@ -8,6 +8,9 @@ using Random = UnityEngine.Random;
 
 public class Client : MonoBehaviour
 {
+	public event Action<PlayerConnection.ConnectionType> connectionEvent;
+	public event Action<float> oponnentDistanceRecievedEvent;
+
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
 
@@ -20,19 +23,33 @@ public class Client : MonoBehaviour
 
 		try
 		{
-			if (client.Available > 0) { ProcessData(StreamUtil.Read(client.GetStream())); }
+			if (client.Available > 0)
+			{
+				byte[] inBytes = StreamUtil.Read(client.GetStream());
+				ProcessData(inBytes);
+			}
 		}
 		catch (Exception e)
 		{
-			Debug.LogError(e.Message);
-			client.Close();
+			Debug.LogError(string.Concat(e.Message, '\n', e.StackTrace));
+			Close();
 		}
 	}
 
 	private void OnDestroy()
 	{
 		Debug.LogWarning("Destroying client instance...");
-		client?.Close();
+		Close();
+	}
+
+	public void Close()
+	{
+		if (client == null) { return; }
+
+		isAccepted = false;
+		client.Close();
+		client = null;
+		UnityEngine.SceneManagement.SceneManager.LoadScene(0);
 	}
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
@@ -41,10 +58,15 @@ public class Client : MonoBehaviour
 	{
 		if (isAccepted) { return; }
 
-		if (attempts >= 5) { throw new Exception("FAILED TO CONNECT TO SERVER"); }
+		if (attempts >= 5)
+		{
+			Destroy(this);
+			throw new Exception("FAILED TO CONNECT TO SERVER");
+		}
 
 		try
 		{
+			Debug.Log("trying to connect to server");
 			client ??= new TcpClient();
 			client.Connect(ip, port);
 		}
@@ -64,11 +86,7 @@ public class Client : MonoBehaviour
 
 	public void SendData(Packet packet)
 	{
-		if (client == null)
-		{
-			Debug.LogWarning("Cannot send data if there is no client connected");
-			return;
-		}
+		if (!isAccepted) { return; }
 
 		if (packet == null)
 		{
@@ -76,32 +94,51 @@ public class Client : MonoBehaviour
 			return;
 		}
 
-		Debug.Log($"Client#{id} is sending data to the server!");
-		StreamUtil.Write(client.GetStream(), packet.GetBytes());
+		// Debug.Log($"Client#{id} is sending data to the server!");
+		try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
+		catch (Exception e)
+		{
+			Debug.LogWarning("Cannot send data to closed stream.");
+			Destroy(this);
+		}
 	}
 
 	private void ProcessData(byte[] dataInBytes)
 	{
 		Packet packet = new(dataInBytes);
+		SeverObject severObject;
+		try { severObject = packet.ReadObject(); }
+		catch
+		{
+			Debug.LogError("object could not be read.");
+			Close();
+			return;
+		}
+
 		if (!isAccepted)
 		{
-			AccessCallback callback = packet.Read<AccessCallback>();
+			if (severObject is not AccessCallback callback) { return; }
+
 			HandleAccessCallback(callback);
 			return;
 		}
 
-		ISerializable serializable = packet.ReadObject();
-		switch (serializable)
+		switch (severObject)
 		{
 			case PlayerDistance playerDistance:
-				Debug.Log($"Received player#{playerDistance.id}'s distance of: {playerDistance.distance}");
+				oponnentDistanceRecievedEvent?.Invoke(playerDistance.distance);
+				break;
+			case PlayerConnection playerConnection:
+				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
 			case HeartBeat: break;
+			default: throw new NotSupportedException($"Cannot process ISerializable type {severObject.GetType().Name}");
 		}
 	}
 
 	private void HandleAccessCallback(AccessCallback callback)
 	{
+		Debug.Log("Handling access callback");
 		isAccepted = callback.accepted;
 		if (!isAccepted)
 		{
@@ -117,13 +154,8 @@ public class Client : MonoBehaviour
 	[Button("Send fake data")]
 	private void SetData()
 	{
-		PlayerDistance dst = new PlayerDistance
-		{
-			id = id,
-			distance = Random.Range(0, 11),
-		};
-
-		Debug.Log($"Client#{dst.id} is sending a distance of: {dst.distance}");
+		PlayerDistance dst = new PlayerDistance(Random.Range(0, 11));
+		Debug.Log($"Client#{id} is sending a distance of: {dst.distance}");
 		Packet packet = new();
 		packet.Write(dst);
 

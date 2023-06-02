@@ -1,6 +1,6 @@
 ﻿using saxion_provided;
 
-public class AccessCallback : ISerializable
+public class AccessCallback : SeverObject
 {
 	public AccessCallback(bool accepted, int id = -1)
 	{
@@ -13,7 +13,7 @@ public class AccessCallback : ISerializable
 	public bool accepted { get; private set; }
 	public int id { get; private set; }
 
-	public void Serialize(Packet packet)
+	public override void Serialize(Packet packet)
 	{
 		packet.Write(accepted);
 
@@ -22,7 +22,7 @@ public class AccessCallback : ISerializable
 		packet.Write(id);
 	}
 
-	public void Deserialize(Packet packet)
+	public override void Deserialize(Packet packet)
 	{
 		accepted = packet.ReadBool();
 

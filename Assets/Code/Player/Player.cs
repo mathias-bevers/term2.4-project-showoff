@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ public class Player : Singleton<Player>
     bool _dead = false;
 
     public bool dead => _dead;
+
+    public event Action deathEvent; 
 
     [SerializeField] List<EffectTime> effectTimes = new List<EffectTime>();
 
@@ -140,7 +143,10 @@ public class Player : Singleton<Player>
 
     public void Kill()
     {
+        if (_dead) { return; }
+        
         _dead = true;
+        deathEvent?.Invoke();
     }
 
     private void Update()
