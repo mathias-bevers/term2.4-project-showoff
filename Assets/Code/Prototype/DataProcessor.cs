@@ -4,41 +4,50 @@ using UnityEngine.UI;
 
 public class DataProcessor : MonoBehaviour
 {
+	private const int DISTANCE_SEND_DELAY = 1;
+
 	[SerializeField] private Client networkingClient;
 	[SerializeField] private MapWalker walker;
 	[SerializeField] private Text ownDistanceText;
 	[SerializeField] private Text opponentDistanceText;
 	[SerializeField] private GameObject debugConsole;
-
 	private bool shouldUpdateOT = true;
 	private bool isDeath;
+
+	private float distTimer;
 
 	private void Start()
 	{
 		DontDestroyOnLoad(debugConsole);
-		
+
 		networkingClient.Connect();
 
 		Player.Instance.deathEvent += OnPlayerDeath;
 		networkingClient.oponnentDistanceRecievedEvent += UpdateOpponentText;
 		networkingClient.connectionEvent += DisplayOpponentConnection;
 
+		distTimer = DISTANCE_SEND_DELAY;
+
 		// ownDistanceText.text = opponentDistanceText.text = string.Empty;
 	}
 
 	private void LateUpdate()
 	{
-		if (!networkingClient.isInitialized)
-		{
-			return;
-		}
+		if (!networkingClient.isInitialized) { return; }
+
 		if (isDeath) { return; }
+
+		ownDistanceText.text = $"Score: {walker.TotalMetersRan:f2}";
+		
+		distTimer -= Time.deltaTime;
+		
+		if (distTimer > 0) { return; }
+
+		distTimer = DISTANCE_SEND_DELAY;
 
 		Packet packet = new();
 		packet.Write(new PlayerDistance(walker.TotalMetersRan));
 		networkingClient.SendData(packet);
-		
-		ownDistanceText.text = $"Score: {walker.TotalMetersRan:f2}";
 	}
 
 	private void OnDestroy()
@@ -71,8 +80,8 @@ public class DataProcessor : MonoBehaviour
 		networkingClient.SendData(packet);
 
 		ownDistanceText.transform.parent.gameObject.SetActive(false);
-		
+
 		isDeath = true;
-		networkingClient.Close();
+		CooldownManager.Cooldown(.5f, () => networkingClient.Close());
 	}
 }

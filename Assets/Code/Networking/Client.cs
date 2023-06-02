@@ -138,7 +138,6 @@ public class Client : MonoBehaviour
 
 	private void HandleAccessCallback(AccessCallback callback)
 	{
-		Debug.Log("Handling access callback");
 		isAccepted = callback.accepted;
 		if (!isAccepted)
 		{
@@ -148,18 +147,4 @@ public class Client : MonoBehaviour
 
 		id = callback.id;
 	}
-
-#if UNITY_EDITOR
-	[Button("Initialize")] private void ForceInit() { Connect(Settings.SERVER_IP, Settings.SERVER_PORT); }
-	[Button("Send fake data")]
-	private void SetData()
-	{
-		PlayerDistance dst = new PlayerDistance(Random.Range(0, 11));
-		Debug.Log($"Client#{id} is sending a distance of: {dst.distance}");
-		Packet packet = new();
-		packet.Write(dst);
-
-		SendData(packet);
-	}
-#endif
 }

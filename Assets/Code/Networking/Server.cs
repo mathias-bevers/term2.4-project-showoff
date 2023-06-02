@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -40,7 +40,7 @@ public class Server : Singleton<Server>
 		for (int i = receivedPackets.Count - 1; i >= 0; --i)
 		{
 			ReceivedPacket receivedPacket = receivedPackets[i];
-			
+
 			WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
 			receivedPackets.RemoveAt(i);
 		}
@@ -70,7 +70,7 @@ public class Server : Singleton<Server>
 			if (clients.Count >= 2)
 			{
 				Debug.LogWarning("Refused client, server is full");
-				AccessCallback rejectedCB = new (false);
+				AccessCallback rejectedCB = new(false);
 				packet.Write(rejectedCB);
 
 				try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
@@ -84,22 +84,17 @@ public class Server : Singleton<Server>
 			++currentID;
 			ServerClient serverClient = new(currentID, client);
 
-			// if (clients.Count > 0)
-			// {
-			// 	foreach (ServerClient other in clients)
-			// 	{
-			// 		Packet notify = new();
-			// 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Joined));
-			// 		StreamUtil.Write(serverClient.stream, packet.GetBytes());
-			// 	}
-			// }
+			if (clients.Count > 0)
+			{
+				receivedPackets.Add(new ReceivedPacket(serverClient, new PlayerConnection(PlayerConnection.ConnectionType.Joined)));
+			}
 
 			clients.Add(serverClient);
 
-			AccessCallback acceptedCB = new (true, currentID);
+			AccessCallback acceptedCB = new(true, currentID);
 			packet.Write(acceptedCB);
 			WriteToClient(serverClient, packet);
-			
+
 			Debug.Log($"Accepted new client with id: {currentID}");
 		}
 	}
@@ -112,13 +107,12 @@ public class Server : Singleton<Server>
 
 			try
 			{
-				new Thread(() =>
-				{
-					byte[] inBytes = StreamUtil.Read(client.stream);
-					Packet packet = new(inBytes);
-					SeverObject obj = packet.ReadObject();
-					receivedPackets.Add(new ReceivedPacket(client, obj));
-				}).Start();
+				// new Thread(() => { }).Start();
+
+				byte[] inBytes = StreamUtil.Read(client.stream);
+				Packet packet = new(inBytes);
+				SeverObject obj = packet.ReadObject();
+				receivedPackets.Add(new ReceivedPacket(client, obj));
 			}
 			catch (Exception e)
 			{
@@ -158,10 +152,7 @@ public class Server : Singleton<Server>
 		}
 	}
 
-	private void WriteToClient(ServerClient receiver, Packet packet)
-	{
-		WriteToClient(receiver, packet.GetBytes());
-	}
+	private void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
 
 	private void WriteToClient(ServerClient receiver, byte[] data)
 	{
