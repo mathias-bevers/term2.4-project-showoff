@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using NaughtyAttributes;
 using UnityEngine;
 
 [PreferComponent(typeof(CooldownSharer))]
@@ -44,7 +45,7 @@ public class BasicJumpModule : MotorModule
 
     }
 
-    [@Button]
+    [Button("jump")]
     public void Jump()
     {
         timer = 0;
