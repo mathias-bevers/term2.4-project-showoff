@@ -134,6 +134,14 @@ public class NewMapBuilder : MonoBehaviour
             MapGroupElement mapGroupElement = t.GetComponent<MapGroupElement>();
             if (mapGroupElement == null) continue;
             mapGroupElement.gameObject.SetActive(true);
+            /*
+            foreach(LevelPoint ppp in mapGroupElement.baseElement.EndPoints)
+            {
+                Transform tt = ppp.transform.GetChild(0);
+                MapGroupElement mapGroupElement2 = tt.GetComponent<MapGroupElement>();
+                if (mapGroupElement2 == null) continue;
+                mapGroupElement2.gameObject.SetActive(false);
+            }*/
         }
 
         if (optionalRig == null) return;

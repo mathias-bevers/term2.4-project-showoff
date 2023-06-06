@@ -755,7 +755,7 @@ MonoBehaviour:
   startSpeed: 5
   endSpeed: 12
   accelerationTime: 120
-  minSpawnAmount: 3
+  minSpawnAmount: 5
 --- !u!4 &473837549
 Transform:
   m_ObjectHideFlags: 0
@@ -2041,6 +2041,7 @@ MonoBehaviour:
   onEraChange:
     m_PersistentCalls:
       m_Calls: []
+  hourChangeEraTime: 2
 --- !u!1 &1160234425
 GameObject:
   m_ObjectHideFlags: 0
