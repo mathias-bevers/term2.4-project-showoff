@@ -47,7 +47,7 @@ public class MapWalker : MonoBehaviour
 
     LevelElement activeElement;
 
-
+    public float TotalMetersRan => totalMetersRan;
 
     private void Update()
     {
