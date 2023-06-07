@@ -29,6 +29,12 @@ MonoBehaviour:
   - {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0, type: 3}
   endElements:
   - {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0, type: 3}
-  continuousSupports: []
+  continuousSupports:
+  - lastElement: {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0,
+      type: 3}
+    canTransformInto:
+    - {fileID: 3398807621037779704, guid: 9369af23abd4c1747bdbdd1157af5672, type: 3}
+    - {fileID: 3398807621037779704, guid: e28a6dd933aaee643bb337c670833cce, type: 3}
+    - {fileID: 0}
   nextMapGroups:
   - {fileID: 11400000}
