@@ -44,6 +44,8 @@ public class NewMapBuilder : MonoBehaviour
         else
         {
             foreach (ElementRefs spawnedElement in spawnedLevelElements)
+            {
+                int totalspawncount = 0;
                 foreach (LevelPoint point in spawnedElement.spawnedElement.baseElement.EndPoints)
                 {
                     if (point == null) continue;
@@ -57,8 +59,10 @@ public class NewMapBuilder : MonoBehaviour
                     el.spawnedElement.transform.position = point.position - el.spawnedElement.baseElement.transform.position;
                     el.spawnedElement.transform.rotation = point.transform.rotation;
                     el.spawnedElement.transform.parent = point.transform;
-
+                    el.spawnedElement.gameObject.SetActive(totalspawncount == 0);
+                    totalspawncount++;
                 }
+            }
         }
 
         allSpawnedElements.AddRange(spawnedLevelElements);
@@ -71,7 +75,6 @@ public class NewMapBuilder : MonoBehaviour
 
         if (isEnd)
         {
-            Debug.Log("Is end!");
             isEnd = false;
 
             if (activeMapGroup.nextMapGroups.Count > 0)
@@ -123,6 +126,23 @@ public class NewMapBuilder : MonoBehaviour
 
         _activeElement.Value.spawnedElement.transform.position = transform.position;
         _activeElement.Value.spawnedElement.transform.parent = transform;
+        _activeElement.Value.spawnedElement.gameObject.SetActive(true);
+
+        foreach(LevelPoint pp in _activeElement.Value.spawnedElement.baseElement.EndPoints)
+        {
+            Transform t = pp.transform.GetChild(0);
+            MapGroupElement mapGroupElement = t.GetComponent<MapGroupElement>();
+            if (mapGroupElement == null) continue;
+            mapGroupElement.gameObject.SetActive(true);
+            /*
+            foreach(LevelPoint ppp in mapGroupElement.baseElement.EndPoints)
+            {
+                Transform tt = ppp.transform.GetChild(0);
+                MapGroupElement mapGroupElement2 = tt.GetComponent<MapGroupElement>();
+                if (mapGroupElement2 == null) continue;
+                mapGroupElement2.gameObject.SetActive(false);
+            }*/
+        }
 
         if (optionalRig == null) return;
 

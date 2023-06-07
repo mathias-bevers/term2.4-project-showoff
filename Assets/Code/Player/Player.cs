@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ public class Player : Singleton<Player>
     bool _dead = false;
 
     public bool dead => _dead;
+
+    public event Action deathEvent; 
 
     [SerializeField] List<EffectTime> effectTimes = new List<EffectTime>();
 
@@ -74,6 +77,27 @@ public class Player : Singleton<Player>
         return false;
     }
 
+
+    [SerializeField]int maxHearts = 3;
+    int _currentHearts;
+    public int hearts { get => _currentHearts; private set => _currentHearts = value; }
+
+    public override void Awake()
+    {
+        hearts = maxHearts;
+    }
+
+    public void AddHeart()
+    {
+        _currentHearts++;
+    }
+
+    public void RemoveHeart(bool destructive = false)
+    {
+        if (_currentHearts == 1 && !destructive) return;
+        _currentHearts--;
+    }
+
     public void AddPickup(int idd)
     {
         PickupIdentifier id = (PickupIdentifier)idd;
@@ -119,7 +143,10 @@ public class Player : Singleton<Player>
 
     public void Kill()
     {
+        if (_dead) { return; }
+        
         _dead = true;
+        deathEvent?.Invoke();
     }
 
     private void Update()
@@ -134,10 +161,29 @@ public class Player : Singleton<Player>
         }
 
         if (transform.localPosition.z <= -1 || transform.localPosition.y <= -1)
-            Kill();
+        {
+            if (EffectIsActive(PickupIdentifier.Invincible))
+            {
+                FakeDeath();
+                return;
+            }
+
+            if (!EffectIsActive(PickupIdentifier.Speedup))
+                _currentHearts--;
+            if(_currentHearts <= 0) Kill();
+            else FakeDeath();
+        }
 
         if (!_dead) return;
         DeathEffect.Instance.Death();
+    }
+
+    [HideInInspector]
+    public bool oopsIDied = false;
+
+    void FakeDeath()
+    {
+        oopsIDied = true;
     }
 }
 

@@ -42,6 +42,6 @@ public class DeathEffect : Singleton<DeathEffect>
 
     public void RunAgain()
     {
-        SceneManager.LoadScene("Amber");
+        SceneManager.LoadScene(0);
     }
 }

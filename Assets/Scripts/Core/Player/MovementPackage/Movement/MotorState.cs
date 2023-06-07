@@ -11,7 +11,7 @@ public enum MotorState
     InAir = 2,
     Stunned = 4,
     Swimming = 8,
-    CustomState0 = 16,
+    Slippery = 16,
     CustomState1 = 32,
     CustomState2 = 64,
     CustomState3 = 128,
