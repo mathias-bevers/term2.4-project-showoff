@@ -1425,12 +1425,12 @@ PrefabInstance:
     - target: {fileID: 8818049581568641999, guid: 56ebe8d37e7bad543a1e4ee13ad4daf2,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.38268343
+      value: -0.38268343
       objectReference: {fileID: 0}
     - target: {fileID: 8818049581568641999, guid: 56ebe8d37e7bad543a1e4ee13ad4daf2,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 45
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 9073476510225139480, guid: 56ebe8d37e7bad543a1e4ee13ad4daf2,
         type: 3}

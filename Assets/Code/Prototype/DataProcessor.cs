@@ -11,6 +11,7 @@ public class DataProcessor : MonoBehaviour
 	[SerializeField] private Text ownDistanceText;
 	[SerializeField] private Text opponentDistanceText;
 	[SerializeField] private GameObject debugConsole;
+	
 	private bool shouldUpdateOT = true;
 	private bool isDeath;
 
@@ -18,9 +19,16 @@ public class DataProcessor : MonoBehaviour
 
 	private void Start()
 	{
+		Debug.Log(name, gameObject);
 		DontDestroyOnLoad(debugConsole);
-
+		
+		
+		#if UNITY_EDITOR
+		networkingClient.Connect(Utils.GetIP4Address(), Settings.SERVER_PORT);
+		#else
 		networkingClient.Connect();
+		#endif
+		
 
 		Player.Instance.deathEvent += OnPlayerDeath;
 		networkingClient.oponnentDistanceRecievedEvent += UpdateOpponentText;

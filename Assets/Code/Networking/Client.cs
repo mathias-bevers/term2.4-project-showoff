@@ -58,6 +58,8 @@ public class Client : MonoBehaviour
 	{
 		if (isAccepted) { return; }
 
+		if (ip == null) { throw new ArgumentNullException(nameof(ip), "ip cannot be null"); }
+
 		if (attempts >= 5)
 		{
 			Destroy(this);
