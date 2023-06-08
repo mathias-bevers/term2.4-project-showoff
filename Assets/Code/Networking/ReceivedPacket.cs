@@ -9,17 +9,17 @@ using Debug = UnityEngine.Debug;
 public struct ReceivedPacket
 {
 	public ServerClient sender { get; }
-	public SeverObject severObject { get; }
+	public ServerObject serverObject { get; }
 
-	public ReceivedPacket(ServerClient sender, SeverObject severObject)
+	public ReceivedPacket(ServerClient sender, ServerObject serverObject)
 	{
 		this.sender = sender;
-		this.severObject = severObject;
+		this.serverObject = serverObject;
 	}
 
 	public Packet AsPacket()
 	{
-		if (severObject == null)
+		if (serverObject == null)
 		{
 			StringBuilder sb = new("Trying to write an empty package!\n");
 		
@@ -37,7 +37,7 @@ public struct ReceivedPacket
 		}
 		
 		Packet packet = new();
-		packet.Write(severObject);
+		packet.Write(serverObject);
 		return packet;
 	}
 }

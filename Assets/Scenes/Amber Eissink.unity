@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 203844589}
   - component: {fileID: 203844588}
   - component: {fileID: 203844587}
+  - component: {fileID: 203844590}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -238,6 +239,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &203844590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 203844586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 0}
 --- !u!1 &308030780
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,8 +451,8 @@ MonoBehaviour:
   run: 1
   mapBuilder: {fileID: 1581505917}
   rig: {fileID: 1080175765}
-  startSpeed: 5
-  endSpeed: 20
+  startSpeed: 10
+  endSpeed: 30
   accelerationTime: 120
   minSpawnAmount: 3
 --- !u!4 &473837549
@@ -1083,7 +1101,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.16783334, y: 0.18127777}
   m_AnchorMax: {x: 0.8347708, y: 0.6633148}
-  m_AnchoredPosition: {x: -5, y: 1.5}
+  m_AnchoredPosition: {x: -4.9999695, y: 1.5}
   m_SizeDelta: {x: -19.82129, y: -17.712402}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &829992096
@@ -1691,7 +1709,9 @@ MonoBehaviour:
   starterElement: {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0,
     type: 3}
   allSpawnedElements: []
-  spawnedLevelElements: []
+  spawnedLevelElements:
+  - OGElement: {fileID: 0}
+    spawnedElement: {fileID: 0}
   newSpawnedElements: []
 --- !u!114 &1581505918
 MonoBehaviour:

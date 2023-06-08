@@ -1,15 +1,14 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Client : MonoBehaviour
 {
+	public event Action<PickupData> receivedDefbuffEvent;
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
-	public event Action<float> oponnentDistanceRecievedEvent;
+	public event Action<float> opponentDistanceReceivedEvent;
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
@@ -23,11 +22,10 @@ public class Client : MonoBehaviour
 
 		try
 		{
-			if (client.Available > 0)
-			{
-				byte[] inBytes = StreamUtil.Read(client.GetStream());
-				ProcessData(inBytes);
-			}
+			if (client.Available < 1) { return; }
+
+			byte[] inBytes = StreamUtil.Read(client.GetStream());
+			ProcessData(inBytes);
 		}
 		catch (Exception e)
 		{
@@ -58,15 +56,17 @@ public class Client : MonoBehaviour
 	{
 		if (isAccepted) { return; }
 
+		if (ip == null) { throw new ArgumentNullException(nameof(ip), "ip cannot be null"); }
+
 		if (attempts >= 5)
 		{
 			Destroy(this);
-			throw new Exception("FAILED TO CONNECT TO SERVER");
+			throw new WebException("FAILED TO CONNECT TO SERVER");
 		}
 
 		try
 		{
-			Debug.Log("trying to connect to server");
+			Debug.Log($"trying to connect to server <i>{ip}:{port}</i>");
 			client ??= new TcpClient();
 			client.Connect(ip, port);
 		}
@@ -75,8 +75,9 @@ public class Client : MonoBehaviour
 			if (se.SocketErrorCode == SocketError.ConnectionRefused)
 			{
 				Server.Instance.Initialize(ip, port);
-				Connect(ip, port, attempts + 1);
+				attempts++;
 				Debug.LogWarning($"Retrying connection attempt: {attempts}");
+				Connect(ip, port, attempts);
 				return;
 			}
 
@@ -96,7 +97,7 @@ public class Client : MonoBehaviour
 
 		// Debug.Log($"Client#{id} is sending data to the server!");
 		try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
-		catch (Exception e)
+		catch (Exception)
 		{
 			Debug.LogWarning("Cannot send data to closed stream.");
 			Destroy(this);
@@ -106,8 +107,8 @@ public class Client : MonoBehaviour
 	private void ProcessData(byte[] dataInBytes)
 	{
 		Packet packet = new(dataInBytes);
-		SeverObject severObject;
-		try { severObject = packet.ReadObject(); }
+		ServerObject serverObject;
+		try { serverObject = packet.ReadObject(); }
 		catch
 		{
 			Debug.LogError("object could not be read.");
@@ -117,22 +118,26 @@ public class Client : MonoBehaviour
 
 		if (!isAccepted)
 		{
-			if (severObject is not AccessCallback callback) { return; }
+			if (serverObject is not AccessCallback callback) { return; }
 
 			HandleAccessCallback(callback);
 			return;
 		}
 
-		switch (severObject)
+		switch (serverObject)
 		{
+			case HeartBeat: break;
+			
 			case PlayerDistance playerDistance:
-				oponnentDistanceRecievedEvent?.Invoke(playerDistance.distance);
+				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
 			case PlayerConnection playerConnection:
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
-			case HeartBeat: break;
-			default: throw new NotSupportedException($"Cannot process ISerializable type {severObject.GetType().Name}");
+			case SendPickup sendPickup:
+				receivedDefbuffEvent?.Invoke(sendPickup.data);
+				break;
+			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
 	}
 
