@@ -66,7 +66,7 @@ public class Client : MonoBehaviour
 
 		try
 		{
-			Debug.Log("trying to connect to server");
+			Debug.Log($"trying to connect to server <i>{ip}:{port}</i>");
 			client ??= new TcpClient();
 			client.Connect(ip, port);
 		}
@@ -75,8 +75,9 @@ public class Client : MonoBehaviour
 			if (se.SocketErrorCode == SocketError.ConnectionRefused)
 			{
 				Server.Instance.Initialize(ip, port);
-				Connect(ip, port, attempts + 1);
+				attempts++;
 				Debug.LogWarning($"Retrying connection attempt: {attempts}");
+				Connect(ip, port, attempts);
 				return;
 			}
 
@@ -96,7 +97,7 @@ public class Client : MonoBehaviour
 
 		// Debug.Log($"Client#{id} is sending data to the server!");
 		try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
-		catch (Exception e)
+		catch (Exception)
 		{
 			Debug.LogWarning("Cannot send data to closed stream.");
 			Destroy(this);

@@ -26,6 +26,12 @@ public class Server : Singleton<Server>
 		DontDestroyOnLoad(gameObject);
 	}
 
+	private void OnDestroy()
+	{
+		listener.Server.Close();
+		Debug.LogWarning("Closing server!");
+	}
+
 
 	public void Update()
 	{
