@@ -13,18 +13,23 @@ public class PickupManager : Singleton<PickupManager>
 
 		if (helper.isPendingDestroy) { return; }
 
-
-		foreach (PickupData data in pickups)
-		{
-			if (data.identifier != helper.pickupType) { continue; }
-
-			Debug.Log($"Picked up {data} ");
-			if (data.shouldSendToServer) { pickedupPowerupEvent?.Invoke(data); }
-			else { data.onPickupEvent?.Invoke(data.parameters); }
-		}
+		PickUpPickup(helper.pickupType);
+		
 
 		helper.isPendingDestroy = true;
 		Destroy(hit.transform.gameObject);
+	}
+
+	public void PickUpPickup(PickupIdentifier pickupType, bool hasReceivedFromServer)
+	{
+		foreach (PickupData pickup in pickups)
+		{
+			if (pickup.identifier != pickupType) { continue; }
+
+			// Debug.Log($"Picked up {data} ");
+			if (pickup.shouldSendToServer && !hasReceivedFromServer) { pickedupPowerupEvent?.Invoke(pickup); }
+			else { pickup.onPickupEvent?.Invoke(pickup.parameters); }
+		}
 	}
 }
 

@@ -6,8 +6,9 @@ using UnityEngine;
 
 public class Client : MonoBehaviour
 {
+	public event Action<PickupData> receivedDefbuffEvent;
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
-	public event Action<float> oponnentDistanceRecievedEvent;
+	public event Action<float> opponentDistanceReceivedEvent;
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
@@ -122,15 +123,16 @@ public class Client : MonoBehaviour
 
 		switch (serverObject)
 		{
+			case HeartBeat: break;
+			
 			case PlayerDistance playerDistance:
-				oponnentDistanceRecievedEvent?.Invoke(playerDistance.distance);
+				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
 			case PlayerConnection playerConnection:
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
-			case HeartBeat: break;
 			case SendPickup sendPickup:
-				Debug.Log($"Received debuff from enemy: {sendPickup.data.ToString()}");
+				receivedDefbuffEvent?.Invoke(sendPickup.data);
 				break;
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
