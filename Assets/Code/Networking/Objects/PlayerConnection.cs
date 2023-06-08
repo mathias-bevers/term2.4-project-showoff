@@ -1,6 +1,6 @@
 ﻿using saxion_provided;
 
-public class PlayerConnection : SeverObject
+public class PlayerConnection : ServerObject
 {
 	public enum ConnectionType
 	{

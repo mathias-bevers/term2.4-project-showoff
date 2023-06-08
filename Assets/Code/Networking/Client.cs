@@ -1,10 +1,8 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Client : MonoBehaviour
 {
@@ -23,11 +21,10 @@ public class Client : MonoBehaviour
 
 		try
 		{
-			if (client.Available > 0)
-			{
-				byte[] inBytes = StreamUtil.Read(client.GetStream());
-				ProcessData(inBytes);
-			}
+			if (client.Available < 1) { return; }
+
+			byte[] inBytes = StreamUtil.Read(client.GetStream());
+			ProcessData(inBytes);
 		}
 		catch (Exception e)
 		{
@@ -61,7 +58,7 @@ public class Client : MonoBehaviour
 		if (attempts >= 5)
 		{
 			Destroy(this);
-			throw new Exception("FAILED TO CONNECT TO SERVER");
+			throw new WebException("FAILED TO CONNECT TO SERVER");
 		}
 
 		try
@@ -106,8 +103,8 @@ public class Client : MonoBehaviour
 	private void ProcessData(byte[] dataInBytes)
 	{
 		Packet packet = new(dataInBytes);
-		SeverObject severObject;
-		try { severObject = packet.ReadObject(); }
+		ServerObject serverObject;
+		try { serverObject = packet.ReadObject(); }
 		catch
 		{
 			Debug.LogError("object could not be read.");
@@ -117,13 +114,13 @@ public class Client : MonoBehaviour
 
 		if (!isAccepted)
 		{
-			if (severObject is not AccessCallback callback) { return; }
+			if (serverObject is not AccessCallback callback) { return; }
 
 			HandleAccessCallback(callback);
 			return;
 		}
 
-		switch (severObject)
+		switch (serverObject)
 		{
 			case PlayerDistance playerDistance:
 				oponnentDistanceRecievedEvent?.Invoke(playerDistance.distance);
@@ -132,7 +129,10 @@ public class Client : MonoBehaviour
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
 			case HeartBeat: break;
-			default: throw new NotSupportedException($"Cannot process ISerializable type {severObject.GetType().Name}");
+			case SendPickup sendPickup:
+				Debug.Log($"Received debuff from enemy: {sendPickup.data.ToString()}");
+				break;
+			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
 	}
 

@@ -1,4 +1,5 @@
-﻿using saxion_provided;
+﻿using System;
+using saxion_provided;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,7 @@ public class DataProcessor : MonoBehaviour
 	[SerializeField] private MapWalker walker;
 	[SerializeField] private Text ownDistanceText;
 	[SerializeField] private Text opponentDistanceText;
-	[SerializeField] private GameObject debugConsole;
+
 	private bool shouldUpdateOT = true;
 	private bool isDeath;
 
@@ -18,13 +19,18 @@ public class DataProcessor : MonoBehaviour
 
 	private void Start()
 	{
-		DontDestroyOnLoad(debugConsole);
-
-		networkingClient.Connect();
+		try { networkingClient.Connect(); }
+		catch (System.Net.WebException e)
+		{
+			Debug.LogError(e);
+			return;
+		}
 
 		Player.Instance.deathEvent += OnPlayerDeath;
+		PickupManager.Instance.pickedupPowerupEvent += OnSendPickup;
 		networkingClient.oponnentDistanceRecievedEvent += UpdateOpponentText;
 		networkingClient.connectionEvent += DisplayOpponentConnection;
+
 
 		distTimer = DISTANCE_SEND_DELAY;
 
@@ -38,9 +44,9 @@ public class DataProcessor : MonoBehaviour
 		if (isDeath) { return; }
 
 		ownDistanceText.text = $"Score: {walker.TotalMetersRan:f2}";
-		
+
 		distTimer -= Time.deltaTime;
-		
+
 		if (distTimer > 0) { return; }
 
 		distTimer = DISTANCE_SEND_DELAY;
@@ -83,5 +89,13 @@ public class DataProcessor : MonoBehaviour
 
 		isDeath = true;
 		CooldownManager.Cooldown(.5f, () => networkingClient.Close());
+	}
+
+	private void OnSendPickup(PickupData data)
+	{
+		Debug.Log("Sending pickup to opponent!");
+		Packet packet = new ();
+		packet.Write(new SendPickup(data));
+		networkingClient.SendData(packet);
 	}
 }

@@ -111,7 +111,7 @@ public class Server : Singleton<Server>
 
 				byte[] inBytes = StreamUtil.Read(client.stream);
 				Packet packet = new(inBytes);
-				SeverObject obj = packet.ReadObject();
+				ServerObject obj = packet.ReadObject();
 				receivedPackets.Add(new ReceivedPacket(client, obj));
 			}
 			catch (Exception e)
