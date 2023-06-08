@@ -10,7 +10,12 @@ public class DataProcessor : MonoBehaviour
 	[SerializeField] private MapWalker walker;
 	[SerializeField] private Text ownDistanceText;
 	[SerializeField] private Text opponentDistanceText;
+<<<<<<< HEAD:Assets/Code/Networking/DataProcessor.cs
 
+=======
+	[SerializeField] private GameObject debugConsole;
+	
+>>>>>>> level-design:Assets/Code/Prototype/DataProcessor.cs
 	private bool shouldUpdateOT = true;
 	private bool isDeath;
 
@@ -18,12 +23,25 @@ public class DataProcessor : MonoBehaviour
 
 	private void Start()
 	{
+<<<<<<< HEAD:Assets/Code/Networking/DataProcessor.cs
 		try { networkingClient.Connect(); }
 		catch (System.Net.WebException e)
 		{
 			Debug.LogError(e);
 			return;
 		}
+=======
+		Debug.Log(name, gameObject);
+		DontDestroyOnLoad(debugConsole);
+		
+		
+		#if UNITY_EDITOR
+		networkingClient.Connect(Utils.GetIP4Address(), Settings.SERVER_PORT);
+		#else
+		networkingClient.Connect();
+		#endif
+		
+>>>>>>> level-design:Assets/Code/Prototype/DataProcessor.cs
 
 		Player.Instance.deathEvent += OnPlayerDeath;
 		PickupManager.Instance.pickedupPowerupEvent += OnPowerupPickup;
