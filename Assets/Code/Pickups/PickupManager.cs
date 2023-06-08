@@ -15,12 +15,11 @@ public class PickupManager : Singleton<PickupManager>
 
 		PickUpPickup(helper.pickupType);
 		
-
 		helper.isPendingDestroy = true;
 		Destroy(hit.transform.gameObject);
 	}
 
-	public void PickUpPickup(PickupIdentifier pickupType, bool hasReceivedFromServer)
+	public void PickUpPickup(PickupIdentifier pickupType, bool hasReceivedFromServer = false)
 	{
 		foreach (PickupData pickup in pickups)
 		{

@@ -100,5 +100,9 @@ public class DataProcessor : MonoBehaviour
 		networkingClient.SendData(packet);
 	}
 
-	private void OnReceivedDebuff(PickupData data) { PickupManager.Instance.PickUpPickup(data.identifier); }
+	private void OnReceivedDebuff(PickupData data)
+	{
+		Debug.Log($"Received debuff: {data}");
+		PickupManager.Instance.PickUpPickup(data.identifier, true);
+	}
 }
