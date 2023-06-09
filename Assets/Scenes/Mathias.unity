@@ -1030,6 +1030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickups:
   - <identifier>k__BackingField: 1
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1051,6 +1052,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 4
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1072,6 +1074,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 5
+    <shouldSendToServer>k__BackingField: 1
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1093,6 +1096,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 8
+    <shouldSendToServer>k__BackingField: 1
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1114,6 +1118,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 7
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1135,6 +1140,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 6
+    <shouldSendToServer>k__BackingField: 1
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1868,6 +1874,10 @@ PrefabInstance:
     - target: {fileID: 132536, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_Name
       value: IngameDebugConsole
+      objectReference: {fileID: 0}
+    - target: {fileID: 132536, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -2880,6 +2890,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 942045763}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1287915754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287915753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 946804cb6e4843b687c3c6c3432782ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1330623351
 GameObject:
   m_ObjectHideFlags: 0
@@ -3217,7 +3239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildForEra: 0
-  startGroup: {fileID: 11400000, guid: 2da87d59e1033224daa9ac4785695e90, type: 2}
+  startGroup: {fileID: 11400000, guid: 9dc6ba2f41cb0c943823c73e4b0a918b, type: 2}
   starterElement: {fileID: 3398807621037779704, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871,
     type: 3}
   allSpawnedElements: []
@@ -3830,7 +3852,6 @@ MonoBehaviour:
   walker: {fileID: 473837548}
   ownDistanceText: {fileID: 1330623353}
   opponentDistanceText: {fileID: 875710514}
-  debugConsole: {fileID: 1287915753}
 --- !u!1 &1967171190
 GameObject:
   m_ObjectHideFlags: 0

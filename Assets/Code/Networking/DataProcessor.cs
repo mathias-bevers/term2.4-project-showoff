@@ -1,17 +1,17 @@
-﻿using saxion_provided;
+﻿using System;
+using saxion_provided;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DataProcessor : MonoBehaviour
 {
-	private const int DISTANCE_SEND_DELAY = 1;
+	private const float DISTANCE_SEND_DELAY = 0.5f;
 
 	[SerializeField] private Client networkingClient;
 	[SerializeField] private MapWalker walker;
 	[SerializeField] private Text ownDistanceText;
 	[SerializeField] private Text opponentDistanceText;
-	[SerializeField] private GameObject debugConsole;
-	
+
 	private bool shouldUpdateOT = true;
 	private bool isDeath;
 
@@ -19,24 +19,32 @@ public class DataProcessor : MonoBehaviour
 
 	private void Start()
 	{
-		Debug.Log(name, gameObject);
-		DontDestroyOnLoad(debugConsole);
-		
-		
-		#if UNITY_EDITOR
-		networkingClient.Connect(Utils.GetIP4Address(), Settings.SERVER_PORT);
-		#else
-		networkingClient.Connect();
-		#endif
-		
+		try
+		{
+			#if UNITY_EDITOR
+			networkingClient.Connect(Utils.GetIP4Address(), Settings.SERVER_PORT);
+			#else
+			networkingClient.Connect(); 
+			#endif
+		}
+		catch (System.Net.WebException e)
+		{
+			Debug.LogError(e);
+			return;
+		}
 
 		Player.Instance.deathEvent += OnPlayerDeath;
-		networkingClient.oponnentDistanceRecievedEvent += UpdateOpponentText;
-		networkingClient.connectionEvent += DisplayOpponentConnection;
+		PickupManager.Instance.pickedupPowerupEvent += OnPowerupPickup;
+
+		networkingClient.opponentDistanceReceivedEvent += OnReceivedOpponentDistance;
+		networkingClient.connectionEvent += OnOpponentConnection;
+		networkingClient.receivedDefbuffEvent += OnReceivedDebuff;
+
 
 		distTimer = DISTANCE_SEND_DELAY;
 
-		// ownDistanceText.text = opponentDistanceText.text = string.Empty;
+		ownDistanceText.text = "Score: ";
+		opponentDistanceText.text = "NO OPPONENT FOUND";
 	}
 
 	private void LateUpdate()
@@ -46,9 +54,9 @@ public class DataProcessor : MonoBehaviour
 		if (isDeath) { return; }
 
 		ownDistanceText.text = $"Score: {walker.TotalMetersRan:f2}";
-		
+
 		distTimer -= Time.deltaTime;
-		
+
 		if (distTimer > 0) { return; }
 
 		distTimer = DISTANCE_SEND_DELAY;
@@ -67,14 +75,14 @@ public class DataProcessor : MonoBehaviour
 		networkingClient.SendData(packet);
 	}
 
-	private void UpdateOpponentText(float dst)
+	private void OnReceivedOpponentDistance(float dst)
 	{
 		if (!shouldUpdateOT) { return; }
 
 		opponentDistanceText.text = $"Opponent: {dst:f2}";
 	}
 
-	private void DisplayOpponentConnection(PlayerConnection.ConnectionType connectionType)
+	private void OnOpponentConnection(PlayerConnection.ConnectionType connectionType)
 	{
 		shouldUpdateOT = false;
 		opponentDistanceText.text = $"Opponent has: {connectionType.ToString()}";
@@ -91,5 +99,18 @@ public class DataProcessor : MonoBehaviour
 
 		isDeath = true;
 		CooldownManager.Cooldown(.5f, () => networkingClient.Close());
+	}
+
+	private void OnPowerupPickup(PickupData data)
+	{
+		Packet packet = new();
+		packet.Write(new SendPickup(data));
+		networkingClient.SendData(packet);
+	}
+
+	private void OnReceivedDebuff(PickupData data)
+	{
+		Debug.Log($"Received debuff: {data}");
+		PickupManager.Instance.PickUpPickup(data.identifier, true);
 	}
 }
