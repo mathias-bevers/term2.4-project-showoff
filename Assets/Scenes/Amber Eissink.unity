@@ -483,10 +483,10 @@ MonoBehaviour:
   run: 1
   mapBuilder: {fileID: 1581505917}
   rig: {fileID: 1080175765}
-  startSpeed: 10
-  endSpeed: 30
+  startSpeed: 3
+  endSpeed: 5
   accelerationTime: 120
-  minSpawnAmount: 3
+  minSpawnAmount: 2
 --- !u!4 &473837549
 Transform:
   m_ObjectHideFlags: 0
@@ -1870,7 +1870,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1581505916
 Transform:
@@ -1900,8 +1900,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildForEra: 0
-  startGroup: {fileID: 11400000, guid: 3e0f098491d478a48b02c6e24e451c0f, type: 2}
-  starterElement: {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0,
+  startGroup: {fileID: 11400000, guid: 9dc6ba2f41cb0c943823c73e4b0a918b, type: 2}
+  starterElement: {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871,
     type: 3}
   allSpawnedElements: []
   spawnedLevelElements:
