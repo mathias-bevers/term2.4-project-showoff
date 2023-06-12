@@ -13,6 +13,7 @@ public class MapGroup : ScriptableObject
     public bool overrideContinuousSupport = false;
     public int minRange;
     public int maxRange;
+    public int safetyRange = 10;
 
     int currentRange = 0;
 
@@ -31,6 +32,8 @@ public class MapGroup : ScriptableObject
         "By setting Last Element to any element in the lists you can detect when that element gets spawned.\n" +
         "Once it detects that element has spawned, it will then forcefully overwrite the next element to spawn with one of the specified elements.")]
     public List<ContinuousSupport> continuousSupports = new List<ContinuousSupport>();
+    [InfoBox("Blocked Supports. The complete opposite of the above.")]
+    public List<ContinuousSupport> blockedSupports = new List<ContinuousSupport>();
 
     [Space(30)]
     [Header("Next Map Groups")]
@@ -43,9 +46,16 @@ public class MapGroup : ScriptableObject
         WriteDebug("Current Range: " + currentRange + " [" + minRange + "] [" + maxRange + "]");
     }
 
-    public ElementData GetElement(int aliveCount, MapGroupElement lastElement)
+    public ElementData GetElement(int aliveCount, MapGroupElement lastElement, int internalCounter = 0)
     {
-        if (aliveCount == 0) { WriteDebug("Random Start!"); return new ElementData(GetRandomStart(), false); }
+        if (internalCounter >= safetyRange) return new ElementData(GetRandomStart(), false);
+        if (aliveCount == 0) 
+        { 
+            WriteDebug("Random Start!");
+            ElementData elD3 = new ElementData(GetRandomStart(), false);
+            if (Blocked(lastElement, elD3)) GetElement(aliveCount, lastElement, internalCounter+1);
+            else return elD3;
+        }
 
         MapGroupElement el = GetFromContinuedSupport(lastElement);
 
@@ -53,17 +63,51 @@ public class MapGroup : ScriptableObject
             if (overrideContinuousSupport)
             {
                 WriteDebug("Got Continued Support early!");
-                return new ElementData(GetFromContinuedSupport(lastElement, endElements), true);
+                ElementData elD2 =  new ElementData(GetFromContinuedSupport(lastElement, endElements), true);
+                if (Blocked(lastElement, elD2)) return GetElement(aliveCount, lastElement, internalCounter + 1);
+                else return elD2;
             }
             else
             {
-                if (el == null) { WriteDebug("Got End"); return new ElementData(GetRandomEnd(), true); }
+                if (el == null) 
+                { 
+                    WriteDebug("Got End"); 
+                    ElementData elD = new ElementData(GetRandomEnd(), true);
+                    if (Blocked(lastElement, elD)) return GetElement(aliveCount, lastElement, internalCounter + 1);
+                    else return elD;
+                }
             }
 
-        if (el != null) { WriteDebug("Got continued support!"); return new ElementData(el, false); }
+        if (el != null) 
+        { 
+            WriteDebug("Got continued support!");
+            ElementData inD = new ElementData(el, false);
+            if (Blocked(lastElement, inD)) return GetElement(aliveCount, lastElement, internalCounter + 1);
+            else return inD;
+        }
 
         WriteDebug("Get random mid!");
-        return new ElementData(GetRandomMiddle(), false);
+        ElementData endD=  new ElementData(GetRandomMiddle(), false);
+        if (Blocked(lastElement, endD)) return GetElement(aliveCount, lastElement, internalCounter + 1);
+         return endD;
+    }
+
+    bool Blocked(MapGroupElement lastElement, ElementData currentElement)
+    {
+        for (int i = 0; i < blockedSupports.Count; i++)
+        {
+            if (blockedSupports[i].lastElement.baseElement == lastElement.baseElement)
+            {
+                for (int f = 0; f < blockedSupports[i].canTransformInto.Count; f++)
+                {
+                    if (blockedSupports[i].canTransformInto[f].baseElement == currentElement.mapGroupElement.baseElement)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     MapGroupElement GetFromContinuedSupport(MapGroupElement lastElement, List<MapGroupElement> mustBeInThis = null)
@@ -73,7 +117,7 @@ public class MapGroup : ScriptableObject
         foreach (ContinuousSupport supportEl in continuousSupports)
             if (supportEl.lastElement == lastElement)
             {
-                if (mustBeInThis == null) continuousSupportList.AddRange(supportEl.canTransformInto);
+                if (mustBeInThis == null) continuousSupportList.AddRange(supportEl.canTransformInto); 
                 else
                 {
                     foreach (MapGroupElement el in supportEl.canTransformInto)
@@ -81,6 +125,7 @@ public class MapGroup : ScriptableObject
                             continuousSupportList.Add(el);
                 }
             }
+
         if (continuousSupportList.Count > 0)
             return continuousSupportList.GetRandomElement();
 
