@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraRigSmoothFace : CameraRigModule
 {
-    [SerializeField] Transform forwardHelper;
+   public Transform forwardHelper;
 
     private void LateUpdate()
     {

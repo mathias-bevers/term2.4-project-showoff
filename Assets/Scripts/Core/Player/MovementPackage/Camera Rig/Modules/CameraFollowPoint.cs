@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraFollowPoint : CameraRigModule
 {
-    [SerializeField] Transform followPoint;
+    public Transform followPoint;
     [SerializeField] bool smoothFollow = false;
     [SerializeField] AnimationCurve speedCurve = new AnimationCurve(new Keyframe(0, 0.5f), new Keyframe(0.2f, 0.9f), new Keyframe(0.5f, 1f), new Keyframe(0.8f, 0.9f), new Keyframe(1f, 0.5f));
     [SerializeField] float followSpeed = 1.0f;
