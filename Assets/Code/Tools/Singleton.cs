@@ -2,29 +2,26 @@ using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T : Component
 {
-    static T instance;
+	private static T instance;
 
-    public static T Instance
-    {
-        get => GetInstance();
-    }
+	public static T Instance => GetInstance();
 
-    static T GetInstance()
-    {
-        if (instance != null) return instance;
-        instance = FindObjectOfType<T>();
-        if (instance != null) return instance;
+	public virtual void Awake()
+	{
+		if (instance == null) { instance = this as T; }
+		else { Destroy(gameObject); }
+	}
 
-        GameObject obj = new GameObject();
-        obj.name = typeof(T).Name;
-        instance = obj.AddComponent<T>();
-        return instance;
-    }
+	private static T GetInstance()
+	{
+		if (instance != null) { return instance; }
 
-    public virtual void Awake()
-    {
-        if (instance == null)
-            instance = this as T;
-        else { Debug.Log("Destroy From: " + GetType().Name); Destroy(gameObject); }
-    }
+		instance = FindObjectOfType<T>();
+		if (instance != null) { return instance; }
+
+		GameObject obj = new GameObject();
+		obj.name = typeof(T).Name;
+		instance = obj.AddComponent<T>();
+		return instance;
+	}
 }

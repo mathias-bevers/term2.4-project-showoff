@@ -47,7 +47,6 @@ public class Client : MonoBehaviour
 		isAccepted = false;
 		client.Close();
 		client = null;
-		UnityEngine.SceneManagement.SceneManager.LoadScene(0);
 	}
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
@@ -66,7 +65,6 @@ public class Client : MonoBehaviour
 
 		try
 		{
-			Debug.Log($"trying to connect to server <i>{ip}:{port}</i>");
 			client ??= new TcpClient();
 			client.Connect(ip, port);
 		}
@@ -95,7 +93,6 @@ public class Client : MonoBehaviour
 			return;
 		}
 
-		// Debug.Log($"Client#{id} is sending data to the server!");
 		try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
 		catch (Exception)
 		{
