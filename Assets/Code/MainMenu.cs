@@ -18,7 +18,7 @@ public class MainMenu : MonoBehaviour
 		startButton.onClick.AddListener(RunGame);
 		quitButton.onClick.AddListener(Application.Quit);
 
-		ipInputField.text = Utils.GetIP4Address();
+		ipInputField.text = Settings.SERVER_IP == null ? Utils.GetIP4Address().ToString() : Settings.SERVER_IP.ToString();
 	}
 
 	private void RunGame()

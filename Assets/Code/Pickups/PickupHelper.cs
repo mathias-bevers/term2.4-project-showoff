@@ -5,4 +5,5 @@ using UnityEngine;
 public class PickupHelper : MonoBehaviour
 {
     public PickupIdentifier pickupType;
+    public bool isPendingDestroy { get; set; }
 }

@@ -1,6 +1,6 @@
 using saxion_provided;
 
-public class PlayerDistance : SeverObject
+public class PlayerDistance : ServerObject
 {
 	public PlayerDistance() { }
 	public PlayerDistance(float distance) { this.distance = distance; }

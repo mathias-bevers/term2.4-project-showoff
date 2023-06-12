@@ -40,9 +40,9 @@ namespace saxion_provided
 		public void Write (bool pBool)							{		writer.Write(pBool);		}
 		public void Write (float pFloat)						{		writer.Write(pFloat);		}
 
-		public void Write (SeverObject pSeverObject)			{
-			Write(pSeverObject.GetType().FullName);
-			pSeverObject.Serialize(this); 
+		public void Write (ServerObject pServerObject)			{
+			Write(pServerObject.GetType().FullName);
+			pServerObject.Serialize(this); 
 		}
 
 		/// READ METHODS
@@ -52,7 +52,7 @@ namespace saxion_provided
 		public bool ReadBool() { return reader.ReadBoolean(); }
 		public float ReadFloat() { return reader.ReadSingle(); }
 
-		public SeverObject ReadObject()
+		public ServerObject ReadObject()
 		{
 			string typeName = ReadString();
 			Type type = Type.GetType(typeName);
@@ -62,12 +62,12 @@ namespace saxion_provided
 				throw new ArgumentNullException($"Could not find class of type {typeName}");
 			}
 			
-			SeverObject obj = (SeverObject)Activator.CreateInstance(type);
+			ServerObject obj = (ServerObject)Activator.CreateInstance(type);
 			obj.Deserialize(this);
 			return obj;
 		}
 
-		public T Read<T>() where T:SeverObject
+		public T Read<T>() where T:ServerObject
 		{
 			return (T)ReadObject();
 		}

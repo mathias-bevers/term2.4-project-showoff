@@ -1,6 +1,6 @@
 ﻿using saxion_provided;
 
-public class AccessCallback : SeverObject
+public class AccessCallback : ServerObject
 {
 	public AccessCallback(bool accepted, int id = -1)
 	{

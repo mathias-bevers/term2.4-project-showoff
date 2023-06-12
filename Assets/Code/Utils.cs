@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static partial class Utils
 {
@@ -22,14 +23,14 @@ public static partial class Utils
         return collection[randomIndex];
     }
 
-    public static string GetIP4Address()
+    public static IPAddress GetIP4Address()
     {
 	    IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
 	    foreach (IPAddress ip in host.AddressList)
 	    {
-		    if (ip.AddressFamily == AddressFamily.InterNetwork) { return ip.ToString(); }
+		    if (ip.AddressFamily == AddressFamily.InterNetwork) { return ip; }
 	    }
 
-	    return string.Empty;
+	    throw new Exception("Cannot get ip4 address");
     }
 }
