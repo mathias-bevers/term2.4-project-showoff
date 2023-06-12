@@ -8,6 +8,8 @@ public class CameraFollowPoint : CameraRigModule
     [SerializeField] float followSpeed = 1.0f;
     [SerializeField] float forceTPAt = 1.0f;
 
+    float distance = 0;
+
     public void SetTarget(Transform target) => followPoint = target;
     public Transform GetTarget() => followPoint;
 
@@ -20,15 +22,21 @@ public class CameraFollowPoint : CameraRigModule
         else
         {
             float distance = Vector3.Distance(transform.position, followPoint.position);
-            if (distance > forceTPAt) { Teleport(); return; }
+            if (distance > forceTPAt) { Debug.Log(this.distance); return; }
+            
             transform.position = Vector3.MoveTowards(transform.position, followPoint.position, speedCurve.Evaluate(Utils.Map(distance, 0, forceTPAt, 0, 1)) * followSpeed * Time.deltaTime);
-            //lastDirection = transform.position - followPoint.position;
+
+            this.distance = Vector3.Distance(transform.position, followPoint.position);
         }
     }
 
     public void Teleport()
     {
-        transform.position = followPoint.position;
-        //transform.position += lastDirection;
+        /*float actDist = Vector3.Distance(cameraRig.cam.transform.position, transform.position);
+        Debug.Log(actDist);
+        Vector3 dir = transform.position - followPoint.position;
+        Vector3 newDir = dir / actDist;
+        newDir *= (actDist + this.distance);
+        transform.position -= newDir;*/
     }
 }

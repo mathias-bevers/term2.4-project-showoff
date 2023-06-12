@@ -5,6 +5,6 @@ using UnityEngine;
 public class PlayerRig : MonoBehaviour
 {
     [SerializeField] public Player player;
-    [SerializeField] CameraRig cameraRig;
+    [SerializeField] public CameraRig cameraRig;
   
 }
