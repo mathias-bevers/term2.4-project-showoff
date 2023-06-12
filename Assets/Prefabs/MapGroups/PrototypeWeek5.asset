@@ -19,7 +19,18 @@ MonoBehaviour:
   - {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871, type: 3}
   randomSelectableElements:
   - {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871, type: 3}
+  - {fileID: 2795655155604526668, guid: 312804f9623d23549a425b4bdca304e3, type: 3}
+  - {fileID: 2795655155604526668, guid: 91a7ca33bdb90464f9985932170e5506, type: 3}
+  - {fileID: 2795655155604526668, guid: 2a132c0d168ebfb4ca6ab68643e94486, type: 3}
+  - {fileID: 3398807621037779704, guid: f0a09c9eeda85f649a9b63485c27c8c1, type: 3}
+  - {fileID: 3794884456335368583, guid: 2e3b59ec743d4c64086fadfb32f82c14, type: 3}
   endElements:
   - {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871, type: 3}
-  continuousSupports: []
+  continuousSupports:
+  - lastElement: {fileID: 2795655155604526668, guid: 312804f9623d23549a425b4bdca304e3,
+      type: 3}
+    canTransformInto:
+    - {fileID: 2795655155604526668, guid: 2a132c0d168ebfb4ca6ab68643e94486, type: 3}
+    - {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871, type: 3}
+    - {fileID: 2795655155604526668, guid: 91a7ca33bdb90464f9985932170e5506, type: 3}
   nextMapGroups: []

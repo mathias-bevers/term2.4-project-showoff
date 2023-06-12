@@ -17,6 +17,9 @@ public class MapWalker : MonoBehaviour
     [Header("Map Spawn Data")]
     [SerializeField] int minSpawnAmount = 3;
 
+
+    float distShouldRan = 0;
+
     float currentSpeed = 0;
     float afterCalcCurrentSpeed 
     { 
@@ -70,7 +73,7 @@ public class MapWalker : MonoBehaviour
         {
             lastActiveElement = activeElement;
 
-            metersRan = 0;
+            metersRan = distShouldRan;
         }
         if (Input.GetKeyDown(KeyCode.D)) activeElement?.ChoseSide(MapSides.Right);
         if (Input.GetKeyDown(KeyCode.A)) activeElement?.ChoseSide(MapSides.Left);
@@ -121,7 +124,7 @@ public class MapWalker : MonoBehaviour
             if (activeNode.Value.isEnd)
             {
                 mapBuilder.MoveOverElement(rig);
-                metersRan = 0;
+                metersRan = distShouldRan;
                 activeNode = null;
                 newActiveNode = null;
                 activePath = null;
@@ -208,6 +211,8 @@ public class MapWalker : MonoBehaviour
         activeNode = activePath[activePath.Count - 1];
         newActiveNode = activeNode;
         removableDistance = Vector3.Distance(activePath[0].position, activePath[activePath.Count - 1].position);
+        distShouldRan = metersRan - removableDistance;
+
         if (!activeNode.Value.isEnd)
         {
             if (Player.Instance.EffectIsActive(PickupIdentifier.Speedup))

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &203844587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -755,7 +755,7 @@ MonoBehaviour:
   startSpeed: 5
   endSpeed: 12
   accelerationTime: 120
-  minSpawnAmount: 5
+  minSpawnAmount: 3
 --- !u!4 &473837549
 Transform:
   m_ObjectHideFlags: 0
@@ -972,6 +972,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickups:
   - <identifier>k__BackingField: 1
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -993,6 +994,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 4
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1014,6 +1016,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 5
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1035,6 +1038,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 8
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1056,6 +1060,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 7
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1077,6 +1082,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   - <identifier>k__BackingField: 6
+    <shouldSendToServer>k__BackingField: 0
     <onPickupEvent>k__BackingField:
       m_PersistentCalls:
         m_Calls:
@@ -1759,7 +1765,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 100
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -1955,6 +1961,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1080175764}
   - component: {fileID: 1080175765}
+  - component: {fileID: 1080175766}
   m_Layer: 0
   m_Name: PlayerRig
   m_TagString: Untagged
@@ -1994,6 +2001,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 631515933}
   cameraRig: {fileID: 688429671}
+--- !u!114 &1080175766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080175763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10bb0ad13ceb454b99de26061040ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1100942320
 GameObject:
   m_ObjectHideFlags: 0
@@ -2635,8 +2654,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildForEra: 0
-  startGroup: {fileID: 11400000, guid: ea6d164271568e64aad8512f5493fbdc, type: 2}
-  starterElement: {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0,
+  startGroup: {fileID: 11400000, guid: 9dc6ba2f41cb0c943823c73e4b0a918b, type: 2}
+  starterElement: {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871,
     type: 3}
   allSpawnedElements: []
   spawnedLevelElements: []
