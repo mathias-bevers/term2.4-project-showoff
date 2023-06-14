@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Fps : MonoBehaviour
 {
+#if DEBUG
     private float count;
 
     private IEnumerator Start()
@@ -32,4 +33,5 @@ public class Fps : MonoBehaviour
         GUI.Label(location, text);
 
     }
+#endif
 }
