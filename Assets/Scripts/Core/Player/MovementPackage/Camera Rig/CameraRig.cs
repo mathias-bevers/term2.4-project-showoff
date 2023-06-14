@@ -21,6 +21,7 @@ public class CameraRig : MonoBehaviour
     Transform cameraTransform;
 
     public RotElement cameraRotation { get => _cameraRotation; set { _cameraRotation = value; UpdateCamRotation(); } }
+    public Camera cam => _registerOnStart;
 
     private void Awake()
     {

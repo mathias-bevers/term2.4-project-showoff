@@ -147,7 +147,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 162639291}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.35, y: 1.29, z: 26.6}
+  m_LocalPosition: {x: -1.06, y: -0.86, z: 18.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -483,8 +483,8 @@ MonoBehaviour:
   run: 1
   mapBuilder: {fileID: 1581505917}
   rig: {fileID: 1080175765}
-  startSpeed: 10
-  endSpeed: 30
+  startSpeed: 8
+  endSpeed: 12
   accelerationTime: 120
   minSpawnAmount: 3
 --- !u!4 &473837549
@@ -1870,7 +1870,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1581505916
 Transform:
@@ -1900,8 +1900,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildForEra: 0
-  startGroup: {fileID: 11400000, guid: 3e0f098491d478a48b02c6e24e451c0f, type: 2}
-  starterElement: {fileID: 3398807621037779704, guid: 2ab3f65653324d343bfe62b5c06da4e0,
+  startGroup: {fileID: 11400000, guid: 9dc6ba2f41cb0c943823c73e4b0a918b, type: 2}
+  starterElement: {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871,
     type: 3}
   allSpawnedElements: []
   spawnedLevelElements:
