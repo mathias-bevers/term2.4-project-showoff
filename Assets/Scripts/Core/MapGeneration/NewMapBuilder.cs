@@ -147,6 +147,7 @@ public class NewMapBuilder : MonoBehaviour
         if (optionalRig == null) return;
 
         optionalRig.transform.position = _activeElement.Value.spawnedElement.baseElement.StartPoint.position;
+        optionalRig.cameraRig.GetComponent<CameraFollowPoint>()?.Teleport();
     }
 
     void DestroyRecursive(MapGroupElement element)
