@@ -10,14 +10,14 @@ public class MapGroupElement : MonoBehaviour
 
     public ModelHelper baseModelParent;
 
-    public void Display(Era era)
+    public void Display(Era era, bool spawnObstacles)
     {
         foreach (MapElement element in eraElementList)
         {
             element.gameObject.SetActive(true);
             element.modelHelper?.Display(element.era == era);
         }
-
+        if (!spawnObstacles) return;
         EraObject[] eraObjects = transform.GetComponentsInChildren<EraObject>(true);
         foreach(EraObject eraObject in eraObjects)
             eraObject.Display(era);

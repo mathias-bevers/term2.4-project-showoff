@@ -47,7 +47,7 @@ public class Client : MonoBehaviour
 		isAccepted = false;
 		client.Close();
 		client = null;
-		UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+		//UnityEngine.SceneManagement.SceneManager.LoadScene(0);
 	}
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);

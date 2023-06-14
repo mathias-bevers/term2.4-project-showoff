@@ -11,7 +11,7 @@ public class DeathEffect : Singleton<DeathEffect>
     [SerializeField] Image deathPanel;
 
     bool dead = false;
-    float timer = 0;
+    float timer = -2;
 
     public override void Awake()
     {

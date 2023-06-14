@@ -186,7 +186,7 @@ public class NewMapBuilder : MonoBehaviour
         ElementRefs reffie = new ElementRefs(ref overrideElement, Instantiate(overrideElement));
         newSpawnedElements.Add(reffie);
         if (_activeElement == null) _activeElement = reffie;
-        reffie.spawnedElement.Display(buildForEra);
+        reffie.spawnedElement.Display(buildForEra, _elementAmount > 2);
         return reffie;
     }
 

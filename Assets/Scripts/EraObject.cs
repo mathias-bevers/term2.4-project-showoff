@@ -11,21 +11,24 @@ public class EraObject : MonoBehaviour
 
     public void Display(Era era)
     {
-        if (chanceToSpawnNothing && Random.Range(0, 100) <= noSpawnChance) return;
-        List<SpawnableEraElement> spawnableEraElements = new List<SpawnableEraElement>();
+        foreach (EraList eraList in spawnableObjects)
+            if (eraList.forEra == era)
+            {
+                if (chanceToSpawnNothing && Random.Range(0, 100) <= noSpawnChance) continue;
 
-        foreach(EraList eraList in spawnableObjects)
-            if (eraList.forEra == era) 
+                List<SpawnableEraElement> spawnableEraElements = new List<SpawnableEraElement>();
                 spawnableEraElements.AddRange(eraList.spawnableObjects);
 
-        if (spawnableEraElements.Count == 0) return;
+                if (spawnableEraElements.Count == 0) continue;
 
-        SpawnableEraElement spawnableElement = spawnableEraElements.GetRandomElementStruct();
+                SpawnableEraElement spawnableElement = spawnableEraElements.GetRandomElementStruct();
 
-        GameObject spanwnedElement = Instantiate(spawnableElement.gameObject, transform);
-        spanwnedElement.transform.localPosition = spawnableElement.transformData.position;
-        spanwnedElement.transform.localScale = spawnableElement.transformData.scale;
-        spanwnedElement.transform.localRotation = Quaternion.Euler(spawnableElement.transformData.eulerAngles);
+                GameObject spanwnedElement = Instantiate(spawnableElement.gameObject, transform);
+                spanwnedElement.transform.localPosition = spawnableElement.transformData.position;
+                spanwnedElement.transform.localScale = spawnableElement.transformData.scale;
+                spanwnedElement.transform.localRotation = Quaternion.Euler(spawnableElement.transformData.eulerAngles);
+
+            }
     }
 }
 
