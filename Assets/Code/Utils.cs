@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public static partial class Utils
@@ -33,4 +35,6 @@ public static partial class Utils
 
 	    throw new Exception("Cannot get ip4 address");
     }
+
+    public static Transform[] GetAllChildren(this Transform parent) => parent.Cast<Transform>().ToArray();
 }

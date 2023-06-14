@@ -1,47 +1,66 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DeathEffect : Singleton<DeathEffect>
 {
-    [SerializeField] Image backgroundPanel;
+	[SerializeField] private Image backgroundPanel;
+	[SerializeField] private Text distanceRanText;
+	[SerializeField] private Button continueButton;
+	[SerializeField] private InputField nameInputField;
 
-    [SerializeField] Image deathPanel;
+	private bool dead;
+	private bool animationComplete;
+	private float timer;
+	private float distanceRan;
 
-    bool dead = false;
-    float timer = 0;
+	private Transform[] childTransforms;
 
-    public override void Awake()
-    {
-        base.Awake();
-        backgroundPanel.gameObject.SetActive(false);
-        deathPanel.gameObject.SetActive(false);
-    }
+	public override void Awake()
+	{
+		base.Awake();
+		continueButton.onClick.AddListener(OnContinueClicked);
+		
+		backgroundPanel.gameObject.SetActive(false);
+		childTransforms = backgroundPanel.transform.GetAllChildren();
 
+		foreach (Transform childTransform in childTransforms) { childTransform.gameObject.SetActive(false); }
+	}
 
-    public void Death()
-    {
-        dead = true;
-    }
+	private void Update()
+	{
+		if (!dead) { return; }
 
-    void Update()
-    {
-        if (!dead) return;
-        backgroundPanel.gameObject.SetActive(true);
-        timer += Time.deltaTime;
+		if (animationComplete) { return; }
 
-        float filler = Mathf.Clamp01(Utils.Map(timer, 0, 2, 0, 1));
+		backgroundPanel.gameObject.SetActive(true);
+		timer += Time.deltaTime;
 
-        backgroundPanel.fillAmount = filler;
+		float filler = Mathf.Clamp01(Utils.Map(timer, 0, 2, 0, 1));
 
-        if(timer >= 2)
-            deathPanel.gameObject.SetActive(true);
-    }
+		backgroundPanel.fillAmount = filler;
 
-    public void RunAgain()
-    {
-        SceneManager.LoadScene(0);
-    }
+		if (timer < 2) { return; }
+
+		AnimationCompleted();
+	}
+
+	private void AnimationCompleted()
+	{
+		foreach (Transform childObject in childTransforms) { childObject.gameObject.SetActive(true); }
+
+		distanceRan = FindObjectOfType<MapWalker>().TotalMetersRan;
+		distanceRanText.text = $"You ran {distanceRan:n0} meters";
+
+		animationComplete = true;
+	}
+
+	private void OnContinueClicked()
+	{
+		
+	}
+
+	public void Death() { dead = true; }
+
+	public void RunAgain() { SceneManager.LoadScene(0); }
 }
