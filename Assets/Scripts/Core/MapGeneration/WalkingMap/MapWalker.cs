@@ -39,6 +39,7 @@ public class MapWalker : MonoBehaviour
     }
     float accelerationTimer = 0;
 
+
     private void Start()
     {
         currentSpeed = startSpeed;
