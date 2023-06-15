@@ -14,6 +14,8 @@ public class DeathEffect : Singleton<DeathEffect>
 	private float timer;
 	private float distanceRan;
 
+    bool dead = false;
+    float timer = -2;
 	private Transform[] childTransforms;
 
 	public override void Awake()

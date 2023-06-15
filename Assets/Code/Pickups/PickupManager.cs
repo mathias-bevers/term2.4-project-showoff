@@ -26,8 +26,15 @@ public class PickupManager : Singleton<PickupManager>
 			if (pickup.identifier != pickupType) { continue; }
 
 			// Debug.Log($"Picked up {data} ");
-			if (pickup.shouldSendToServer && !hasReceivedFromServer) { pickedupPowerupEvent?.Invoke(pickup); }
-			else { pickup.onPickupEvent?.Invoke(pickup.parameters); }
+			if (!hasReceivedFromServer)
+			{
+				if (pickup.shouldSendToServer) { pickedupPowerupEvent?.Invoke(pickup); }
+				else { pickup.onPickupEvent?.Invoke(pickup.parameters); }
+			}
+			else
+			{
+                pickup.onPickupEvent?.Invoke(pickup.parameters);
+            }
 		}
 	}
 }
