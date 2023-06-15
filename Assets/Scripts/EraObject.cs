@@ -9,8 +9,9 @@ public class EraObject : MonoBehaviour
     [SerializeField] int noSpawnChance = 25;
     [SerializeField] List<EraList> spawnableObjects = new List<EraList>();
 
-    public void Display(Era era)
+    public virtual List<GameObject> Display(Era era)
     {
+        List<GameObject> spawnedObjects = new List<GameObject>();
         foreach (EraList eraList in spawnableObjects)
             if (eraList.forEra == era)
             {
@@ -27,8 +28,10 @@ public class EraObject : MonoBehaviour
                 spanwnedElement.transform.localPosition = spawnableElement.transformData.position;
                 spanwnedElement.transform.localScale = spawnableElement.transformData.scale;
                 spanwnedElement.transform.localRotation = Quaternion.Euler(spawnableElement.transformData.eulerAngles);
-
+                spawnedObjects.Add(spanwnedElement);
             }
+
+        return spawnedObjects;
     }
 }
 

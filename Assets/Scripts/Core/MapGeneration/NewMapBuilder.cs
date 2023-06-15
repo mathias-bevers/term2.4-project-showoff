@@ -23,6 +23,7 @@ public class NewMapBuilder : MonoBehaviour
 
     bool isEnd = false;
 
+    Era lastEra = Era.Era20;
 
     [SerializeField] List<ElementRefs> allSpawnedElements = new List<ElementRefs>();
     [SerializeField] List<ElementRefs> spawnedLevelElements = new List<ElementRefs>();
@@ -32,6 +33,18 @@ public class NewMapBuilder : MonoBehaviour
     {
         SetMapGroup(startGroup);
     }
+
+#if DEBUG
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if(buildForEra == Era.Era1) buildForEra = Era.Era2;
+            else if(buildForEra == Era.Era2) buildForEra = Era.Era3;
+            else if (buildForEra == Era.Era3) buildForEra = Era.Era1;
+        }
+    }
+#endif
 
     public void BuildLevelElement()
     {
@@ -88,7 +101,8 @@ public class NewMapBuilder : MonoBehaviour
     {
         ElementData elData = activeMapGroup.GetElement(currentMapgroupCounter, lastElement);
         isEnd = elData.isEnd;
-        return CreateElement(elData.mapGroupElement); }
+        return CreateElement(elData.mapGroupElement); 
+    }
 
 
     public void MoveOverElement(PlayerRig optionalRig = null)
@@ -142,6 +156,12 @@ public class NewMapBuilder : MonoBehaviour
                 if (mapGroupElement2 == null) continue;
                 mapGroupElement2.gameObject.SetActive(false);
             }*/
+        }
+
+        if(_activeElement.Value.spawnedElement.isEra != lastEra)
+        {
+            lastEra = _activeElement.Value.spawnedElement.isEra;
+            SkyboxSetter.Instance?.SetSkybox(lastEra, false);
         }
 
         if (optionalRig == null) return;
