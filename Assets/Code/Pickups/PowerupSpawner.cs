@@ -13,12 +13,12 @@ public class PowerupSpawner : EraObject
             PickupHelper helper = element.GetComponent<PickupHelper>();
             if (helper == null) continue;
             int randomNum = Random.Range(0, 6);
-            if (randomNum == 0) helper.pickupType = PickupIdentifier.AddHeart;
-            else if (randomNum == 1) helper.pickupType = PickupIdentifier.RemoveHeart;
-            else if (randomNum == 2) helper.pickupType = PickupIdentifier.Slippery;
-            else if (randomNum == 3) helper.pickupType = PickupIdentifier.SlowdownRework;
-            else if (randomNum == 4) helper.pickupType = PickupIdentifier.SpeedupRework;
-            else if (randomNum == 5) helper.pickupType = PickupIdentifier.Invincible;
+            if (randomNum == 0) helper.SetIdentifier(PickupIdentifier.AddHeart);
+            else if (randomNum == 1) helper.SetIdentifier(PickupIdentifier.RemoveHeart);
+            else if (randomNum == 2) helper.SetIdentifier(PickupIdentifier.Slippery);
+            else if (randomNum == 3) helper.SetIdentifier(PickupIdentifier.SlowdownRework);
+            else if (randomNum == 4) helper.SetIdentifier(PickupIdentifier.Speedup);
+            else if (randomNum == 5) helper.SetIdentifier(PickupIdentifier.Invincible);
         }
 
         return spawnedElements;

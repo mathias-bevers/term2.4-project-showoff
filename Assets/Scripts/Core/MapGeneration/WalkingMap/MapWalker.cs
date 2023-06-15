@@ -109,6 +109,7 @@ public class MapWalker : MonoBehaviour
         accelerationTimer += Time.deltaTime;
         if (accelerationTimer >= accelerationTime) accelerationTimer = accelerationTime;
         currentSpeed = Utils.Map(accelerationTimer, 0, accelerationTime, startSpeed, endSpeed);
+        if (currentSpeed > endSpeed) currentSpeed = endSpeed;
         if (overrideSpeed >= 0) currentSpeed = slowedSpeed;
     }
 
