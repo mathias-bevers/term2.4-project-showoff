@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.27528393, g: 0.32086772, b: 0.6949774, a: 1}
+  m_IndirectSpecularColor: {r: 0.27508736, g: 0.3213616, b: 0.6948379, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -307,18 +307,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &249283193 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1792025613, guid: ec217401686bb6cf2a0ff79637a2a6e2,
-    type: 3}
-  m_PrefabInstance: {fileID: 1420836457}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &287967995
 GameObject:
   m_ObjectHideFlags: 0
@@ -882,6 +870,7 @@ MonoBehaviour:
   endSpeed: 12
   accelerationTime: 120
   minSpawnAmount: 4
+  slowedSpeed: 0.1
 --- !u!4 &473837549
 Transform:
   m_ObjectHideFlags: 0
@@ -953,6 +942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd2e6f2f7dac5a439c0dd7ad6e17b57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _images: []
   effectTimes:
   - pickupIdentifier: 1
     time: 10
@@ -2083,7 +2073,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080175763}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d10bb0ad13ceb454b99de26061040ad6, type: 3}
   m_Name: 
@@ -2559,11 +2549,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2097607794839207467, guid: ec217401686bb6cf2a0ff79637a2a6e2,
-        type: 3}
-      propertyPath: distanceRanText
-      value: 
-      objectReference: {fileID: 249283193}
     - target: {fileID: 2097607794839207468, guid: ec217401686bb6cf2a0ff79637a2a6e2,
         type: 3}
       propertyPath: m_Name
@@ -3143,6 +3128,7 @@ MonoBehaviour:
   - {fileID: 2080331963}
   - {fileID: 367289132}
   - {fileID: 2029454042}
+  animator: {fileID: 0}
 --- !u!1 &1967171190
 GameObject:
   m_ObjectHideFlags: 0
@@ -3158,7 +3144,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1967171191
 Transform:
   m_ObjectHideFlags: 0

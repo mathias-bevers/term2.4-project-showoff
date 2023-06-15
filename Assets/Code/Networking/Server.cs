@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
@@ -13,10 +11,12 @@ public class Server : Singleton<Server>
 	private const int MAX_PLAYERS = 2;
 	private bool isRunning;
 
+	private HighScoreCloud cloud;
 	private int currentID = -1;
 	private List<int> badClients;
 	private List<ReceivedPacket> receivedPackets;
 	private List<ServerClient> clients;
+
 
 	private TcpListener listener;
 
@@ -24,12 +24,6 @@ public class Server : Singleton<Server>
 	{
 		base.Awake();
 		DontDestroyOnLoad(gameObject);
-	}
-
-	private void OnDestroy()
-	{
-		listener.Server.Close();
-		Debug.LogWarning("Closing server!");
 	}
 
 
@@ -43,11 +37,44 @@ public class Server : Singleton<Server>
 
 		if (receivedPackets.Count < 1) { return; }
 
+		ProcessReceivedPackets();
+	}
+
+	private void OnDestroy()
+	{
+		listener.Server.Close();
+		Debug.LogWarning("Closing server!");
+	}
+
+	private void ProcessReceivedPackets()
+	{
+		if (receivedPackets.Count < 1) { return; }
+		
 		for (int i = receivedPackets.Count - 1; i >= 0; --i)
 		{
 			ReceivedPacket receivedPacket = receivedPackets[i];
 
-			WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
+			switch (receivedPacket.serverObject)
+			{
+				case RequestHighScores:
+				{
+					Packet highScoresPacket = new();
+					highScoresPacket.Write(new HighScoresList(cloud.GetAllScores()));
+					WriteToClient(receivedPacket.sender, highScoresPacket);
+					break;
+				}
+				case HighScoresList list:
+				{
+					Debug.Log($"Gotten a list of {list.scores.Count} scores from client {receivedPacket.sender.id}");
+					foreach ((string, int) score in list.scores) { cloud.AddScore(score); }
+
+					break;
+				}
+				default:
+					WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
+					break;
+			}
+
 			receivedPackets.RemoveAt(i);
 		}
 	}
@@ -57,6 +84,7 @@ public class Server : Singleton<Server>
 		clients = new List<ServerClient>(MAX_PLAYERS);
 		badClients = new List<int>();
 		receivedPackets = new List<ReceivedPacket>();
+		cloud = new HighScoreCloud();
 
 		listener = new TcpListener(ip, port);
 		listener.Start();
@@ -90,10 +118,7 @@ public class Server : Singleton<Server>
 			++currentID;
 			ServerClient serverClient = new(currentID, client);
 
-			if (clients.Count > 0)
-			{
-				receivedPackets.Add(new ReceivedPacket(serverClient, new PlayerConnection(PlayerConnection.ConnectionType.Joined)));
-			}
+			if (clients.Count > 0) { receivedPackets.Add(new ReceivedPacket(serverClient, new PlayerConnection(PlayerConnection.ConnectionType.Joined))); }
 
 			clients.Add(serverClient);
 
@@ -113,8 +138,6 @@ public class Server : Singleton<Server>
 
 			try
 			{
-				// new Thread(() => { }).Start();
-
 				byte[] inBytes = StreamUtil.Read(client.stream);
 				Packet packet = new(inBytes);
 				ServerObject obj = packet.ReadObject();
@@ -162,11 +185,7 @@ public class Server : Singleton<Server>
 
 	private void WriteToClient(ServerClient receiver, byte[] data)
 	{
-		try
-		{
-			StreamUtil.Write(receiver.stream, data);
-			/*new Thread(() => {  }).Start();*/
-		}
+		try { StreamUtil.Write(receiver.stream, data); }
 		catch (Exception)
 		{
 			Debug.Log($"Marking client#{receiver.id} as bad client");
@@ -177,6 +196,11 @@ public class Server : Singleton<Server>
 #if UNITY_EDITOR
 	[Button("Initialize")] private void ForceInit() { Initialize(Settings.SERVER_IP, Settings.SERVER_PORT); }
 
-	private void OnGUI() { GUI.Label(new Rect(10, 10, 160, 30), $"connected clients: {clients.Count}"); }
+	private void OnGUI()
+	{
+		if (GUI.Button(new Rect(10, 50, 160, 30), "Log all cloud items")) { Debug.Log(cloud.ToString()); }
+
+		GUI.Label(new Rect(10, 10, 160, 30), $"connected clients: {clients.Count}");
+	}
 #endif
 }

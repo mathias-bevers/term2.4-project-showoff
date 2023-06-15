@@ -38,7 +38,7 @@ public class DataProcessor : MonoBehaviour
 
 		networkingClient.opponentDistanceReceivedEvent += OnReceivedOpponentDistance;
 		networkingClient.connectionEvent += OnOpponentConnection;
-		networkingClient.receivedDefbuffEvent += OnReceivedDebuff;
+		networkingClient.receivedDebuffEvent += OnReceivedDebuff;
 
 
 		distTimer = DISTANCE_SEND_DELAY;
@@ -91,7 +91,7 @@ public class DataProcessor : MonoBehaviour
 
 	private void OnPlayerDeath()
 	{
-		Packet packet = new();
+		Packet packet = new(); 
 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Died));
 		networkingClient.SendData(packet);
 

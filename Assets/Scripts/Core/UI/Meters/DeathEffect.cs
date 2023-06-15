@@ -1,28 +1,29 @@
+using System;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DeathEffect : Singleton<DeathEffect>
 {
+	[SerializeField, Scene] private int mainMenuScene;
 	[SerializeField] private Image backgroundPanel;
 	[SerializeField] private Text distanceRanText;
 	[SerializeField] private Button continueButton;
 	[SerializeField] private InputField nameInputField;
-
-	private bool dead;
+	
 	private bool animationComplete;
-	private float timer;
 	private float distanceRan;
-
-    bool dead = false;
+	bool dead = false;
     float timer = -2;
+    
 	private Transform[] childTransforms;
 
 	public override void Awake()
 	{
 		base.Awake();
 		continueButton.onClick.AddListener(OnContinueClicked);
-		
+
 		backgroundPanel.gameObject.SetActive(false);
 		childTransforms = backgroundPanel.transform.GetAllChildren();
 
@@ -59,7 +60,17 @@ public class DeathEffect : Singleton<DeathEffect>
 
 	private void OnContinueClicked()
 	{
+		string trimmedName = nameInputField.text.Trim();
 		
+		try
+		{
+			HighScoreManager.Instance.WriteScoreToFile(trimmedName, (int)distanceRan);
+			SceneManager.LoadScene(mainMenuScene);
+		}
+		catch (ArgumentException e)
+		{
+			distanceRanText.text = e.Message.ColorRichText(Color.red);
+		}
 	}
 
 	public void Death() { dead = true; }

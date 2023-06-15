@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using NaughtyAttributes;
+using saxion_provided;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,24 +29,31 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	{
 		if (scene.buildIndex != mainMenuScene) { return; }
 
-		highScoreDatas = ReadScoresFromFile();
+		highScoreDatas = GetAllHighScores();
 		SetScores();
 	}
 
-	private void WriteScoreToFile()
+	public void WriteScoreToFile(string playerName, int distanceRan)
 	{
-		if (!File.Exists(highScoreFilePath)) { File.Create(highScoreFilePath); }
+		if (string.IsNullOrEmpty(playerName)) { throw new ArgumentNullException(nameof(playerName), "The given name is cannot be empty"); }
 
-		string playerName = "test";
-		int distanceRan = UnityEngine.Random.Range(1, 1000000001);
+		if (distanceRan <= 1) { throw new ArgumentOutOfRangeException(nameof(distanceRan), $"\'{distanceRan}\' is not a valid distance"); }
+
+		if (!File.Exists(highScoreFilePath)) { File.Create(highScoreFilePath); }
 
 		string fileLine = string.Concat(playerName, ',', distanceRan, Environment.NewLine);
 		File.AppendAllText(highScoreFilePath, fileLine);
 	}
 
-	private List<HighScoreData> ReadScoresFromFile()
+	private List<HighScoreData> GetAllHighScores()
 	{
-		if (!File.Exists(highScoreFilePath)) { return new List<HighScoreData>(); }
+		List<HighScoreData> orderedScores = new List<HighScoreData>();
+		return orderedScores;
+	}
+
+	private IEnumerable<(string, int)> ReadScoresFromFile()
+	{
+		if (!File.Exists(highScoreFilePath)) { return null; }
 
 		List<(string, int)> fileEntries = new();
 		foreach (string entry in File.ReadLines(highScoreFilePath))
@@ -60,16 +68,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 			fileEntries.Add((playerName, distanceRan));
 		}
 
-		fileEntries.Sort((a, b) => b.Item2.CompareTo(a.Item2));
-
-		List<HighScoreData> existingEntries = new();
-		for (int i = 0; i < fileEntries.Count; ++i)
-		{
-			(string, int) fileEntry = fileEntries[i];
-			existingEntries.Add(new HighScoreData(i + 1, fileEntry.Item1, fileEntry.Item2));
-		}
-
-		return existingEntries;
+		return fileEntries;
 	}
 
 	private void SetScores()
@@ -81,5 +80,15 @@ public class HighScoreManager : Singleton<HighScoreManager>
 			HighScorePanel panel = hsBoard.GetChild(i).GetComponent<HighScorePanel>();
 			panel.SetScore(i >= highScoreDatas.Count ? null : highScoreDatas[i]);
 		}
+	}
+
+	public Packet LocalScoresAsPacket()
+	{
+		IEnumerable<(string, int)> localScores = ReadScoresFromFile();
+		HighScoresList serverList = new(localScores);
+		
+		Packet packet = new();
+		packet.Write(serverList);
+		return packet;
 	}
 }

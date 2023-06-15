@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using saxion_provided;
@@ -6,7 +8,7 @@ using UnityEngine;
 
 public class Client : MonoBehaviour
 {
-	public event Action<PickupData> receivedDefbuffEvent;
+	public event Action<PickupData> receivedDebuffEvent;
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 
@@ -132,7 +134,12 @@ public class Client : MonoBehaviour
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
 			case SendPickup sendPickup:
-				receivedDefbuffEvent?.Invoke(sendPickup.data);
+				receivedDebuffEvent?.Invoke(sendPickup.data);
+				break;
+			case RequestHighScores:
+				Packet highScoresPacket = new ();
+				highScoresPacket.Write(new HighScoresList(HighScoreManager.Instance.highScoreDatas.Select(data => (data.name, data.score))));
+				SendData(highScoresPacket);
 				break;
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
@@ -148,5 +155,6 @@ public class Client : MonoBehaviour
 		}
 
 		id = callback.id;
+		SendData(HighScoreManager.Instance.LocalScoresAsPacket());
 	}
 }
