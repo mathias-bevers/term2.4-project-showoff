@@ -144,7 +144,7 @@ public static class GameSettings
                             contains = true; break;
                         }
                     }
-                    if (!contains) File.AppendAllText(path, MakeString(exposedVar));
+                    if (!contains) File.AppendAllLines(path, new string[1] { MakeString(exposedVar) });
                 }
             }
         }
