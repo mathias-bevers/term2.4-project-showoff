@@ -10,7 +10,6 @@ using System.Linq;
 public static class GameSettings
 {
     [Expose] public static bool IsLeftClient = false;
-    [Expose] public static bool IsRightClient = false;
 
     #region Public Methods
     public static void WriteFile() => _WriteFile();
