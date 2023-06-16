@@ -2869,10 +2869,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Death Canvas
       objectReference: {fileID: 0}
-    - target: {fileID: 2097607795581842054, guid: ec217401686bb6cf2a0ff79637a2a6e2,
+    - target: {fileID: 2097607796132303104, guid: ec217401686bb6cf2a0ff79637a2a6e2,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      propertyPath: m_Text
+      value: SAVE SCORE
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec217401686bb6cf2a0ff79637a2a6e2, type: 3}

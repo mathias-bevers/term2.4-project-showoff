@@ -546,19 +546,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2097607795581842049}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2097607794839207467}
-        m_TargetAssemblyTypeName: DeathEffect, Assembly-CSharp
-        m_MethodName: RunAgain
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &2097607796132303110
 GameObject:
   m_ObjectHideFlags: 0

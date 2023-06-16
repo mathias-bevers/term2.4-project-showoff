@@ -13,6 +13,7 @@ public class DeathEffect : Singleton<DeathEffect>
 	[SerializeField] private InputField nameInputField;
 
 	private bool animationComplete;
+	private bool sentScoreToServer;
 	private float distanceRan;
 	bool dead = false;
     float timer = -2;
@@ -61,12 +62,18 @@ public class DeathEffect : Singleton<DeathEffect>
 
 	private void OnContinueClicked()
 	{
+		if (sentScoreToServer)
+		{
+			SceneManager.LoadScene(mainMenuScene);
+		}
+		
 		string trimmedName = nameInputField.text.Trim();
 		
 		try
 		{
 			HighScoreManager.Instance.SendHighScoreToServer(trimmedName, (int)distanceRan);
-			CooldownManager.Cooldown(0.25f, () => SceneManager.LoadScene(mainMenuScene)); //TODO: Replace with DataBase
+			continueButton.GetComponentInChildren<Text>().text = "Back to menu";
+			sentScoreToServer = true;
 		}
 		catch (ArgumentException e)
 		{

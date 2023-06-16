@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
@@ -33,9 +32,9 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
 		if (scene.buildIndex != mainMenuScene) { return; }
-		
+
 		List<(string, int)> fileEntries = ReadScoresFromFile().ToList();
-		fileEntries.Sort((a,b) => b.Item2.CompareTo(a.Item2));
+		fileEntries.Sort((a, b) => b.Item2.CompareTo(a.Item2));
 		highScoreDatas = fileEntries.Select((entry, i) => new HighScoreData(i + 1, entry.Item1, entry.Item2)).ToList();
 
 		SetScores();
@@ -46,21 +45,23 @@ public class HighScoreManager : Singleton<HighScoreManager>
 		if (scoreCollection.IsNullOrEmpty()) { return; }
 
 		if (!File.Exists(highScoreFilePath)) { File.Create(highScoreFilePath); }
-		
+
 		List<string> linesToWrite = scoreCollection.Select(score => string.Concat(score.Item1, ',', score.Item2)).ToList();
 		Debug.Log("new file content:\n\n" + string.Join('\n', linesToWrite));
 
 		File.WriteAllLines(highScoreFilePath, linesToWrite);
 	}
 
-	public void SendHighScoreToServer(string name, int score)
+	public void SendHighScoreToServer(string playerName, int score)
 	{
+		if (string.IsNullOrEmpty(playerName)) { throw new ArgumentNullException(nameof(playerName), "Cannot be null or empty"); }
+
 		Packet packet = new();
-		packet.Write(new AddHighScore(name, score));
+		packet.Write(new AddHighScore(playerName, score));
 		// Debug.Log($"Sending score to server: {name}, {score}");
 		Player.Instance.client.SendData(packet);
 	}
-	
+
 	private IEnumerable<(string, int)> ReadScoresFromFile()
 	{
 		if (!File.Exists(highScoreFilePath)) { return null; }
@@ -83,7 +84,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 			}
 			catch (IndexOutOfRangeException) { Debug.LogWarning($"Could not process line: \'{entry}\'"); }
 		}
-		
+
 		return fileEntries;
 	}
 
