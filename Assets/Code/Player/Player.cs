@@ -11,6 +11,7 @@ public class Player : Singleton<Player>
     public bool dead => _dead;
 
     public event Action deathEvent;
+    public Client client { get; set; }
 
     [SerializeField] List<EffectImage> _images = new List<EffectImage>();
     [SerializeField] List<EffectTime> effectTimes = new List<EffectTime>();

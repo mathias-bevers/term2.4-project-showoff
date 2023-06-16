@@ -25,4 +25,6 @@ public class AddHighScore : HighScoreServerObject
 		name = packet.ReadString();
 		score = packet.ReadInt();
 	}
+
+	public override string ToString() => name.PadRight(10) + score;
 }

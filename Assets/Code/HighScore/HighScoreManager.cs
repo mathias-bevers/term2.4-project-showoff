@@ -47,23 +47,20 @@ public class HighScoreManager : Singleton<HighScoreManager>
 
 		if (!File.Exists(highScoreFilePath)) { File.Create(highScoreFilePath); }
 		
-		IEnumerable<string> linesToWrite = scoreCollection.Select(score => string.Concat(score.Item1, ',', score.Item2));
+		List<string> linesToWrite = scoreCollection.Select(score => string.Concat(score.Item1, ',', score.Item2)).ToList();
+		Debug.Log("new file content:\n\n" + string.Join('\n', linesToWrite));
 
 		File.WriteAllLines(highScoreFilePath, linesToWrite);
 	}
 
-	public void WriteScoreToFile(string playerName, int distanceRan)
+	public void SendHighScoreToServer(string name, int score)
 	{
-		if (string.IsNullOrEmpty(playerName)) { throw new ArgumentNullException(nameof(playerName), "The given name is cannot be empty"); }
-
-		if (distanceRan <= 1) { throw new ArgumentOutOfRangeException(nameof(distanceRan), $"\'{distanceRan}\' is not a valid distance"); }
-
-		if (!File.Exists(highScoreFilePath)) { File.Create(highScoreFilePath); }
-
-		string fileLine = string.Concat(playerName, ',', distanceRan, Environment.NewLine);
-		File.AppendAllText(highScoreFilePath, fileLine);
+		Packet packet = new();
+		packet.Write(new AddHighScore(name, score));
+		// Debug.Log($"Sending score to server: {name}, {score}");
+		Player.Instance.client.SendData(packet);
 	}
-
+	
 	private IEnumerable<(string, int)> ReadScoresFromFile()
 	{
 		if (!File.Exists(highScoreFilePath)) { return null; }

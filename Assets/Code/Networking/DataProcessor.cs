@@ -98,7 +98,6 @@ public class DataProcessor : MonoBehaviour
 		ownDistanceText.transform.parent.gameObject.SetActive(false);
 
 		isDeath = true;
-		CooldownManager.Cooldown(.5f, () => networkingClient.Close());
 	}
 
 	private void OnPowerupPickup(PickupData data)

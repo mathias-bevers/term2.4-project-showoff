@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using saxion_provided;
+using UnityEngine;
 
 public class HighScoreCloud
 {
@@ -22,26 +23,29 @@ public class HighScoreCloud
 		namedScores.Add((name, score));
 	}
 
-	private void AddScore((string, int) namedScore) => AddScore(namedScore.Item1, namedScore.Item2);
-
-	public IEnumerable<(string, int)> GetAllScores() => namedScores;
-
 	public void ProcessPacket(ServerClient sender, HighScoreServerObject serverObject)
 	{
+		bool closeClient = false;
 		switch (serverObject)
 		{
-			case AddHighScores list: 
-				foreach ((string, int) score in list.scores) { AddScore(score); }
-				Packet listPacket = new();
-				listPacket.Write(new AddHighScores(GetAllScores()));
-				parentServer.WriteToClient(sender, listPacket, this);
+			case AddHighScores addingScoreList: 
+				foreach ((string, int) score in addingScoreList.scores) { AddScore(score.Item1, score.Item2); }
 				break;
 
-			case AddHighScore score:
+			case AddHighScore scoreToAdd:
+				AddScore(scoreToAdd.name, scoreToAdd.score);
+				// Debug.Log($"adding score {scoreToAdd}\n{this}");
+				closeClient = true;
 				break;
-			
-			default: throw new ArgumentException( $"can not process type {serverObject.GetType().Name}", nameof(serverObject));
+
+			default: throw new ArgumentException( $"SERVER: can not process type {serverObject.GetType().Name}", nameof(serverObject));
 		}
+		
+		Packet bulkPacket = new();
+		GetHighScores getHighScores = new GetHighScores(namedScores, closeClient);
+		bulkPacket.Write(getHighScores);
+		Debug.Log($"Sending highscore to client {sender.id}:\n{getHighScores}");
+		parentServer.WriteToClient(sender, bulkPacket);
 	}
 
 	public override string ToString()

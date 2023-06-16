@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using saxion_provided;
@@ -7,15 +6,26 @@ using UnityEngine;
 
 public class Client : MonoBehaviour
 {
-	public event Action<PickupData> receivedDebuffEvent;
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
+	public event Action<PickupData> receivedDebuffEvent;
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
 
 	private bool isAccepted;
 	private TcpClient client;
+
+	private void Start()
+	{
+		if (Player.Instance.client != null)
+		{
+			Destroy(gameObject);
+			return;
+		}
+
+		Player.Instance.client = this;
+	}
 
 	public void Update()
 	{
@@ -48,6 +58,7 @@ public class Client : MonoBehaviour
 		isAccepted = false;
 		client.Close();
 		client = null;
+		Destroy(gameObject);
 	}
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
@@ -125,7 +136,7 @@ public class Client : MonoBehaviour
 		switch (serverObject)
 		{
 			case HeartBeat: break;
-			
+
 			case PlayerDistance playerDistance:
 				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
@@ -135,8 +146,10 @@ public class Client : MonoBehaviour
 			case SendPickup sendPickup:
 				receivedDebuffEvent?.Invoke(sendPickup.data);
 				break;
-			case AddHighScores list:
-				HighScoreManager.Instance.RewriteScoresToFile(list.scores);
+			case GetHighScores getHighScores:
+				Debug.Log($"Getting scores from server:\n {getHighScores}");
+				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
+				if (getHighScores.closeClient) { Close(); }
 				break;
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}

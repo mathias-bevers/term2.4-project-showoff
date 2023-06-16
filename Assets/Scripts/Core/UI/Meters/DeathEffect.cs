@@ -12,7 +12,6 @@ public class DeathEffect : Singleton<DeathEffect>
 	[SerializeField] private Button continueButton;
 	[SerializeField] private InputField nameInputField;
 
-	private int pass = 0;
 	private bool animationComplete;
 	private float distanceRan;
 	bool dead = false;
@@ -66,8 +65,8 @@ public class DeathEffect : Singleton<DeathEffect>
 		
 		try
 		{
-			HighScoreManager.Instance.WriteScoreToFile(trimmedName, (int)distanceRan);
-			SceneManager.LoadScene(mainMenuScene);
+			HighScoreManager.Instance.SendHighScoreToServer(trimmedName, (int)distanceRan);
+			CooldownManager.Cooldown(0.25f, () => SceneManager.LoadScene(mainMenuScene)); //TODO: Replace with DataBase
 		}
 		catch (ArgumentException e)
 		{
@@ -76,6 +75,4 @@ public class DeathEffect : Singleton<DeathEffect>
 	}
 
 	public void Death() { dead = true; }
-
-	public void RunAgain() { SceneManager.LoadScene(0); }
 }

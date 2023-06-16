@@ -54,7 +54,11 @@ public class Server : Singleton<Server>
 		{
 			ReceivedPacket receivedPacket = receivedPackets[i];
 
-			if (receivedPacket.serverObject is HighScoreServerObject asHighScore) { cloud.ProcessPacket(receivedPacket.sender, asHighScore); }
+			if (receivedPacket.serverObject is HighScoreServerObject asHighScore)
+			{
+				try { cloud.ProcessPacket(receivedPacket.sender, asHighScore); }
+				catch (ArgumentException e) { Debug.LogError(e); }
+			}
 			else { WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket()); }
 
 			receivedPackets.RemoveAt(i);
@@ -162,15 +166,9 @@ public class Server : Singleton<Server>
 			WriteToClient(receiver, packet);
 		}
 	}
+	
 
-	public void WriteToClient<T>(ServerClient receiver, Packet packet, T requester)
-	{
-		if (requester is HighScoreCloud) { return; }
-
-		WriteToClient(receiver, packet.GetBytes());
-	}
-
-	private void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
+	public void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
 
 	private void WriteToClient(ServerClient receiver, byte[] data)
 	{
