@@ -56,18 +56,20 @@ public class Server : Singleton<Server>
 
 			switch (receivedPacket.serverObject)
 			{
-				case RequestHighScores:
+				
+				case HighScoresList list:
 				{
+					foreach ((string, int) score in list.scores) { cloud.AddScore(score); }
 					Packet highScoresPacket = new();
 					highScoresPacket.Write(new HighScoresList(cloud.GetAllScores()));
 					WriteToClient(receivedPacket.sender, highScoresPacket);
 					break;
 				}
-				case HighScoresList list:
+				case RequestHighScores:
 				{
-					Debug.Log($"Gotten a list of {list.scores.Count} scores from client {receivedPacket.sender.id}");
-					foreach ((string, int) score in list.scores) { cloud.AddScore(score); }
-
+					Packet highScoresPacket = new();
+					highScoresPacket.Write(new HighScoresList(cloud.GetAllScores()));
+					WriteToClient(receivedPacket.sender, highScoresPacket);
 					break;
 				}
 				default:

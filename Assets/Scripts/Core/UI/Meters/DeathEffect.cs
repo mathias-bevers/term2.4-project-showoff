@@ -11,7 +11,8 @@ public class DeathEffect : Singleton<DeathEffect>
 	[SerializeField] private Text distanceRanText;
 	[SerializeField] private Button continueButton;
 	[SerializeField] private InputField nameInputField;
-	
+
+	private int pass = 0;
 	private bool animationComplete;
 	private float distanceRan;
 	bool dead = false;
@@ -22,6 +23,7 @@ public class DeathEffect : Singleton<DeathEffect>
 	public override void Awake()
 	{
 		base.Awake();
+		
 		continueButton.onClick.AddListener(OnContinueClicked);
 
 		backgroundPanel.gameObject.SetActive(false);

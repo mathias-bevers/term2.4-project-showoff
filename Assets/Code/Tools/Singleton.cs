@@ -6,6 +6,8 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
 
 	public static T Instance => GetInstance();
 
+	public static bool IsInitialized => instance != null;
+
 	public virtual void Awake()
 	{
 		if (instance == null) { instance = this as T; }

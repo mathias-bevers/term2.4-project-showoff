@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
@@ -8,11 +10,14 @@ using UnityEngine.SceneManagement;
 
 public class HighScoreManager : Singleton<HighScoreManager>
 {
+	public delegate List<(string, int)> RequestHighScoreDelegate();
+
 	[SerializeField, Scene] private int mainMenuScene;
 
 	public List<HighScoreData> highScoreDatas { get; private set; }
-	private MapWalker mapWalker;
+	public RequestHighScoreDelegate requestHighScoreDelegate { get; set; }
 
+	private MapWalker mapWalker;
 	private string highScoreFilePath;
 
 	public override void Awake()
@@ -28,9 +33,23 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
 		if (scene.buildIndex != mainMenuScene) { return; }
+		
+		List<(string, int)> fileEntries = ReadScoresFromFile().ToList();
+		fileEntries.Sort((a,b) => b.Item2.CompareTo(a.Item2));
+		highScoreDatas = fileEntries.Select((entry, i) => new HighScoreData(i + 1, entry.Item1, entry.Item2)).ToList();
 
-		highScoreDatas = GetAllHighScores();
 		SetScores();
+	}
+
+	public void RewriteScoresToFile(List<(string, int)> scoreCollection)
+	{
+		if (scoreCollection.IsNullOrEmpty()) { return; }
+
+		if (!File.Exists(highScoreFilePath)) { File.Create(highScoreFilePath); }
+		
+		IEnumerable<string> linesToWrite = scoreCollection.Select(score => string.Concat(score.Item1, ',', score.Item2));
+
+		File.WriteAllLines(highScoreFilePath, linesToWrite);
 	}
 
 	public void WriteScoreToFile(string playerName, int distanceRan)
@@ -45,12 +64,6 @@ public class HighScoreManager : Singleton<HighScoreManager>
 		File.AppendAllText(highScoreFilePath, fileLine);
 	}
 
-	private List<HighScoreData> GetAllHighScores()
-	{
-		List<HighScoreData> orderedScores = new List<HighScoreData>();
-		return orderedScores;
-	}
-
 	private IEnumerable<(string, int)> ReadScoresFromFile()
 	{
 		if (!File.Exists(highScoreFilePath)) { return null; }
@@ -58,16 +71,22 @@ public class HighScoreManager : Singleton<HighScoreManager>
 		List<(string, int)> fileEntries = new();
 		foreach (string entry in File.ReadLines(highScoreFilePath))
 		{
-			string[] splitEntry = entry.Split(',');
+			if (string.IsNullOrEmpty(entry)) { continue; }
 
-			string playerName = splitEntry[0].Trim();
-			string distanceInString = splitEntry[1].Trim();
+			try
+			{
+				string[] splitEntry = entry.Split(',');
 
-			if (!int.TryParse(distanceInString, out int distanceRan)) { Debug.LogError($"could not parse \'{distanceInString}\' to an int!"); }
+				string playerName = splitEntry[0].Trim();
+				string distanceInString = splitEntry[1].Trim();
 
-			fileEntries.Add((playerName, distanceRan));
+				if (!int.TryParse(distanceInString, out int distanceRan)) { Debug.LogError($"could not parse \'{distanceInString}\' to an int!"); }
+
+				fileEntries.Add((playerName, distanceRan));
+			}
+			catch (IndexOutOfRangeException) { Debug.LogWarning($"Could not process line: \'{entry}\'"); }
 		}
-
+		
 		return fileEntries;
 	}
 
@@ -86,7 +105,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	{
 		IEnumerable<(string, int)> localScores = ReadScoresFromFile();
 		HighScoresList serverList = new(localScores);
-		
+
 		Packet packet = new();
 		packet.Write(serverList);
 		return packet;
