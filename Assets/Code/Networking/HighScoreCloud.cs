@@ -44,7 +44,7 @@ public class HighScoreCloud
 		Packet bulkPacket = new();
 		GetHighScores getHighScores = new GetHighScores(namedScores, closeClient);
 		bulkPacket.Write(getHighScores);
-		Debug.Log($"Sending highscore to client {sender.id}:\n{getHighScores}");
+		//Debug.Log($"Sending highscore to client {sender.id}:\n{getHighScores}");
 		parentServer.WriteToClient(sender, bulkPacket);
 	}
 

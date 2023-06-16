@@ -29,11 +29,11 @@ public class Client : MonoBehaviour
 
 	public void Update()
 	{
-		if (client == null) { return; }
-
 		try
 		{
-			while (client.Available > 1)
+			if (client == null) { return; }
+
+			while (client is { Available: > 1 })
 			{
 				byte[] inBytes = StreamUtil.Read(client.GetStream());
 				ProcessData(inBytes);
@@ -48,7 +48,7 @@ public class Client : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		Debug.LogWarning("Destroying client instance...");
+		// Debug.LogWarning("Destroying client instance...");
 		Close();
 	}
 
@@ -141,17 +141,21 @@ public class Client : MonoBehaviour
 			case PlayerDistance playerDistance:
 				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
+			
 			case PlayerConnection playerConnection:
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
+			
 			case SendPickup sendPickup:
 				receivedDebuffEvent?.Invoke(sendPickup.data);
 				break;
+			
 			case GetHighScores getHighScores:
-				Debug.Log($"Getting scores from server:\n {getHighScores}");
+				// Debug.Log($"Getting scores from server:\n {getHighScores}");
 				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
-				if (getHighScores.closeClient) { Close(); }
+				// if (getHighScores.closeClient) { Close(); }
 				break;
+			
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
 	}

@@ -125,7 +125,7 @@ public class Player : Singleton<Player>
     public void AddPickup(int idd)
     {
         PickupIdentifier id = (PickupIdentifier)idd;
-        Debug.Log($"Adding pickup {id.ToString()}");
+        //Debug.Log($"Adding pickup {id.ToString()}");
         float time = 0;
         foreach (EffectTime pickupCountdown in effectTimes)
             if (pickupCountdown.pickupIdentifier == id)

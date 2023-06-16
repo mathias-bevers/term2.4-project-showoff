@@ -109,7 +109,7 @@ public class DataProcessor : MonoBehaviour
 
 	private void OnReceivedDebuff(PickupData data)
 	{
-		Debug.Log($"Received debuff: {data}");
+		// Debug.Log($"Received debuff: {data}");
 		PickupManager.Instance.PickUpPickup(data.identifier, true);
 	}
 }

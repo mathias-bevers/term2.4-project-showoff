@@ -47,9 +47,9 @@ public class HighScoreManager : Singleton<HighScoreManager>
 		if (!File.Exists(highScoreFilePath)) { File.Create(highScoreFilePath); }
 
 		List<string> linesToWrite = scoreCollection.Select(score => string.Concat(score.Item1, ',', score.Item2)).ToList();
-		Debug.Log("new file content:\n\n" + string.Join('\n', linesToWrite));
-
+		
 		File.WriteAllLines(highScoreFilePath, linesToWrite);
+		Debug.Log($"Written {string.Join(", ", scoreCollection)} to file.");
 	}
 
 	public void SendHighScoreToServer(string playerName, int score)

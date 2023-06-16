@@ -44,7 +44,7 @@ public class Server : Singleton<Server>
 	private void OnDestroy()
 	{
 		listener.Server.Close();
-		Debug.LogWarning("Closing server!");
+		// Debug.LogWarning("Closing server!");
 	}
 
 	private void ProcessReceivedPackets()
@@ -113,7 +113,7 @@ public class Server : Singleton<Server>
 			packet.Write(acceptedCB);
 			WriteToClient(serverClient, packet);
 
-			Debug.Log($"Accepted new client with id: {currentID}");
+			//Debug.Log($"Accepted new client with id: {currentID}");
 		}
 	}
 
@@ -130,9 +130,9 @@ public class Server : Singleton<Server>
 				ServerObject obj = packet.ReadObject();
 				receivedPackets.Add(new ReceivedPacket(client, obj));
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
-				Debug.LogError(e.Message + $"\nAdding client {client.id} to bad clients");
+				//Debug.LogError(e.Message + $"\nAdding client {client.id} to bad clients");
 				badClients.Add(client.id);
 			}
 		}
@@ -176,7 +176,7 @@ public class Server : Singleton<Server>
 		try { StreamUtil.Write(receiver.stream, data); }
 		catch (Exception)
 		{
-			Debug.Log($"Marking client#{receiver.id} as bad client");
+			//Debug.Log($"Marking client#{receiver.id} as bad client");
 			badClients.Add(receiver.id);
 		}
 	}
