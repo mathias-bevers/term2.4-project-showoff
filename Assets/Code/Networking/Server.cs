@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
@@ -180,14 +181,12 @@ public class Server : Singleton<Server>
 		}
 	}
 
-#if UNITY_EDITOR
-	[Button("Initialize")] private void ForceInit() { Initialize(Settings.SERVER_IP, Settings.SERVER_PORT); }
-
-	private void OnGUI()
+	public string DEBUG_INFO()
 	{
-		if (GUI.Button(new Rect(10, 50, 160, 30), "Log all cloud items")) { Debug.Log(cloud.ToString()); }
+		StringBuilder sb = new("SERVER DEBUG:\n\n");
+		sb.AppendLine($"Connected clients: {clients.Count}");
+		sb.AppendLine($"Package backlog: {receivedPackets.Count}");
 
-		GUI.Label(new Rect(10, 10, 160, 30), $"connected clients: {clients.Count}");
+		return sb.ToString();
 	}
-#endif
 }

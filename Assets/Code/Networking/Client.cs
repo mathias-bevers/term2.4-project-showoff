@@ -33,10 +33,11 @@ public class Client : MonoBehaviour
 
 		try
 		{
-			if (client.Available < 1) { return; }
-
-			byte[] inBytes = StreamUtil.Read(client.GetStream());
-			ProcessData(inBytes);
+			while (client.Available > 1)
+			{
+				byte[] inBytes = StreamUtil.Read(client.GetStream());
+				ProcessData(inBytes);
+			}
 		}
 		catch (Exception e)
 		{
