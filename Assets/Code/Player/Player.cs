@@ -11,6 +11,7 @@ public class Player : Singleton<Player>
     public bool dead => _dead;
 
     public event Action deathEvent;
+    public Client client { get; set; }
 
     [SerializeField] List<EffectImage> _images = new List<EffectImage>();
     [SerializeField] List<EffectTime> effectTimes = new List<EffectTime>();
@@ -124,7 +125,7 @@ public class Player : Singleton<Player>
     public void AddPickup(int idd)
     {
         PickupIdentifier id = (PickupIdentifier)idd;
-        Debug.Log($"Adding pickup {id.ToString()}");
+        //Debug.Log($"Adding pickup {id.ToString()}");
         float time = 0;
         foreach (EffectTime pickupCountdown in effectTimes)
             if (pickupCountdown.pickupIdentifier == id)
