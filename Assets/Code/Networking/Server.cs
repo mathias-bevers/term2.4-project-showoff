@@ -49,33 +49,13 @@ public class Server : Singleton<Server>
 	private void ProcessReceivedPackets()
 	{
 		if (receivedPackets.Count < 1) { return; }
-		
+
 		for (int i = receivedPackets.Count - 1; i >= 0; --i)
 		{
 			ReceivedPacket receivedPacket = receivedPackets[i];
 
-			switch (receivedPacket.serverObject)
-			{
-				
-				case HighScoresList list:
-				{
-					foreach ((string, int) score in list.scores) { cloud.AddScore(score); }
-					Packet highScoresPacket = new();
-					highScoresPacket.Write(new HighScoresList(cloud.GetAllScores()));
-					WriteToClient(receivedPacket.sender, highScoresPacket);
-					break;
-				}
-				case RequestHighScores:
-				{
-					Packet highScoresPacket = new();
-					highScoresPacket.Write(new HighScoresList(cloud.GetAllScores()));
-					WriteToClient(receivedPacket.sender, highScoresPacket);
-					break;
-				}
-				default:
-					WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
-					break;
-			}
+			if (receivedPacket.serverObject is HighScoreServerObject asHighScore) { cloud.ProcessPacket(receivedPacket.sender, asHighScore); }
+			else { WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket()); }
 
 			receivedPackets.RemoveAt(i);
 		}
@@ -86,7 +66,7 @@ public class Server : Singleton<Server>
 		clients = new List<ServerClient>(MAX_PLAYERS);
 		badClients = new List<int>();
 		receivedPackets = new List<ReceivedPacket>();
-		cloud = new HighScoreCloud();
+		cloud = new HighScoreCloud(this);
 
 		listener = new TcpListener(ip, port);
 		listener.Start();
@@ -181,6 +161,13 @@ public class Server : Singleton<Server>
 
 			WriteToClient(receiver, packet);
 		}
+	}
+
+	public void WriteToClient<T>(ServerClient receiver, Packet packet, T requester)
+	{
+		if (requester is HighScoreCloud) { return; }
+
+		WriteToClient(receiver, packet.GetBytes());
 	}
 
 	private void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }

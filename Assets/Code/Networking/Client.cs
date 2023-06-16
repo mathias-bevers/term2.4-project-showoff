@@ -135,12 +135,7 @@ public class Client : MonoBehaviour
 			case SendPickup sendPickup:
 				receivedDebuffEvent?.Invoke(sendPickup.data);
 				break;
-			case RequestHighScores:
-				Packet highScoresPacket = new ();
-				highScoresPacket.Write(new HighScoresList(HighScoreManager.Instance.highScoreDatas.Select(data => (data.name, data.score))));
-				SendData(highScoresPacket);
-				break;
-			case HighScoresList list:
+			case AddHighScores list:
 				HighScoreManager.Instance.RewriteScoresToFile(list.scores);
 				break;
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");

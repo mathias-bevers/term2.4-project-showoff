@@ -2,13 +2,13 @@
 using System.Linq;
 using saxion_provided;
 
-public class HighScoresList : ServerObject
+public class AddHighScores : HighScoreServerObject
 {
 	public List<(string, int)> scores { get; }
 
-	public HighScoresList() { scores = new List<(string, int)>(); }
+	public AddHighScores() { scores = new List<(string, int)>(); }
 
-	public HighScoresList(IEnumerable<(string, int)> scores)
+	public AddHighScores(IEnumerable<(string, int)> scores)
 	{
 		this.scores = (scores == null) ? new List<(string, int)>() : scores.ToList();
 	}

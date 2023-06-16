@@ -104,10 +104,10 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	public Packet LocalScoresAsPacket()
 	{
 		IEnumerable<(string, int)> localScores = ReadScoresFromFile();
-		HighScoresList serverList = new(localScores);
+		AddHighScores server = new(localScores);
 
 		Packet packet = new();
-		packet.Write(serverList);
+		packet.Write(server);
 		return packet;
 	}
 }
