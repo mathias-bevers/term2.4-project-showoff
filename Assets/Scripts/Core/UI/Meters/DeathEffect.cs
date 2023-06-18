@@ -10,7 +10,7 @@ public class DeathEffect : Singleton<DeathEffect>
 	[SerializeField] private Image backgroundPanel;
 	[SerializeField] private Text distanceRanText;
 	[SerializeField] private Button continueButton;
-	[SerializeField] private InputField nameInputField;
+	[SerializeField] private NameInput nameInput;
 
 	private bool animationComplete;
 	private bool sentScoreToServer;
@@ -67,7 +67,7 @@ public class DeathEffect : Singleton<DeathEffect>
 			SceneManager.LoadScene(mainMenuScene);
 		}
 		
-		string trimmedName = nameInputField.text.Trim();
+		string trimmedName = nameInput.GetName().Trim();
 		
 		try
 		{

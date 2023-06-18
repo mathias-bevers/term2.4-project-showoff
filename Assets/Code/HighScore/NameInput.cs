@@ -2,12 +2,15 @@ using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class NameInput : MonoBehaviour
 {
 	private const int ALPHABET_COUNT = 26;
 	private const int CHAR_ALPHABET_START = 65;
+
+	[SerializeField] private Transform inputGroups;
 	
 	private EventSystem eventSystem;
 	private LetterInput[] letterInputs;
@@ -17,16 +20,17 @@ public class NameInput : MonoBehaviour
 	{
 		cachedTransform = transform;
 
-		letterInputs = new LetterInput[cachedTransform.childCount];
+		letterInputs = new LetterInput[inputGroups.childCount];
 		for (int i = 0; i < letterInputs.Length; ++i)
 		{
-			Transform inputParent = cachedTransform.GetChild(i);
+			Transform inputGroup = inputGroups.GetChild(i);
 
-			Text letterText = inputParent.GetChild(0).GetComponent<Text>();
-			Button upButton = inputParent.GetChild(1).GetComponent<Button>();
-			Button downButton = inputParent.GetChild(2).GetComponent<Button>();
+			Text letterText = inputGroup.GetChild(0).GetComponent<Text>();
+			Button upButton = inputGroup.GetChild(1).GetComponent<Button>();
+			Button downButton = inputGroup.GetChild(2).GetComponent<Button>();
 
 			letterInputs[i] = new LetterInput(upButton, downButton, letterText);
+			letterInputs[i].CycleLetter(0);
 		}
 	}
 
