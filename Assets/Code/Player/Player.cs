@@ -25,6 +25,18 @@ public class Player : Singleton<Player>
         return activeEvents.Count;
     }
 
+    public void Discard(PickupIdentifier identifier)
+    {
+        if (activeEvents.Count == 0) return;
+        for(int i = activeEvents.Count -1;i >=0; i++)
+        {
+            if(activeEvents[i].identifier == identifier)
+            {
+                activeEvents.RemoveAt(i);
+            }
+        }
+    }
+
     public bool EffectIsActive(PickupIdentifier identifier)
     {
         foreach (PickupCountdown countdown in activeEvents)
@@ -121,6 +133,8 @@ public class Player : Singleton<Player>
     public void AddHeart()
     {
         _currentHearts++;
+        if (_currentHearts >= 3)
+            _currentHearts = 3;
     }
 
     public void RemoveHeart(bool destructive = false)
@@ -196,6 +210,17 @@ public class Player : Singleton<Player>
             }
         }
 
+
+        if (EffectIsActive(PickupIdentifier.AddHeart))
+        {
+            AddHeart();
+            Discard(PickupIdentifier.AddHeart);
+        }
+        if (EffectIsActive(PickupIdentifier.RemoveHeart))
+        {
+            RemoveHeart(false);
+            Discard(PickupIdentifier.RemoveHeart);
+        }
         if (transform.localPosition.z <= -1 || transform.localPosition.y <= -1)
         {
             if (EffectIsActive(PickupIdentifier.Invincible))
