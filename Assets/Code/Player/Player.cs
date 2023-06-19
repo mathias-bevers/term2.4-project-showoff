@@ -18,6 +18,13 @@ public class Player : Singleton<Player>
 
     public List<PickupCountdown> activeEvents = new List<PickupCountdown>();
 
+    [SerializeField] public Animator animator;
+
+    public int EffectCount()
+    {
+        return activeEvents.Count;
+    }
+
     public bool EffectIsActive(PickupIdentifier identifier)
     {
         foreach (PickupCountdown countdown in activeEvents)
@@ -238,6 +245,7 @@ public class PickupCountdown
     public PickupIdentifier identifier;
     public float maxTimer;
     public float currentTimer;
+    public bool hasReceivedFromServer = false;
 
 
     public PickupCountdown(PickupIdentifier identifier, float maxTimer)
@@ -245,5 +253,13 @@ public class PickupCountdown
         this.identifier = identifier;
         this.maxTimer = maxTimer;
         this.currentTimer = 0;
+    }
+
+    public PickupCountdown(PickupIdentifier identifier, float maxTimer, bool hasReceivedFromServer)
+    {
+        this.identifier = identifier;
+        this.maxTimer = maxTimer;
+        this.currentTimer = 0;
+        this.hasReceivedFromServer = hasReceivedFromServer;
     }
 }

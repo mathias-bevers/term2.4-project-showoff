@@ -18,7 +18,7 @@ public class PowerupSpawner : EraObject
             else if (randomNum == 2) helper.SetIdentifier(PickupIdentifier.Slippery);
             else if (randomNum == 3) helper.SetIdentifier(PickupIdentifier.SlowdownRework);
             else if (randomNum == 4) helper.SetIdentifier(PickupIdentifier.Speedup);
-            else if (randomNum == 5) helper.SetIdentifier(PickupIdentifier.Invincible);
+            else if (randomNum == 5) helper.SetIdentifier(PickupIdentifier.SpeedupRework);
         }
 
         return spawnedElements;
