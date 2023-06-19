@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using saxion_provided;
 using UnityEngine;
 
@@ -27,23 +29,36 @@ public class Client : MonoBehaviour
 		Player.Instance.client = this;
 	}
 
+	List<Packet> packets = new List<Packet>();
+
 	public void Update()
 	{
 		try
 		{
 			if (client == null) { return; }
 
-			while (client is { Available: > 1 })
+			new Thread(() =>
 			{
-				byte[] inBytes = StreamUtil.Read(client.GetStream());
-				ProcessData(inBytes);
-			}
+				while (client is { Available: > 1 })
+				{
+					byte[] inBytes = StreamUtil.Read(client.GetStream());
+
+					Packet packet = new Packet(inBytes);
+					packets.Add(packet);
+				}
+			}).Start();
 		}
 		catch (Exception e)
 		{
 			Debug.LogError(string.Concat(e.Message, '\n', e.StackTrace));
 			Close();
 		}
+
+		for(int i = packets.Count -1; i >= 0; i--)
+        {
+			ProcessData(packets[i]);
+			packets.RemoveAt(i);
+        }
 	}
 
 	private void OnDestroy()
@@ -114,9 +129,8 @@ public class Client : MonoBehaviour
 		}
 	}
 
-	private void ProcessData(byte[] dataInBytes)
-	{
-		Packet packet = new(dataInBytes);
+	private void ProcessData(Packet packet)
+	{ 
 		ServerObject serverObject;
 		try { serverObject = packet.ReadObject(); }
 		catch
