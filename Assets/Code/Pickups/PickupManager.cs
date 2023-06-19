@@ -77,7 +77,7 @@ public class PickupManager : Singleton<PickupManager>
                         Player.Instance.animator.SetTrigger("ReceiveLeft");
                     }
                 }
-                pickupCountdowns.Add(new PickupCountdown(pickup.identifier, 1.60f, true));
+                pickupCountdowns.Add(new PickupCountdown(pickup.identifier, 2.50f, true));
                 //
             }
         }
@@ -94,9 +94,9 @@ public class PickupManager : Singleton<PickupManager>
             {
                 foreach (PickupData pickup in pickups)
                 {
+                    if (pickup.identifier != pickupCountdowns[i].identifier) { continue; }
                     if (!pickupCountdowns[i].hasReceivedFromServer)
                     {
-                        if (pickup.identifier != pickupCountdowns[i].identifier) { continue; }
                         if (pickup.shouldSendToServer) { pickedupPowerupEvent?.Invoke(pickup); }
                         else { pickup.onPickupEvent?.Invoke(pickup.parameters); }
                         break;
