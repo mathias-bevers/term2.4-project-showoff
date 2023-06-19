@@ -28,7 +28,7 @@ public class Player : Singleton<Player>
     public void Discard(PickupIdentifier identifier)
     {
         if (activeEvents.Count == 0) return;
-        for(int i = activeEvents.Count -1;i >=0; i++)
+        for(int i = activeEvents.Count -1;i >=0; i--)
         {
             if(activeEvents[i].identifier == identifier)
             {
