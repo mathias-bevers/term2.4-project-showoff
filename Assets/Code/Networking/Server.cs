@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
+using System.Text;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
@@ -13,10 +12,12 @@ public class Server : Singleton<Server>
 	private const int MAX_PLAYERS = 2;
 	private bool isRunning;
 
+	private HighScoreCloud cloud;
 	private int currentID = -1;
 	private List<int> badClients;
 	private List<ReceivedPacket> receivedPackets;
 	private List<ServerClient> clients;
+
 
 	private TcpListener listener;
 
@@ -24,12 +25,6 @@ public class Server : Singleton<Server>
 	{
 		base.Awake();
 		DontDestroyOnLoad(gameObject);
-	}
-
-	private void OnDestroy()
-	{
-		listener.Server.Close();
-		Debug.LogWarning("Closing server!");
 	}
 
 
@@ -43,11 +38,30 @@ public class Server : Singleton<Server>
 
 		if (receivedPackets.Count < 1) { return; }
 
+		ProcessReceivedPackets();
+	}
+
+	private void OnDestroy()
+	{
+		listener.Server.Close();
+		// Debug.LogWarning("Closing server!");
+	}
+
+	private void ProcessReceivedPackets()
+	{
+		if (receivedPackets.Count < 1) { return; }
+
 		for (int i = receivedPackets.Count - 1; i >= 0; --i)
 		{
 			ReceivedPacket receivedPacket = receivedPackets[i];
 
-			WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
+			if (receivedPacket.serverObject is HighScoreServerObject asHighScore)
+			{
+				try { cloud.ProcessPacket(receivedPacket.sender, asHighScore); }
+				catch (ArgumentException e) { Debug.LogError(e); }
+			}
+			else { WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket()); }
+
 			receivedPackets.RemoveAt(i);
 		}
 	}
@@ -57,6 +71,7 @@ public class Server : Singleton<Server>
 		clients = new List<ServerClient>(MAX_PLAYERS);
 		badClients = new List<int>();
 		receivedPackets = new List<ReceivedPacket>();
+		cloud = new HighScoreCloud(this);
 
 		listener = new TcpListener(ip, port);
 		listener.Start();
@@ -90,10 +105,7 @@ public class Server : Singleton<Server>
 			++currentID;
 			ServerClient serverClient = new(currentID, client);
 
-			if (clients.Count > 0)
-			{
-				receivedPackets.Add(new ReceivedPacket(serverClient, new PlayerConnection(PlayerConnection.ConnectionType.Joined)));
-			}
+			if (clients.Count > 0) { receivedPackets.Add(new ReceivedPacket(serverClient, new PlayerConnection(PlayerConnection.ConnectionType.Joined))); }
 
 			clients.Add(serverClient);
 
@@ -101,7 +113,7 @@ public class Server : Singleton<Server>
 			packet.Write(acceptedCB);
 			WriteToClient(serverClient, packet);
 
-			Debug.Log($"Accepted new client with id: {currentID}");
+			//Debug.Log($"Accepted new client with id: {currentID}");
 		}
 	}
 
@@ -113,16 +125,14 @@ public class Server : Singleton<Server>
 
 			try
 			{
-				// new Thread(() => { }).Start();
-
 				byte[] inBytes = StreamUtil.Read(client.stream);
 				Packet packet = new(inBytes);
 				ServerObject obj = packet.ReadObject();
 				receivedPackets.Add(new ReceivedPacket(client, obj));
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
-				Debug.LogError(e.Message + $"\nAdding client {client.id} to bad clients");
+				//Debug.LogError(e.Message + $"\nAdding client {client.id} to bad clients");
 				badClients.Add(client.id);
 			}
 		}
@@ -157,26 +167,26 @@ public class Server : Singleton<Server>
 			WriteToClient(receiver, packet);
 		}
 	}
+	
 
-	private void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
+	public void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
 
 	private void WriteToClient(ServerClient receiver, byte[] data)
 	{
-		try
-		{
-			StreamUtil.Write(receiver.stream, data);
-			/*new Thread(() => {  }).Start();*/
-		}
+		try { StreamUtil.Write(receiver.stream, data); }
 		catch (Exception)
 		{
-			Debug.Log($"Marking client#{receiver.id} as bad client");
+			//Debug.Log($"Marking client#{receiver.id} as bad client");
 			badClients.Add(receiver.id);
 		}
 	}
 
-#if UNITY_EDITOR
-	[Button("Initialize")] private void ForceInit() { Initialize(Settings.SERVER_IP, Settings.SERVER_PORT); }
+	public string DEBUG_INFO()
+	{
+		StringBuilder sb = new("SERVER DEBUG:\n\n");
+		sb.AppendLine($"Connected clients: {clients.Count}");
+		sb.AppendLine($"Package backlog: {receivedPackets.Count}");
 
-	private void OnGUI() { GUI.Label(new Rect(10, 10, 160, 30), $"connected clients: {clients.Count}"); }
-#endif
+		return sb.ToString();
+	}
 }

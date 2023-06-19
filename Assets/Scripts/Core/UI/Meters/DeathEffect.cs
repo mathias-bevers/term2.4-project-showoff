@@ -1,47 +1,85 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DeathEffect : Singleton<DeathEffect>
 {
-    [SerializeField] Image backgroundPanel;
+	[SerializeField, Scene] private int mainMenuScene;
+	[SerializeField] private Image backgroundPanel;
+	[SerializeField] private Text distanceRanText;
+	[SerializeField] private Button continueButton;
+	[SerializeField] private NameInput nameInput;
 
-    [SerializeField] Image deathPanel;
-
-    bool dead = false;
+	private bool animationComplete;
+	private bool sentScoreToServer;
+	private float distanceRan;
+	bool dead = false;
     float timer = -2;
+    
+	private Transform[] childTransforms;
 
-    public override void Awake()
-    {
-        base.Awake();
-        backgroundPanel.gameObject.SetActive(false);
-        deathPanel.gameObject.SetActive(false);
-    }
+	public override void Awake()
+	{
+		base.Awake();
+		
+		continueButton.onClick.AddListener(OnContinueClicked);
 
+		backgroundPanel.gameObject.SetActive(false);
+		childTransforms = backgroundPanel.transform.GetAllChildren();
 
-    public void Death()
-    {
-        dead = true;
-    }
+		foreach (Transform childTransform in childTransforms) { childTransform.gameObject.SetActive(false); }
+	}
 
-    void Update()
-    {
-        if (!dead) return;
-        backgroundPanel.gameObject.SetActive(true);
-        timer += Time.deltaTime;
+	private void Update()
+	{
+		if (!dead) { return; }
 
-        float filler = Mathf.Clamp01(Utils.Map(timer, 0, 2, 0, 1));
+		if (animationComplete) { return; }
 
-        backgroundPanel.fillAmount = filler;
+		backgroundPanel.gameObject.SetActive(true);
+		timer += Time.deltaTime;
 
-        if(timer >= 2)
-            deathPanel.gameObject.SetActive(true);
-    }
+		float filler = Mathf.Clamp01(Utils.Map(timer, 0, 2, 0, 1));
 
-    public void RunAgain()
-    {
-        SceneManager.LoadScene(0);
-    }
+		backgroundPanel.fillAmount = filler;
+
+		if (timer < 2) { return; }
+
+		AnimationCompleted();
+	}
+
+	private void AnimationCompleted()
+	{
+		foreach (Transform childObject in childTransforms) { childObject.gameObject.SetActive(true); }
+
+		distanceRan = FindObjectOfType<MapWalker>().TotalMetersRan;
+		distanceRanText.text = $"You ran {distanceRan:n0} meters";
+
+		animationComplete = true;
+	}
+
+	private void OnContinueClicked()
+	{
+		if (sentScoreToServer)
+		{
+			SceneManager.LoadScene(mainMenuScene);
+		}
+		
+		string trimmedName = nameInput.GetName().Trim();
+		
+		try
+		{
+			HighScoreManager.Instance.SendHighScoreToServer(trimmedName, (int)distanceRan);
+			continueButton.GetComponentInChildren<Text>().text = "Back to menu";
+			sentScoreToServer = true;
+		}
+		catch (ArgumentException e)
+		{
+			distanceRanText.text = e.Message.ColorRichText(Color.red);
+		}
+	}
+
+	public void Death() { dead = true; }
 }
