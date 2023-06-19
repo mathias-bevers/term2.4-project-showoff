@@ -7,6 +7,8 @@ public class MapWalker : MonoBehaviour
 {
     public bool run = false;
 
+    float recoveryTime = 0;
+
     [SerializeField] NewMapBuilder mapBuilder;
     [SerializeField] PlayerRig rig;
 
@@ -17,6 +19,9 @@ public class MapWalker : MonoBehaviour
     [Header("Map Spawn Data")]
     [SerializeField] int minSpawnAmount = 3;
 
+    [SerializeField] float slowedSpeed = 0.1f;
+
+    float overrideSpeed = -1;
 
     float distShouldRan = 0;
 
@@ -33,6 +38,7 @@ public class MapWalker : MonoBehaviour
         } 
     }
     float accelerationTimer = 0;
+
 
     private void Start()
     {
@@ -62,6 +68,17 @@ public class MapWalker : MonoBehaviour
 
     void OnUpdate()
     {
+        if (!run) return;
+        if(recoveryTime >= 0)
+        {
+            overrideSpeed = slowedSpeed;
+            recoveryTime -= Time.deltaTime;
+        }
+        else
+        {
+            overrideSpeed = -1;
+        }
+
         if (mapBuilder == null) return;
         BuildElements();
 
@@ -92,6 +109,8 @@ public class MapWalker : MonoBehaviour
         accelerationTimer += Time.deltaTime;
         if (accelerationTimer >= accelerationTime) accelerationTimer = accelerationTime;
         currentSpeed = Utils.Map(accelerationTimer, 0, accelerationTime, startSpeed, endSpeed);
+        if (currentSpeed > endSpeed) currentSpeed = endSpeed;
+        if (overrideSpeed >= 0) currentSpeed = slowedSpeed;
     }
 
     Path activePath = null;
@@ -107,8 +126,11 @@ public class MapWalker : MonoBehaviour
             mapBuilder.MoveOverElement(rig);
             rig.player.transform.localPosition = Vector3.zero;
             rig.player.oopsIDied = false;
-            if(!rig.player.EffectIsActive(PickupIdentifier.Speedup))
-            rig.player.AddPickup((int)PickupIdentifier.Speedup);
+            if (!rig.player.EffectIsActive(PickupIdentifier.Speedup))
+            {
+                rig.player.AddPickup((int)PickupIdentifier.Speedup);
+                recoveryTime = 3;
+            }
         }
 
         if (activeElement != null) if (activeElement.forceRequestNewPath) activePath = activeElement.GetPath();

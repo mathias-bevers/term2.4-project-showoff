@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class Client : MonoBehaviour
 {
-	public event Action<PickupData> receivedDefbuffEvent;
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
+	public event Action<PickupData> receivedDebuffEvent;
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
@@ -16,16 +16,28 @@ public class Client : MonoBehaviour
 	private bool isAccepted;
 	private TcpClient client;
 
+	private void Start()
+	{
+		if (Player.Instance.client != null)
+		{
+			Destroy(gameObject);
+			return;
+		}
+
+		Player.Instance.client = this;
+	}
+
 	public void Update()
 	{
-		if (client == null) { return; }
-
 		try
 		{
-			if (client.Available < 1) { return; }
+			if (client == null) { return; }
 
-			byte[] inBytes = StreamUtil.Read(client.GetStream());
-			ProcessData(inBytes);
+			while (client is { Available: > 1 })
+			{
+				byte[] inBytes = StreamUtil.Read(client.GetStream());
+				ProcessData(inBytes);
+			}
 		}
 		catch (Exception e)
 		{
@@ -36,7 +48,7 @@ public class Client : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		Debug.LogWarning("Destroying client instance...");
+		// Debug.LogWarning("Destroying client instance...");
 		Close();
 	}
 
@@ -47,7 +59,7 @@ public class Client : MonoBehaviour
 		isAccepted = false;
 		client.Close();
 		client = null;
-		UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+		Destroy(gameObject);
 	}
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
@@ -66,7 +78,6 @@ public class Client : MonoBehaviour
 
 		try
 		{
-			Debug.Log($"trying to connect to server <i>{ip}:{port}</i>");
 			client ??= new TcpClient();
 			client.Connect(ip, port);
 		}
@@ -95,7 +106,6 @@ public class Client : MonoBehaviour
 			return;
 		}
 
-		// Debug.Log($"Client#{id} is sending data to the server!");
 		try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
 		catch (Exception)
 		{
@@ -127,16 +137,25 @@ public class Client : MonoBehaviour
 		switch (serverObject)
 		{
 			case HeartBeat: break;
-			
+
 			case PlayerDistance playerDistance:
 				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
+			
 			case PlayerConnection playerConnection:
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
+			
 			case SendPickup sendPickup:
-				receivedDefbuffEvent?.Invoke(sendPickup.data);
+				receivedDebuffEvent?.Invoke(sendPickup.data);
 				break;
+			
+			case GetHighScores getHighScores:
+				// Debug.Log($"Getting scores from server:\n {getHighScores}");
+				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
+				// if (getHighScores.closeClient) { Close(); }
+				break;
+			
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
 	}
@@ -151,5 +170,6 @@ public class Client : MonoBehaviour
 		}
 
 		id = callback.id;
+		SendData(HighScoreManager.Instance.LocalScoresAsPacket());
 	}
 }

@@ -10,8 +10,10 @@ public class Player : Singleton<Player>
 
     public bool dead => _dead;
 
-    public event Action deathEvent; 
+    public event Action deathEvent;
+    public Client client { get; set; }
 
+    [SerializeField] List<EffectImage> _images = new List<EffectImage>();
     [SerializeField] List<EffectTime> effectTimes = new List<EffectTime>();
 
     public List<PickupCountdown> activeEvents = new List<PickupCountdown>();
@@ -23,6 +25,28 @@ public class Player : Singleton<Player>
                 return true;
 
         return false;
+    }
+
+    public Sprite GetSprite(PickupIdentifier identifier)
+    {
+        foreach (EffectImage image in _images)
+            if (image.identifier == identifier)
+                return image.sprite;
+        return null;
+    }
+
+    public float EffectNearEnd(PickupIdentifier identifier)
+    {
+        if (!EffectIsActive(identifier)) return 0;
+
+        foreach (PickupCountdown cd in activeEvents)
+        {
+            if (cd.identifier == identifier)
+            {
+                return Utils.Map(cd.currentTimer, 0, cd.maxTimer, 0, 1);
+            }
+        }
+        return 0;
     }
 
     public bool IsInStartup(PickupIdentifier identifier)
@@ -101,13 +125,13 @@ public class Player : Singleton<Player>
     public void AddPickup(int idd)
     {
         PickupIdentifier id = (PickupIdentifier)idd;
-        Debug.Log($"Adding pickup {id.ToString()}");
+        //Debug.Log($"Adding pickup {id.ToString()}");
         float time = 0;
         foreach (EffectTime pickupCountdown in effectTimes)
             if (pickupCountdown.pickupIdentifier == id)
                 time = pickupCountdown.time;
 
-        if (!EffectIsActive(id)) activeEvents.Add(new PickupCountdown(id, time));
+        if (!EffectIsActive(id)) { activeEvents.Add(new PickupCountdown(id, time)); PowerupDisplayHandler.Instance.AddPowerup(id); }
         else
         {
             for (int i = 0; i < activeEvents.Count; i++)
@@ -126,7 +150,11 @@ public class Player : Singleton<Player>
     {
         if (data.identifier == PickupIdentifier.Speedup)
         {
-            if (!EffectIsActive(data.identifier)) activeEvents.Add(new PickupCountdown(data.identifier, data.parameters.decimalNumber));
+            if (!EffectIsActive(data.identifier))
+            {
+                activeEvents.Add(new PickupCountdown(data.identifier, data.parameters.decimalNumber)); 
+                PowerupDisplayHandler.Instance.AddPowerup(data.identifier);
+            }
             else
             {
                 for (int i = 0; i < activeEvents.Count; i++)
@@ -195,6 +223,13 @@ public struct EffectTime
     public float time;
     public float startupTime;
     public float breakoutTime;
+}
+
+[System.Serializable]
+public struct EffectImage
+{
+    public PickupIdentifier identifier;
+    public Sprite sprite;
 }
 
 [System.Serializable]

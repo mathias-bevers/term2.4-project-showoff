@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Fps : MonoBehaviour
 {
+#if DEBUG
     private float count;
 
     private IEnumerator Start()
@@ -23,7 +24,7 @@ public class Fps : MonoBehaviour
     private void OnGUI()
     {
         GUIUtility.ScaleAroundPivot(new Vector2(3, 3), Vector2.zero);
-        Rect location = new Rect(5, 5, 85, 25);
+        Rect location = new Rect(5, 85, 85, 25);
         string text = $"FPS: {Mathf.Round(count)}";
         Texture black = Texture2D.linearGrayTexture;
         GUI.DrawTexture(location, black, ScaleMode.StretchToFill);
@@ -32,4 +33,5 @@ public class Fps : MonoBehaviour
         GUI.Label(location, text);
 
     }
+#endif
 }
