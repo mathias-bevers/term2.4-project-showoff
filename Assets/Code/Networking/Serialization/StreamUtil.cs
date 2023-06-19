@@ -23,14 +23,12 @@ namespace saxion_provided
 		 */
 		public static void Write(NetworkStream pStream, byte[] pMessage)
 		{
-			Thread thread = new Thread(() =>
-			{
+			
 				//convert message length to 4 bytes and write those bytes into the stream
 				pStream.Write(BitConverter.GetBytes(pMessage.Length), 0, 4);
 				//now send the bytes of the message themselves
 				pStream.Write(pMessage, 0, pMessage.Length);
-			});
-			thread.Start();
+			
 		}
 
 		/**
