@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DataProcessor : MonoBehaviour
 {
-	private const float DISTANCE_SEND_DELAY = 3f;
+	private const float DISTANCE_SEND_DELAY = 5f;
 
 	[SerializeField] private Client networkingClient;
 	[SerializeField] private MapWalker walker;

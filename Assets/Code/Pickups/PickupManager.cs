@@ -41,7 +41,6 @@ public class PickupManager : Singleton<PickupManager>
                 }
             }
 
-            // Debug.Log($"Picked up {data} ");
             if (!hasReceivedFromServer)
             {
                 if (pickup.shouldSendToServer)
@@ -78,15 +77,12 @@ public class PickupManager : Singleton<PickupManager>
                     }
                 }
                 pickupCountdowns.Add(new PickupCountdown(pickup.identifier, 2.50f, true));
-                //
             }
         }
     }
 
     private void Update()
     {
-
-
         for (int i = pickupCountdowns.Count - 1; i >= 0; i--)
         {
             pickupCountdowns[i].currentTimer += Time.deltaTime;
@@ -104,6 +100,7 @@ public class PickupManager : Singleton<PickupManager>
                     else
                     {
                         pickup.onPickupEvent?.Invoke(pickup.parameters);
+                        break;
                     }
                 }
                 pickupCountdowns.RemoveAt(i);
