@@ -449,6 +449,123 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1826474235032543430
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5360051057394923865}
+  - component: {fileID: 1043108581967804039}
+  - component: {fileID: 4089283118688685751}
+  m_Layer: 0
+  m_Name: Object
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5360051057394923865
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826474235032543430}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3398807621037779705}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1043108581967804039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826474235032543430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 624c99e8d5daf4c4295ebd790cecb4cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chanceToSpawnNothing: 1
+  noSpawnChance: 85
+  spawnableObjects:
+  - forEra: 0
+    spawnableObjects:
+    - gameObject: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 2.2, z: 3}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+  - forEra: 1
+    spawnableObjects:
+    - gameObject: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 2.2, z: 3}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+--- !u!114 &4089283118688685751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826474235032543430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b194082d60ebe54792d609f44546c64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chanceToSpawnNothing: 1
+  noSpawnChance: 35
+  spawnableObjects:
+  - forEra: 0
+    spawnableObjects:
+    - gameObject: {fileID: 2499655455466691566, guid: abdf873191d60804bb8d5dc55d20bb87,
+        type: 3}
+      transformData:
+        position: {x: 1, y: 0, z: 1.5}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: abdf873191d60804bb8d5dc55d20bb87,
+        type: 3}
+      transformData:
+        position: {x: -1, y: 0, z: 1.5}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: abdf873191d60804bb8d5dc55d20bb87,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 0, z: 1.5}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 42274d2a6c880ad40a135a90d685d3aa,
+        type: 3}
+      transformData:
+        position: {x: -1, y: 0, z: 1.5}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 42274d2a6c880ad40a135a90d685d3aa,
+        type: 3}
+      transformData:
+        position: {x: 1, y: 0, z: 1.5}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 42274d2a6c880ad40a135a90d685d3aa,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 0, z: 2}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
 --- !u!1 &1938083746988211344
 GameObject:
   m_ObjectHideFlags: 0
@@ -1038,6 +1155,7 @@ Transform:
   - {fileID: 3398807621003918999}
   - {fileID: 3398807621413081666}
   - {fileID: 3398807622507102552}
+  - {fileID: 5360051057394923865}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -1067,8 +1067,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 624c99e8d5daf4c4295ebd790cecb4cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chanceToSpawnNothing: 0
-  noSpawnChance: 75
+  chanceToSpawnNothing: 1
+  noSpawnChance: 50
   spawnableObjects:
   - forEra: 0
     spawnableObjects:
