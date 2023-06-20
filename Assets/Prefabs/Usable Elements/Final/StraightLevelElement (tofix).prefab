@@ -1078,6 +1078,14 @@ MonoBehaviour:
         position: {x: 0, y: 2.2, z: 3}
         eulerAngles: {x: 0, y: 0, z: 0}
         scale: {x: 1, y: 1, z: 1}
+  - forEra: 1
+    spawnableObjects:
+    - gameObject: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 2.2, z: 3}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
 --- !u!1 &2143553748534247836
 GameObject:
   m_ObjectHideFlags: 0

@@ -70,6 +70,11 @@ public class Motor : MonoBehaviour, IRegistry
         _velocity.y = 0;
     }
 
+    public void ResetVelocity()
+    {
+        _velocity = Vector2.zero;
+    }
+
     public void RemoveFall()
     {
         if (_velocity.y <= -0.1f) _velocity.y = 0;
