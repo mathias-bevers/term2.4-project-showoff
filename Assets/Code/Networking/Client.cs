@@ -1,175 +1,185 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using saxion_provided;
 using UnityEngine;
 
 public class Client : MonoBehaviour
 {
-	public event Action<PlayerConnection.ConnectionType> connectionEvent;
-	public event Action<float> opponentDistanceReceivedEvent;
-	public event Action<PickupData> receivedDebuffEvent;
+    public event Action<PlayerConnection.ConnectionType> connectionEvent;
+    public event Action<float> opponentDistanceReceivedEvent;
+    public event Action<PickupData> receivedDebuffEvent;
 
-	public int id { get; private set; } = -1;
-	public bool isInitialized => id >= 0;
+    public int id { get; private set; } = -1;
+    public bool isInitialized => id >= 0;
 
-	private bool isAccepted;
-	private TcpClient client;
+    private bool isAccepted;
+    private TcpClient client;
 
-	private void Start()
-	{
-		if (Player.Instance.client != null)
-		{
-			Destroy(gameObject);
-			return;
-		}
+    private void Start()
+    {
+        if (Player.Instance.client != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-		Player.Instance.client = this;
-	}
+        Player.Instance.client = this;
+    }
 
-	public void Update()
-	{
-		try
-		{
-			if (client == null) { return; }
+    List<Packet> packets = new List<Packet>();
 
-			while (client is { Available: > 1 })
-			{
-				byte[] inBytes = StreamUtil.Read(client.GetStream());
-				ProcessData(inBytes);
-			}
-		}
-		catch (Exception e)
-		{
-			Debug.LogError(string.Concat(e.Message, '\n', e.StackTrace));
-			Close();
-		}
-	}
+    public void Update()
+    {
+        try
+        {
+            if (client == null) { return; }
 
-	private void OnDestroy()
-	{
-		// Debug.LogWarning("Destroying client instance...");
-		Close();
-	}
+            while (client is { Available: > 1 })
+            {
+                byte[] inBytes = StreamUtil.Read(client.GetStream());
+                packets.Add(new Packet(inBytes));
+            }
 
-	public void Close()
-	{
-		if (client == null) { return; }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(string.Concat(e.Message, '\n', e.StackTrace));
+            Close();
+        }
 
-		isAccepted = false;
-		client.Close();
-		client = null;
-		Destroy(gameObject);
-	}
+        for (int i = packets.Count - 1; i >= 0; i--)
+        {
+            ProcessData(packets[i]);
+            packets.RemoveAt(i);
+        }
+    }
 
-	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
+    private void OnDestroy()
+    {
+        // Debug.LogWarning("Destroying client instance...");
+        Close();
+    }
 
-	public void Connect(IPAddress ip, int port, int attempts = 0)
-	{
-		if (isAccepted) { return; }
+    public void Close()
+    {
+        if (client == null) { return; }
 
-		if (ip == null) { throw new ArgumentNullException(nameof(ip), "ip cannot be null"); }
+        isAccepted = false;
+        client.Close();
+        client = null;
+        Destroy(gameObject);
+    }
 
-		if (attempts >= 5)
-		{
-			Destroy(this);
-			throw new WebException("FAILED TO CONNECT TO SERVER");
-		}
+    public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
 
-		try
-		{
-			client ??= new TcpClient();
-			client.Connect(ip, port);
-		}
-		catch (SocketException se)
-		{
-			if (se.SocketErrorCode == SocketError.ConnectionRefused)
-			{
-				Server.Instance.Initialize(ip, port);
-				attempts++;
-				Debug.LogWarning($"Retrying connection attempt: {attempts}");
-				Connect(ip, port, attempts);
-				return;
-			}
+    public void Connect(IPAddress ip, int port, int attempts = 0)
+    {
+        if (isAccepted) { return; }
 
-			Debug.LogError($"Failed to connect to server!\n{se.Message}");
-		}
-	}
+        if (ip == null) { throw new ArgumentNullException(nameof(ip), "ip cannot be null"); }
 
-	public void SendData(Packet packet)
-	{
-		if (!isAccepted) { return; }
+        if (attempts >= 5)
+        {
+            Destroy(this);
+            throw new WebException("FAILED TO CONNECT TO SERVER");
+        }
 
-		if (packet == null)
-		{
-			Debug.LogWarning("Trying to send null");
-			return;
-		}
+        try
+        {
+            client ??= new TcpClient();
+            client.Connect(ip, port);
+        }
+        catch (SocketException se)
+        {
+            if (se.SocketErrorCode == SocketError.ConnectionRefused)
+            {
+                Server.Instance.Initialize(ip, port);
+                attempts++;
+                Debug.LogWarning($"Retrying connection attempt: {attempts}");
+                Connect(ip, port, attempts);
+                return;
+            }
 
-		try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
-		catch (Exception)
-		{
-			Debug.LogWarning("Cannot send data to closed stream.");
-			Destroy(this);
-		}
-	}
+            Debug.LogError($"Failed to connect to server!\n{se.Message}");
+        }
+    }
 
-	private void ProcessData(byte[] dataInBytes)
-	{
-		Packet packet = new(dataInBytes);
-		ServerObject serverObject;
-		try { serverObject = packet.ReadObject(); }
-		catch
-		{
-			Debug.LogError("object could not be read.");
-			Close();
-			return;
-		}
+    public void SendData(Packet packet)
+    {
+        if (!isAccepted) { return; }
 
-		if (!isAccepted)
-		{
-			if (serverObject is not AccessCallback callback) { return; }
+        if (packet == null)
+        {
+            Debug.LogWarning("Trying to send null");
+            return;
+        }
 
-			HandleAccessCallback(callback);
-			return;
-		}
+        try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
+        catch (Exception)
+        {
+            Debug.LogWarning("Cannot send data to closed stream.");
+            Destroy(this);
+        }
+    }
 
-		switch (serverObject)
-		{
-			case HeartBeat: break;
+    private void ProcessData(Packet packet)
+    {
+        ServerObject serverObject;
+        try { serverObject = packet.ReadObject(); }
+        catch
+        {
+            Debug.LogError("object could not be read.");
+            Close();
+            return;
+        }
 
-			case PlayerDistance playerDistance:
-				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
-				break;
-			
-			case PlayerConnection playerConnection:
-				connectionEvent?.Invoke(playerConnection.connectionType);
-				break;
-			
-			case SendPickup sendPickup:
-				receivedDebuffEvent?.Invoke(sendPickup.data);
-				break;
-			
-			case GetHighScores getHighScores:
-				// Debug.Log($"Getting scores from server:\n {getHighScores}");
-				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
-				// if (getHighScores.closeClient) { Close(); }
-				break;
-			
-			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
-		}
-	}
+        if (!isAccepted)
+        {
+            if (serverObject is not AccessCallback callback) { return; }
 
-	private void HandleAccessCallback(AccessCallback callback)
-	{
-		isAccepted = callback.accepted;
-		if (!isAccepted)
-		{
-			Destroy(this);
-			return;
-		}
+            HandleAccessCallback(callback);
+            return;
+        }
 
-		id = callback.id;
-		SendData(HighScoreManager.Instance.LocalScoresAsPacket());
-	}
+        switch (serverObject)
+        {
+            case HeartBeat: break;
+
+            case PlayerDistance playerDistance:
+                opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
+                break;
+
+            case PlayerConnection playerConnection:
+                connectionEvent?.Invoke(playerConnection.connectionType);
+                break;
+
+            case SendPickup sendPickup:
+                receivedDebuffEvent?.Invoke(sendPickup.data);
+                break;
+
+            case GetHighScores getHighScores:
+                // Debug.Log($"Getting scores from server:\n {getHighScores}");
+                HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
+                // if (getHighScores.closeClient) { Close(); }
+                break;
+
+            default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
+        }
+    }
+
+    private void HandleAccessCallback(AccessCallback callback)
+    {
+        isAccepted = callback.accepted;
+        if (!isAccepted)
+        {
+            Destroy(this);
+            return;
+        }
+
+        id = callback.id;
+        SendData(HighScoreManager.Instance.LocalScoresAsPacket());
+    }
 }

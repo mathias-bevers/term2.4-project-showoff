@@ -1067,10 +1067,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 624c99e8d5daf4c4295ebd790cecb4cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chanceToSpawnNothing: 0
-  noSpawnChance: 75
+  chanceToSpawnNothing: 1
+  noSpawnChance: 50
   spawnableObjects:
   - forEra: 0
+    spawnableObjects:
+    - gameObject: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 2.2, z: 3}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+  - forEra: 1
     spawnableObjects:
     - gameObject: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
         type: 3}

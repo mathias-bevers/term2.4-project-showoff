@@ -22,7 +22,7 @@ public class CameraFollowPoint : CameraRigModule
         else
         {
             float distance = Vector3.Distance(transform.position, followPoint.position);
-            if (distance > forceTPAt) { Debug.Log(this.distance); return; }
+            if (distance > forceTPAt) { return; }
             
             transform.position = Vector3.MoveTowards(transform.position, followPoint.position, speedCurve.Evaluate(Utils.Map(distance, 0, forceTPAt, 0, 1)) * followSpeed * Time.deltaTime);
 

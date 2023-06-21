@@ -6,7 +6,11 @@ public class EraTimer : Singleton<EraTimer>
 {
     public IntUnityEvent onEraChange;
 
+    Era _currentEra = Era.Era1;
+    public Era currentEra => _currentEra;
+
     [SerializeField] int hourChangeEraTime = 2;
+    [SerializeField] int eraCount = 2;
 
     int lastEra = -1;
     int curEra = -1;
@@ -36,11 +40,12 @@ public class EraTimer : Singleton<EraTimer>
         int hours = currentTime.Hour;
         float cur = hours / (float)hourChangeEraTime;
 
-        curEra = (int)(cur % 3);
+        curEra = (int)(cur % eraCount);
         if (lastEra != curEra)
         {
             lastEra = curEra;
             onEraChange?.Invoke(curEra);
+            _currentEra = (Era)curEra;
         }
     }
 }
