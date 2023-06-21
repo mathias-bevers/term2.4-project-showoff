@@ -1,3 +1,4 @@
+using System;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,7 +37,7 @@ public class GridLayoutGroupResizer : MonoBehaviour
 
 		timer = RESIZE_DELAY;
 
-		if (canvas.rect.size == currentCanvasSize) { }
+		if (canvas.rect.size == currentCanvasSize) { return; }
 
 		Resize();
 	}
