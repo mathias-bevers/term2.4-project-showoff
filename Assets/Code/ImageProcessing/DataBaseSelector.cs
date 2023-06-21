@@ -23,12 +23,14 @@ public class DataBaseSelector : MonoBehaviour
 	[SerializeField] private Button previousPage;
 	[SerializeField] private Button nextPage;
 
-	private Dictionary<string, Sprite> spriteCache;
+	public Dictionary<string, Sprite> spriteCache { get; private set; }
+	public string selectedFileName { get; private set; }
+	public string imageDirectoryPath { get; private set; }
+
 	private Image[] uiImages;
 	private int scrollIndex;
 	private int gridSize;
 	private int pages;
-	private string imageDirectoryPath;
 	private string[] fileNames;
 
 	private void Awake()
@@ -36,7 +38,8 @@ public class DataBaseSelector : MonoBehaviour
 		spriteCache = new Dictionary<string, Sprite>();
 		gridSize = imagesPerRow * rows;
 		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, "BillboardImages", Path.DirectorySeparatorChar);
-		fileNames = acceptedFileFormats.SelectMany(fileFormat => Directory.GetFiles(imageDirectoryPath, $"*.{fileFormat}", SearchOption.AllDirectories)).ToArray();
+		// fileNames = acceptedFileFormats.SelectMany(fileFormat => Directory.GetFiles(imageDirectoryPath, $"*.{fileFormat}", SearchOption.AllDirectories)).ToArray();
+		fileNames = GetFileNames();
 		pages = (int)Math.Ceiling((float)fileNames.Length / gridSize);
 
 		SetupGrid();
@@ -66,11 +69,9 @@ public class DataBaseSelector : MonoBehaviour
 				continue;
 			}
 
-			byte[] inBytes = File.ReadAllBytes(fileName);
-			Texture2D texture = new(1, 1);
-			texture.LoadImage(inBytes);
+		
 
-			sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+			sprite = Utils.loadSpriteFromDisk(imageDirectoryPath + fileName);
 			sprites.Add(sprite);
 			spriteCache.Add(fileName, sprite);
 		}
@@ -132,7 +133,7 @@ public class DataBaseSelector : MonoBehaviour
 	private void SetNavigation(int displayedImages)
 	{
 		Navigation navigation;
-		
+
 		if (displayedImages == gridSize)
 		{
 			Selectable bottomRight = uiImages[gridSize - 1].GetComponentInParent<Selectable>();
@@ -175,7 +176,7 @@ public class DataBaseSelector : MonoBehaviour
 		Selectable topLast = uiImages[imagesPerRow - 1].GetComponentInParent<Selectable>();
 		navigation = topLast.navigation;
 		navigation.selectOnRight = previousPage;
-		topLast.navigation= navigation;
+		topLast.navigation = navigation;
 
 		navigation = previousPage.navigation;
 		navigation.selectOnLeft = topLast;
@@ -185,6 +186,23 @@ public class DataBaseSelector : MonoBehaviour
 	private void SelectImage(int gridIndex)
 	{
 		int listIndex = gridSize * scrollIndex + gridIndex;
-		Debug.Log($"Selected image #{listIndex} with name: {fileNames[listIndex].Split(Path.DirectorySeparatorChar).Last()}");
+		selectedFileName = fileNames[listIndex];
+		Debug.Log("selectedFileName: " + selectedFileName);
+	}
+
+	private string[] GetFileNames()
+	{
+		List<string> temp = new();
+		
+		foreach (string fileFormat in acceptedFileFormats)
+		{
+			foreach (string fileName in Directory.GetFiles(imageDirectoryPath, $"*.{fileFormat}", SearchOption.AllDirectories))
+			{
+				string trimmedFileName = fileName.Substring(imageDirectoryPath.Length, fileName.Length - imageDirectoryPath.Length);
+				temp.Add(trimmedFileName);
+			}
+		}
+		
+		return temp.ToArray();
 	}
 }

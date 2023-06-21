@@ -10,9 +10,9 @@ public class Server : Singleton<Server>
 {
 	private const int MAX_PLAYERS = 2;
 	private bool isRunning;
+	private DataBaseCloud dataBaseCloud;
 
 	private HighScoreCloud highScoreCloud;
-	private DataBaseCloud dataBaseCloud;
 	private int currentID = -1;
 	private List<int> badClients;
 	private List<ReceivedPacket> receivedPackets;
@@ -55,16 +55,21 @@ public class Server : Singleton<Server>
 		{
 			ReceivedPacket receivedPacket = receivedPackets[i];
 
-			if (receivedPacket.serverObject is HighScoreServerObject asHighScore)
+			switch (receivedPacket.serverObject)
 			{
-				try { highScoreCloud.ProcessPacket(receivedPacket.sender, asHighScore); }
-				catch (ArgumentException e) { Debug.LogError(e); }
-			}
-			else if(receivedPacket.serverObject is DataBaseObject dataBaseObject)
-			{
+				case HighScoreServerObject asHighScore:
+					try { highScoreCloud.ProcessPacket(receivedPacket.sender, asHighScore); }
+					catch (ArgumentException e) { Debug.LogError(e); }
+					break;
 				
+				case DataBaseObject dataBaseObject:
+					try { dataBaseCloud.ProcessPacket(receivedPacket.sender, dataBaseObject); }
+					catch (Exception e) { Debug.Log(e); }
+					break;
+				
+				default: WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
+					break;
 			}
-			else { WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket()); }
 
 			receivedPackets.RemoveAt(i);
 		}
@@ -74,13 +79,13 @@ public class Server : Singleton<Server>
 	{
 		listener = new TcpListener(ip, port);
 		listener.Start();
-		
+
 		clients = new List<ServerClient>(MAX_PLAYERS);
 		badClients = new List<int>();
 		receivedPackets = new List<ReceivedPacket>();
 		highScoreCloud = new HighScoreCloud(this);
 		dataBaseCloud = new DataBaseCloud(this);
-		
+
 		isRunning = true;
 
 		Debug.Log($"Started new server on <b>{listener.LocalEndpoint}</b>!");
@@ -173,7 +178,7 @@ public class Server : Singleton<Server>
 			WriteToClient(receiver, packet);
 		}
 	}
-	
+
 
 	public void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
 

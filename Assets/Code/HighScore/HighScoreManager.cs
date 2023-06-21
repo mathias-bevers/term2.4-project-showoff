@@ -26,7 +26,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 		DontDestroyOnLoad(gameObject);
 		SceneManager.sceneLoaded += OnSceneLoaded;
 
-		highScoreFilePath = string.Concat(Application.persistentDataPath, System.IO.Path.DirectorySeparatorChar, "high_scores.txt");
+		highScoreFilePath = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, "high_scores.txt");
 	}
 
 	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

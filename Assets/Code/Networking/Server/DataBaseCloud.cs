@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using saxion_provided;
+using UnityEngine;
 
 public class DataBaseCloud
 {
@@ -29,6 +30,7 @@ public class DataBaseCloud
 		GetFileNames getFileNames = new(fileNames);
 		packet.Write(getFileNames);
 		parentServer.WriteToClient(sender, packet);
+		Debug.Log($"Writing file-names to client#{sender.id}\n{ToString()}");
 	}
 
 	public override string ToString()

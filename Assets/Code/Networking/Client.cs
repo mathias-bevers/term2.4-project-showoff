@@ -10,7 +10,6 @@ public class Client : MonoBehaviour
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
-	public event Action<GetFileNames> receivedFileNames; 
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
@@ -121,9 +120,9 @@ public class Client : MonoBehaviour
 		Packet packet = new(dataInBytes);
 		ServerObject serverObject;
 		try { serverObject = packet.ReadObject(); }
-		catch
+		catch(Exception e)
 		{
-			Debug.LogError("object could not be read.");
+			Debug.LogError("object could not be read.\n" + e.Message);
 			Close();
 			return;
 		}
