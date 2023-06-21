@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
 
@@ -12,7 +11,8 @@ public class Server : Singleton<Server>
 	private const int MAX_PLAYERS = 2;
 	private bool isRunning;
 
-	private HighScoreCloud cloud;
+	private HighScoreCloud highScoreCloud;
+	private DataBaseCloud dataBaseCloud;
 	private int currentID = -1;
 	private List<int> badClients;
 	private List<ReceivedPacket> receivedPackets;
@@ -57,8 +57,12 @@ public class Server : Singleton<Server>
 
 			if (receivedPacket.serverObject is HighScoreServerObject asHighScore)
 			{
-				try { cloud.ProcessPacket(receivedPacket.sender, asHighScore); }
+				try { highScoreCloud.ProcessPacket(receivedPacket.sender, asHighScore); }
 				catch (ArgumentException e) { Debug.LogError(e); }
+			}
+			else if(receivedPacket.serverObject is DataBaseObject dataBaseObject)
+			{
+				
 			}
 			else { WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket()); }
 
@@ -68,13 +72,15 @@ public class Server : Singleton<Server>
 
 	public void Initialize(IPAddress ip, int port)
 	{
+		listener = new TcpListener(ip, port);
+		listener.Start();
+		
 		clients = new List<ServerClient>(MAX_PLAYERS);
 		badClients = new List<int>();
 		receivedPackets = new List<ReceivedPacket>();
-		cloud = new HighScoreCloud(this);
-
-		listener = new TcpListener(ip, port);
-		listener.Start();
+		highScoreCloud = new HighScoreCloud(this);
+		dataBaseCloud = new DataBaseCloud(this);
+		
 		isRunning = true;
 
 		Debug.Log($"Started new server on <b>{listener.LocalEndpoint}</b>!");

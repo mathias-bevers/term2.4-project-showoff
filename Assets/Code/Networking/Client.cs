@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using saxion_provided;
@@ -9,6 +10,7 @@ public class Client : MonoBehaviour
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
+	public event Action<GetFileNames> receivedFileNames; 
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
@@ -151,9 +153,11 @@ public class Client : MonoBehaviour
 				break;
 			
 			case GetHighScores getHighScores:
-				// Debug.Log($"Getting scores from server:\n {getHighScores}");
 				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
-				// if (getHighScores.closeClient) { Close(); }
+				break;
+			
+			case GetFileNames fileNames:
+				ChosenImagesCommunicator.Instance.RewriteDataBaseCache(fileNames);
 				break;
 			
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
