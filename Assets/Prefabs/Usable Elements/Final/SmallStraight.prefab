@@ -2764,6 +2764,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8081471678270543733}
   - component: {fileID: 4329274280841029442}
+  - component: {fileID: 5131783654937207552}
   m_Layer: 0
   m_Name: Obstacle
   m_TagString: Untagged
@@ -2837,6 +2838,37 @@ MonoBehaviour:
         type: 3}
       transformData:
         position: {x: 0, y: 0, z: 2}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+--- !u!114 &5131783654937207552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6357996846034209662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 624c99e8d5daf4c4295ebd790cecb4cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chanceToSpawnNothing: 1
+  noSpawnChance: 85
+  spawnableObjects:
+  - forEra: 0
+    spawnableObjects:
+    - gameObject: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 2.2, z: 3}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+  - forEra: 1
+    spawnableObjects:
+    - gameObject: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 2.2, z: 3}
         eulerAngles: {x: 0, y: 0, z: 0}
         scale: {x: 1, y: 1, z: 1}
 --- !u!1 &6402434481175022901

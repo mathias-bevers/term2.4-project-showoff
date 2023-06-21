@@ -1,2 +1,1 @@
-IsLeftClient:BOOL:False
-IsRightClient:BOOL:False
+IsLeftClient:BOOL:True
