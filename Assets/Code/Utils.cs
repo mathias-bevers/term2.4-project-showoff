@@ -39,5 +39,25 @@ public static partial class Utils
 
 	public static Transform[] GetAllChildren(this Transform parent) => parent.Cast<Transform>().ToArray();
 
-	public static string ColorRichText(this string str, Color color) => string.Concat("<color=", ColorUtility.ToHtmlStringRGBA(color), ">",str, "</color>");
+	public static string ColorRichText(this string str, Color color) => string.Concat("<color=", ColorUtility.ToHtmlStringRGBA(color), ">", str, "</color>");
+
+	public static T GetComponentInParents<T>(this Transform start) where T : Component
+	{
+		Transform parent = start.parent;
+		while (parent != null)
+		{
+			if (parent.TryGetComponent(out T component)) { return component; }
+
+			parent = parent.parent;
+		}
+
+		throw new NoComponentFoundException<T>("");
+	}
+
+	public static T GetComponentThrow<T>(this GameObject gameObject) where T : Component
+	{
+		if (gameObject.TryGetComponent(out T component)) { return component; }
+
+		throw new NoComponentFoundException<T>();
+	}
 }

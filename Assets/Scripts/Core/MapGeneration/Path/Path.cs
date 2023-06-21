@@ -2,46 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class Path : IEnumerator
+namespace Mudfish
 {
-    public List<PathNode> nodes;
-
-    public Path()
+    public class Path : IEnumerator
     {
-        nodes = new List<PathNode>();
-    }
+        public List<PathNode> nodes;
 
-    public int Count => nodes.Count;
+        public Path() { nodes = new List<PathNode>(); }
+
+        public int Count => nodes.Count;
 
 
-    int position = -1;
-    public object Current => this[position];
+        int position = -1;
+        public object Current => this[position];
 
-    public PathNode this[int index]
-    {
-        get
+        public PathNode this[int index]
         {
-            if (index >= Count)
-                return new PathNode(nodes[Count - 1].position);
-            else 
-         return   nodes[index];
+            get
+            {
+                if (index >= Count) return new PathNode(nodes[Count - 1].position);
+                else return nodes[index];
+            }
         }
-    }
 
-    public IEnumerator GetEnumerator()
-    {
-        return (IEnumerator)this;
-    }
+        public IEnumerator GetEnumerator() { return (IEnumerator)this; }
 
-    public bool MoveNext()
-    {
-        position++;
-        return (position < nodes.Count);
-    }
+        public bool MoveNext()
+        {
+            position++;
+            return (position < nodes.Count);
+        }
 
-    public void Reset()
-    {
-        position = -1;
+        public void Reset() { position = -1; }
     }
 }
