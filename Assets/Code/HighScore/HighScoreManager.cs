@@ -49,7 +49,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 		List<string> linesToWrite = scoreCollection.Select(score => string.Concat(score.Item1, ',', score.Item2)).ToList();
 		
 		File.WriteAllLines(highScoreFilePath, linesToWrite);
-		Debug.Log($"Written {string.Join(", ", scoreCollection)} to file.");
+		// Debug.Log($"Written {string.Join(", ", scoreCollection)} to file.");
 	}
 
 	public void SendHighScoreToServer(string playerName, int score)

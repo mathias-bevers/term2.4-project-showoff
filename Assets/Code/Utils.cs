@@ -5,15 +5,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
-using UnityEngine.UI;
-using Object = System.Object;
 using Random = UnityEngine.Random;
 
 public static partial class Utils
 {
 	public static bool IsNull(this object obj) => ReferenceEquals(obj, null);
 
-	public static bool IsNullOrEmpty<T>(this IList<T> collection) => collection == null || collection.Count < 1;
+	public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection) => collection == null || !collection.Any();
 
 	public static T GetRandomElement<T>(this IList<T> collection) where T : class
 	{
@@ -64,7 +62,7 @@ public static partial class Utils
 		throw new NoComponentFoundException<T>();
 	}
 
-	public static Sprite loadSpriteFromDisk(string filePath)
+	public static Sprite LoadSpriteFromDisk(string filePath)
 	{
 		byte[] inBytes = File.ReadAllBytes(filePath);
 		Texture2D texture = new(1, 1);

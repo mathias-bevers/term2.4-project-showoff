@@ -431,8 +431,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc091877d144ef99852c614be2cbe1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainMenuScene: 0
   networkingClient: {fileID: 0}
   previewImageParent: {fileID: 622931678124483314}
+  oneXone: {fileID: 21300000, guid: 43c2f0f88efc40444a196f15a1fbc151, type: 3}
+  confirmSelectionButton: {fileID: 5417803815606180609}
 --- !u!1 &5417803815331230659
 GameObject:
   m_ObjectHideFlags: 0

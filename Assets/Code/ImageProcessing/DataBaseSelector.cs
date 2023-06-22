@@ -24,8 +24,8 @@ public class DataBaseSelector : MonoBehaviour
 	[SerializeField] private Button nextPage;
 
 	public Dictionary<string, Sprite> spriteCache { get; private set; }
-	public string selectedFileName { get; private set; }
 	public string imageDirectoryPath { get; private set; }
+	public event Action<string> imageSelectedEvent; 
 
 	private Image[] uiImages;
 	private int scrollIndex;
@@ -71,7 +71,7 @@ public class DataBaseSelector : MonoBehaviour
 
 		
 
-			sprite = Utils.loadSpriteFromDisk(imageDirectoryPath + fileName);
+			sprite = Utils.LoadSpriteFromDisk(imageDirectoryPath + fileName);
 			sprites.Add(sprite);
 			spriteCache.Add(fileName, sprite);
 		}
@@ -186,8 +186,8 @@ public class DataBaseSelector : MonoBehaviour
 	private void SelectImage(int gridIndex)
 	{
 		int listIndex = gridSize * scrollIndex + gridIndex;
-		selectedFileName = fileNames[listIndex];
-		Debug.Log("selectedFileName: " + selectedFileName);
+		string fileName = fileNames[listIndex];
+		imageSelectedEvent?.Invoke(fileName);
 	}
 
 	private string[] GetFileNames()
