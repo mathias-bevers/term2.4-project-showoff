@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 622931678124483314}
   - component: {fileID: 7745364782567959022}
   m_Layer: 5
-  m_Name: DisplayingImages
+  m_Name: ChosenImagesContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -999,10 +999,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 5417803815708995561}
+    m_SelectOnDown: {fileID: 5417803816913778883}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -1010,7 +1010,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.69411767, g: 0.9490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1245,7 +1245,7 @@ MonoBehaviour:
     m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 5417803816913778883}
+    m_SelectOnDown: {fileID: 5417803815606180609}
     m_SelectOnLeft: {fileID: 5417803817031524137}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -1363,7 +1363,7 @@ GameObject:
   - component: {fileID: 5417803815886621546}
   - component: {fileID: 5417803815886621548}
   m_Layer: 5
-  m_Name: Content
+  m_Name: DataBasePage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2817,7 +2817,7 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 5417803815708995561}
+    m_SelectOnUp: {fileID: 5417803815606180609}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 5417803816479209006}
     m_SelectOnRight: {fileID: 0}
