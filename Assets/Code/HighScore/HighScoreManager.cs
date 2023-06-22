@@ -9,17 +9,14 @@ using UnityEngine.SceneManagement;
 
 public class HighScoreManager : Singleton<HighScoreManager>
 {
-	public delegate List<(string, int)> RequestHighScoreDelegate();
-
 	private const string FILE_NAME = "high_scores.txt";
 
 	[SerializeField, Scene] private int mainMenuScene;
 
 	public List<HighScoreData> highScoreDatas { get; private set; }
-	public RequestHighScoreDelegate requestHighScoreDelegate { get; set; }
-
-	private MapWalker mapWalker;
+	
 	private string filePath;
+
 
 	public override void Awake()
 	{
@@ -99,12 +96,14 @@ public class HighScoreManager : Singleton<HighScoreManager>
 
 	private void SetScores()
 	{
-		Transform hsBoard = FindObjectOfType<HighScorePanel>().transform.parent;
+		HighScorePanel highScorePanel  = FindObjectOfType<HighScorePanel>();
+		if (highScorePanel == null) return;
+		Transform hsBoard = highScorePanel.transform.parent;
 
 		for (int i = 0; i < hsBoard.childCount; ++i)
 		{
 			HighScorePanel panel = hsBoard.GetChild(i).GetComponent<HighScorePanel>();
-			panel.SetScore(i >= highScoreDatas.Count ? null : highScoreDatas[i]);
+			panel?.SetScore(i >= highScoreDatas.Count ? null : highScoreDatas[i]);
 		}
 	}
 

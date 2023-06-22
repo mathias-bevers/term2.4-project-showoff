@@ -136,10 +136,12 @@ public class Server : Singleton<Server>
 
 			try
 			{
-				byte[] inBytes = StreamUtil.Read(client.stream);
-				Packet packet = new(inBytes);
-				ServerObject obj = packet.ReadObject();
-				receivedPackets.Add(new ReceivedPacket(client, obj));
+	
+					byte[] inBytes = StreamUtil.Read(client.stream);
+					Packet packet = new(inBytes);
+					ServerObject obj = packet.ReadObject();
+					receivedPackets.Add(new ReceivedPacket(client, obj));
+			
 			}
 			catch (Exception)
 			{
