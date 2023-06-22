@@ -15,17 +15,22 @@ public class Billboard : MonoBehaviour
 
 	[field: SerializeField] public Image[] images { get; private set; }
 	public string[] displayingImageNames { get; private set; }
-	
+
+	private Canvas parentCanvas;
 	private Transform cachedTransform;
 
 	private void Start()
 	{
 		cachedTransform = transform;
-		
-		float yRotation = cachedTransform.rotation.y + possibleRotations.GetRandomElementStruct(); 
+		parentCanvas = images[0].transform.parent.GetComponentThrow<Canvas>();
+
+		if (!parentCanvas.enabled) { return; }
+
+		float yRotation = cachedTransform.rotation.y + possibleRotations.GetRandomElementStruct();
 		cachedTransform.rotation = Quaternion.Euler(0, yRotation, 0);
-		
+
 		displayingImageNames = BillboardManager.Instance.RequestSetup(this);
+		Debug.Log("Spawned billboard!!", gameObject);
 	}
 
 	private void OnDestroy()

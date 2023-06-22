@@ -10,6 +10,8 @@ public class BillboardManager : Singleton<BillboardManager>
 	private const string TXT_FILE_NAME = "chosen_images.txt";
 	private const string IMAGE_DIRECTORY_NAME = "BillboardImages";
 
+	[SerializeField] private Sprite oneXone; 
+
 	private Dictionary<string, Sprite> spriteCache;
 	private List<string> activeImages;
 	private string txtFilePath;
@@ -24,7 +26,9 @@ public class BillboardManager : Singleton<BillboardManager>
 		activeImages = new List<string>();
 		spriteCache = new Dictionary<string, Sprite>();
 
-		//Player.Instance.deathEvent += spriteCache.Clear; //TODO: uncomment when merging to game scene.
+		if (ReferenceEquals(oneXone, null)) { throw new UnassignedReferenceException($"{nameof(oneXone)} is not set in the editor!"); }
+		
+		Player.Instance.deathEvent += spriteCache.Clear; 
 	}
 
 	public string[] RequestSetup(Billboard billboard)
@@ -34,9 +38,16 @@ public class BillboardManager : Singleton<BillboardManager>
 		foreach (Image image in billboard.images)
 		{
 			string imageToLoadName = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length ? fileNames.Except(activeImages).ToList().GetRandomElement() : fileNames.GetRandomElement();
+
+			if (string.IsNullOrEmpty(imageToLoadName))
+			{
+				image.sprite = oneXone;
+				continue;
+			}
+			
 			activeImages.Add(imageToLoadName);
 
-			if (spriteCache.TryGetValue(imageToLoadName, out Sprite sprite))
+			if (spriteCache.TryGetValue(imageToLoadName, out Sprite sprite)) 
 			{
 				image.sprite = sprite;
 				continue;
