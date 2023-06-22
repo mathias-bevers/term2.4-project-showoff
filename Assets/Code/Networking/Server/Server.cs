@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
 
@@ -12,8 +10,9 @@ public class Server : Singleton<Server>
 {
 	private const int MAX_PLAYERS = 2;
 	private bool isRunning;
+	private DataBaseCloud dataBaseCloud;
 
-	private HighScoreCloud cloud;
+	private HighScoreCloud highScoreCloud;
 	private int currentID = -1;
 	private List<int> badClients;
 	private List<ReceivedPacket> receivedPackets;
@@ -56,12 +55,21 @@ public class Server : Singleton<Server>
 		{
 			ReceivedPacket receivedPacket = receivedPackets[i];
 
-			if (receivedPacket.serverObject is HighScoreServerObject asHighScore)
+			switch (receivedPacket.serverObject)
 			{
-				try { cloud.ProcessPacket(receivedPacket.sender, asHighScore); }
-				catch (ArgumentException e) { Debug.LogError(e); }
+				case HighScoreServerObject asHighScore:
+					try { highScoreCloud.ProcessPacket(receivedPacket.sender, asHighScore); }
+					catch (ArgumentException e) { Debug.LogError(e); }
+					break;
+				
+				case DataBaseObject dataBaseObject:
+					try { dataBaseCloud.ProcessPacket(receivedPacket.sender, dataBaseObject); }
+					catch (Exception e) { Debug.Log(e); }
+					break;
+				
+				default: WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
+					break;
 			}
-			else { WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket()); }
 
 			receivedPackets.RemoveAt(i);
 		}
@@ -69,13 +77,15 @@ public class Server : Singleton<Server>
 
 	public void Initialize(IPAddress ip, int port)
 	{
+		listener = new TcpListener(ip, port);
+		listener.Start();
+
 		clients = new List<ServerClient>(MAX_PLAYERS);
 		badClients = new List<int>();
 		receivedPackets = new List<ReceivedPacket>();
-		cloud = new HighScoreCloud(this);
+		highScoreCloud = new HighScoreCloud(this);
+		dataBaseCloud = new DataBaseCloud(this);
 
-		listener = new TcpListener(ip, port);
-		listener.Start();
 		isRunning = true;
 
 		Debug.Log($"Started new server on <b>{listener.LocalEndpoint}</b>!");
@@ -170,7 +180,7 @@ public class Server : Singleton<Server>
 			WriteToClient(receiver, packet);
 		}
 	}
-	
+
 
 	public void WriteToClient(ServerClient receiver, Packet packet) { WriteToClient(receiver, packet.GetBytes()); }
 

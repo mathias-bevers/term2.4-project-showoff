@@ -9,7 +9,7 @@ public class HighScoreCloud
 {
 	private const int NAME_PADDING = 25;
 	private readonly List<(string, int)> namedScores;
-	private Server parentServer;
+	private readonly Server parentServer;
 
 	public HighScoreCloud(Server parentServer)
 	{

@@ -7,4 +7,5 @@ public static class Settings
 {
 	public static IPAddress SERVER_IP = null;
 	public const int SERVER_PORT = 56565;
+	public const int MAX_MEMES = 10;
 }

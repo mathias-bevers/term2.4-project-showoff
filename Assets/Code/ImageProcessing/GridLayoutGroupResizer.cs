@@ -1,3 +1,4 @@
+using System;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,9 +20,9 @@ public class GridLayoutGroupResizer : MonoBehaviour
 	private void Awake()
 	{
 		cachedRectTransform = transform as RectTransform;
-		glg = gameObject.GetComponentThrow<GridLayoutGroup>();
+		glg = this.GetComponentThrow<GridLayoutGroup>();
 		canvas = (RectTransform)cachedRectTransform.GetComponentInParents<Canvas>().transform;
-		CanvasScaler canvasScaler = canvas.gameObject.GetComponentThrow<CanvasScaler>();
+		CanvasScaler canvasScaler = canvas.GetComponentThrow<CanvasScaler>();
 
 		canvasDesignSize = canvasScaler.referenceResolution;
 		itemDesignPercent = new Vector2(glg.cellSize.x / canvasDesignSize.x, glg.cellSize.y / canvasDesignSize.y);
@@ -36,7 +37,7 @@ public class GridLayoutGroupResizer : MonoBehaviour
 
 		timer = RESIZE_DELAY;
 
-		if (canvas.rect.size == currentCanvasSize) { }
+		if (canvas.rect.size == currentCanvasSize) { return; }
 
 		Resize();
 	}

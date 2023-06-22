@@ -6,11 +6,12 @@ using UnityEngine.UI;
 
 public class DeathEffect : Singleton<DeathEffect>
 {
-	[SerializeField, Scene] private int mainMenuScene;
+	[SerializeField] private GameObject dataBaseCanvas;
 	[SerializeField] private Image backgroundPanel;
 	[SerializeField] private Text distanceRanText;
 	[SerializeField] private Button continueButton;
 	[SerializeField] private NameInput nameInput;
+	
 
 	private bool animationComplete;
 	private bool sentScoreToServer;
@@ -56,6 +57,7 @@ public class DeathEffect : Singleton<DeathEffect>
 
 		distanceRan = FindObjectOfType<MapWalker>().TotalMetersRan;
 		distanceRanText.text = $"You ran {distanceRan:n0} meters";
+		PowerupDisplayHandler.Instance.gameObject.SetActive(false);
 
 		animationComplete = true;
 	}
@@ -64,7 +66,9 @@ public class DeathEffect : Singleton<DeathEffect>
 	{
 		if (sentScoreToServer)
 		{
-			SceneManager.LoadScene(mainMenuScene);
+			dataBaseCanvas.SetActive(true);
+			gameObject.SetActive(false);
+			continueButton.onClick.RemoveAllListeners();
 		}
 		
 		string trimmedName = nameInput.GetName().Trim();
@@ -72,7 +76,7 @@ public class DeathEffect : Singleton<DeathEffect>
 		try
 		{
 			HighScoreManager.Instance.SendHighScoreToServer(trimmedName, (int)distanceRan);
-			continueButton.GetComponentInChildren<Text>().text = "Back to menu";
+			continueButton.GetComponentInChildren<Text>().text = "CONTINUE";
 			sentScoreToServer = true;
 		}
 		catch (ArgumentException e)
