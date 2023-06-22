@@ -155,7 +155,7 @@ public class Client : MonoBehaviour
 				break;
 			
 			case GetFileNames fileNames:
-				ChosenImagesCommunicator.Instance.RewriteDataBaseCache(fileNames);
+				DataBaseCommunicator.Instance.RewriteDataBaseCache(fileNames);
 				break;
 			
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");

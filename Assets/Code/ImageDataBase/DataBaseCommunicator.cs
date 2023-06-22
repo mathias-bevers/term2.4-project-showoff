@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using NaughtyAttributes;
 using saxion_provided;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ChosenImagesCommunicator : Singleton<ChosenImagesCommunicator>
+public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 {
 	private const string FILE_NAME = "chosen_images.txt";
 
@@ -82,10 +80,7 @@ public class ChosenImagesCommunicator : Singleton<ChosenImagesCommunicator>
 
 	public void RewriteDataBaseCache(GetFileNames serverObject)
 	{
-		if (!File.Exists(filePath))
-		{
-			File.Create(filePath).Close();
-		}
+		if (!File.Exists(filePath)) { File.Create(filePath).Close(); }
 
 		try { File.WriteAllLines(filePath, serverObject.fileNames); }
 		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
@@ -136,17 +131,23 @@ public class ChosenImagesCommunicator : Singleton<ChosenImagesCommunicator>
 	{
 		if (!File.Exists(filePath)) { return Array.Empty<string>(); }
 
-		List<string> temp = new();
-		string[] readLines = File.ReadAllLines(filePath);
 
-		if (readLines.Length <= 0) { return Array.Empty<string>(); }
+		try
+		{
+			List<string> temp = new();
+			string[] readLines = File.ReadAllLines(filePath);
+			if (readLines.Length <= 0) { return Array.Empty<string>(); }
 
-		int start = 0;
-		if (readLines.Length > Settings.MAX_MEMES) { start = readLines.Length - Settings.MAX_MEMES; }
+			int start = 0;
+			if (readLines.Length > Settings.MAX_MEMES) { start = readLines.Length - Settings.MAX_MEMES; }
 
-		for (int i = start; i < readLines.Length; ++i) { temp.Add(readLines[i]); }
+			for (int i = start; i < readLines.Length; ++i) { temp.Add(readLines[i]); }
 
-		return temp.ToArray();
+			return temp.ToArray();
+		}
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+
+		return Array.Empty<string>();
 	}
 
 	private void WriteSelectionToServer(string fileName)

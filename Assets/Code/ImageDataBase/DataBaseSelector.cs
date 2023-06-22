@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class DataBaseSelector : MonoBehaviour
 {
+	private const string DIRECTORY_NAME = "BillboardImages";
 	private readonly string[] acceptedFileFormats =
 	{
 		"jpg",
@@ -37,7 +38,7 @@ public class DataBaseSelector : MonoBehaviour
 	{
 		spriteCache = new Dictionary<string, Sprite>();
 		gridSize = imagesPerRow * rows;
-		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, "BillboardImages", Path.DirectorySeparatorChar);
+		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, DIRECTORY_NAME, Path.DirectorySeparatorChar);
 		// fileNames = acceptedFileFormats.SelectMany(fileFormat => Directory.GetFiles(imageDirectoryPath, $"*.{fileFormat}", SearchOption.AllDirectories)).ToArray();
 		fileNames = GetFileNames();
 		pages = (int)Math.Ceiling((float)fileNames.Length / gridSize);
@@ -68,9 +69,7 @@ public class DataBaseSelector : MonoBehaviour
 				sprites.Add(sprite);
 				continue;
 			}
-
-		
-
+			
 			sprite = Utils.LoadSpriteFromDisk(imageDirectoryPath + fileName);
 			sprites.Add(sprite);
 			spriteCache.Add(fileName, sprite);
