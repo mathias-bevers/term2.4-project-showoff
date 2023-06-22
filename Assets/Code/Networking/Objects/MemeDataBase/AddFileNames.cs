@@ -11,9 +11,9 @@ public class AddFileNames : DataBaseObject
 
 	public AddFileNames(IList<string> fileNames)
 	{
-		if (fileNames.IsNullOrEmpty()) { throw new ArgumentNullException(nameof(fileNames), $"Cannot add null to a {nameof(ServerObject)}"); }
+		if (fileNames.IsNull()) { throw new ArgumentNullException(nameof(fileNames), $"Cannot add null to a {nameof(ServerObject)}"); }
 
-		if (fileNames.Count() > Settings.MAX_MEMES) { throw new ArgumentException("can only have 10 fileNames at the time!", nameof(fileNames)); }
+		if (fileNames.Count > Settings.MAX_MEMES) { throw new ArgumentException("can only have 10 fileNames at the time!", nameof(fileNames)); }
 
 		this.fileNames = fileNames.ToArray();
 	}

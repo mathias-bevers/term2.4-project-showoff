@@ -1,6 +1,5 @@
 using saxion_provided;
 
-//TODO: Rewrite to be just an int!!!
 public class SendPickup : ServerObject
 {
 	public SendPickup() { }

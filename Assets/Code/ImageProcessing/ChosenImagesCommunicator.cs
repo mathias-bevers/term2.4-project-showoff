@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NaughtyAttributes;
 using saxion_provided;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -56,7 +58,8 @@ public class ChosenImagesCommunicator : Singleton<ChosenImagesCommunicator>
 		if (!Player.Instance.dead) { return; }
 
 		Packet packet = new();
-		AddFileNames fileNames = new(ReadFileNames());
+		string[] readFileNames = ReadFileNames();
+		AddFileNames fileNames = new(readFileNames);
 		packet.Write(fileNames);
 		networkingClient.SendData(packet);
 		Debug.Log("Send local data to server");
@@ -79,16 +82,25 @@ public class ChosenImagesCommunicator : Singleton<ChosenImagesCommunicator>
 
 	public void RewriteDataBaseCache(GetFileNames serverObject)
 	{
-		if (!File.Exists(filePath)) { File.Create(filePath); }
+		if (!File.Exists(filePath))
+		{
+			File.Create(filePath).Close();
+		}
 
-		File.WriteAllLines(filePath, serverObject.fileNames);
+		try { File.WriteAllLines(filePath, serverObject.fileNames); }
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 
-		if (hasSelectedImage) { SceneManager.LoadScene(0); }
+		if (hasSelectedImage)
+		{
+			SceneManager.LoadScene(0);
+			return;
+		}
 
 		if (!gameObject.activeInHierarchy) { return; }
 
 		try { DisplayPreviewImages(); }
 		catch (FileNotFoundException e) { Debug.LogError(string.Concat(e.Message, Environment.NewLine, Environment.NewLine, e.StackTrace)); }
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 	}
 
 	private void DisplayPreviewImages()
@@ -122,7 +134,7 @@ public class ChosenImagesCommunicator : Singleton<ChosenImagesCommunicator>
 
 	private string[] ReadFileNames()
 	{
-		if (!File.Exists(filePath)) { throw new FileNotFoundException($"could not load file {filePath}"); }
+		if (!File.Exists(filePath)) { return Array.Empty<string>(); }
 
 		List<string> temp = new();
 		string[] readLines = File.ReadAllLines(filePath);
@@ -144,7 +156,7 @@ public class ChosenImagesCommunicator : Singleton<ChosenImagesCommunicator>
 			Debug.LogWarning("No selection has been made");
 			return;
 		}
-		
+
 		Packet packet = new();
 		AddFileName addFileName = new(fileName);
 		packet.Write(addFileName);
