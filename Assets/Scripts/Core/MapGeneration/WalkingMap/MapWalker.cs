@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
+using Mudfish;
 
 public class MapWalker : MonoBehaviour
 {
@@ -62,8 +61,18 @@ public class MapWalker : MonoBehaviour
     {
         if (rig.player.dead) { run = false; //MeterDisplayer.Instance.DisplayMeters((int)totalMetersRan, 10000);
                                             }
-        if(run)
-        OnUpdate();
+
+        if (recoveryTime >= 0)
+        {
+            rig?.motor?.ResetVelocity();
+            Vector3 oldLocalPos = rig.player.transform.localPosition;
+            oldLocalPos.z = 0.5f;
+            rig.player.transform.localPosition = oldLocalPos;
+        }
+
+        if (run)
+            OnUpdate();
+
     }
 
     void OnUpdate()

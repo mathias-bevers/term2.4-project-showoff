@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
@@ -125,10 +126,12 @@ public class Server : Singleton<Server>
 
 			try
 			{
-				byte[] inBytes = StreamUtil.Read(client.stream);
-				Packet packet = new(inBytes);
-				ServerObject obj = packet.ReadObject();
-				receivedPackets.Add(new ReceivedPacket(client, obj));
+	
+					byte[] inBytes = StreamUtil.Read(client.stream);
+					Packet packet = new(inBytes);
+					ServerObject obj = packet.ReadObject();
+					receivedPackets.Add(new ReceivedPacket(client, obj));
+			
 			}
 			catch (Exception)
 			{

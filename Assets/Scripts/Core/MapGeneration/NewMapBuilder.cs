@@ -219,6 +219,10 @@ public class NewMapBuilder : MonoBehaviour
         currentMapgroupCounter = 0;
     }
 
+    public void SetEra(int era)
+    {
+        buildForEra = (Era)era;
+    }
 
     ElementRefs? HandleOld() => CreateElement(starterElement);
 }
