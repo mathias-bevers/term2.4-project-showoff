@@ -3272,7 +3272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6e851ea78ea6304cbec5cf7ba6ab6eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildForEra: 1
+  buildForEra: 0
   startGroup: {fileID: 11400000, guid: 9dc6ba2f41cb0c943823c73e4b0a918b, type: 2}
   starterElement: {fileID: 8406994192992383321, guid: c78c2489d04ef7042b1045c9079baec5,
     type: 3}
