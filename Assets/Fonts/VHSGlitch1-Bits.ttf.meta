@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: c7ec26c9b1876b54d9d61a2ed8e05c0f
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - VHS Glitch 1
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c42fc2f5c1e8cd54a988b8b0b936283b, type: 3}
+  - {fileID: 12800000, guid: 30a6e1c02bf9a2b4f80c1e81e5182a66, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
