@@ -183,11 +183,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 7e30df3a712afd54a9b1467f1b0f635c, type: 3}
-    m_FontSize: 34
+    m_FontSize: 69
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 81
+    m_MinSize: 0
+    m_MaxSize: 94
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -723,7 +723,7 @@ PrefabInstance:
     - target: {fileID: 1042408902243900936, guid: 249d83a3c1506cc489b49b6183d1d0af,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1042408902243900936, guid: 249d83a3c1506cc489b49b6183d1d0af,
         type: 3}
@@ -1124,6 +1124,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 310870261}
     m_Modifications:
+    - target: {fileID: 452196963324767213, guid: a3de0b7acee2b24279f005117163522a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000015258789
+      objectReference: {fileID: 0}
+    - target: {fileID: 2429107754832248167, guid: a3de0b7acee2b24279f005117163522a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000015258789
+      objectReference: {fileID: 0}
+    - target: {fileID: 2429107755247114912, guid: a3de0b7acee2b24279f005117163522a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000015258789
+      objectReference: {fileID: 0}
+    - target: {fileID: 2429107755498754470, guid: a3de0b7acee2b24279f005117163522a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000015258789
+      objectReference: {fileID: 0}
+    - target: {fileID: 2429107755828503633, guid: a3de0b7acee2b24279f005117163522a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000015258789
+      objectReference: {fileID: 0}
     - target: {fileID: 4802254648799630644, guid: a3de0b7acee2b24279f005117163522a,
         type: 3}
       propertyPath: m_Name
@@ -1418,7 +1443,7 @@ RectTransform:
   m_Children:
   - {fileID: 548827891}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1485,11 +1510,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 7e30df3a712afd54a9b1467f1b0f635c, type: 3}
-    m_FontSize: 34
+    m_FontSize: 69
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 81
+    m_MinSize: 0
+    m_MaxSize: 94
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
