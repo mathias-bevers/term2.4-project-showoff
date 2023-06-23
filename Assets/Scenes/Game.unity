@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 079012c3c699bd648a0521b48a14eab1, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: d4e34faecb9b9564e941b0a4236003c7, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.27508736, g: 0.3213616, b: 0.6948379, a: 1}
+  m_IndirectSpecularColor: {r: 0.079334185, g: 0.13543162, b: 0.16916148, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -221,7 +221,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175099383}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c996e69486d8864e9c7607b0bd624e8, type: 3}
   m_Name: 
@@ -2607,8 +2607,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   changeTime: 2
   meshRenderer: {fileID: 271587087}
-  skybox1: {fileID: 2100000, guid: 079012c3c699bd648a0521b48a14eab1, type: 2}
-  skybox2: {fileID: 2100000, guid: 5464c15ff9c6ca04cb5790c1773e76fa, type: 2}
+  skybox1: {fileID: 2100000, guid: d4e34faecb9b9564e941b0a4236003c7, type: 2}
+  skybox2: {fileID: 2100000, guid: 079012c3c699bd648a0521b48a14eab1, type: 2}
   skybox3: {fileID: 2100000, guid: 52fcefd712182d743a781fde12426775, type: 2}
 --- !u!114 &918694541
 MonoBehaviour:
@@ -2739,7 +2739,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 30
+  far clip plane: 45
   field of view: 55
   orthographic: 0
   orthographic size: 5
