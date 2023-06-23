@@ -44,10 +44,16 @@ MonoBehaviour:
       type: 3}
     canTransformInto:
     - {fileID: 3398807621037779704, guid: b5ed101ba97e5004bbd6c641437010f6, type: 3}
+    - {fileID: 2795655155604526668, guid: d1c9f7b950304a5419534421e193a288, type: 3}
+    - {fileID: 2795655155604526668, guid: 7e1469968025e824b81c11ef2c6f9e19, type: 3}
+    - {fileID: 2795655155604526668, guid: 1773e798027029549a32eac074db644b, type: 3}
   - lastElement: {fileID: 3794884456335368583, guid: 32964698d44ce6b439b3d5595f6592d5,
       type: 3}
     canTransformInto:
     - {fileID: 3794884456335368583, guid: 32964698d44ce6b439b3d5595f6592d5, type: 3}
+    - {fileID: 2795655155604526668, guid: d1c9f7b950304a5419534421e193a288, type: 3}
+    - {fileID: 2795655155604526668, guid: 7e1469968025e824b81c11ef2c6f9e19, type: 3}
+    - {fileID: 2795655155604526668, guid: 1773e798027029549a32eac074db644b, type: 3}
   nextMapGroups:
   - {fileID: 11400000}
   - {fileID: 11400000, guid: ff229369568dbf9458f55884fd1558cb, type: 2}
