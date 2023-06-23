@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -10,7 +11,7 @@ public static partial class Utils
 {
 	public static bool IsNull(this object obj) => ReferenceEquals(obj, null);
 
-	public static bool IsNullOrEmpty<T>(this IList<T> collection) => collection == null || collection.Count < 1;
+	public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection) => collection == null || !collection.Any();
 
 	public static T GetRandomElement<T>(this IList<T> collection) where T : class
 	{
@@ -54,10 +55,19 @@ public static partial class Utils
 		throw new NoComponentFoundException<T>("");
 	}
 
-	public static T GetComponentThrow<T>(this GameObject gameObject) where T : Component
+	public static T GetComponentThrow<T>(this Component gameObject) where T : Component
 	{
 		if (gameObject.TryGetComponent(out T component)) { return component; }
 
 		throw new NoComponentFoundException<T>();
+	}
+
+	public static Sprite LoadSpriteFromDisk(string filePath)
+	{
+		byte[] inBytes = File.ReadAllBytes(filePath);
+		Texture2D texture = new(1, 1);
+		texture.LoadImage(inBytes);
+
+		return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
 	}
 }

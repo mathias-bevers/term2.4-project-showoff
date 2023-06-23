@@ -17,34 +17,43 @@ MonoBehaviour:
   maxRange: 20
   safetyRange: 10
   startElements:
-  - {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871, type: 3}
+  - {fileID: 8406994192992383321, guid: c78c2489d04ef7042b1045c9079baec5, type: 3}
   randomSelectableElements:
-  - {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871, type: 3}
-  - {fileID: 2795655155604526668, guid: 312804f9623d23549a425b4bdca304e3, type: 3}
-  - {fileID: 2795655155604526668, guid: 91a7ca33bdb90464f9985932170e5506, type: 3}
-  - {fileID: 2795655155604526668, guid: 2a132c0d168ebfb4ca6ab68643e94486, type: 3}
-  - {fileID: 3398807621037779704, guid: f0a09c9eeda85f649a9b63485c27c8c1, type: 3}
-  - {fileID: 3794884456335368583, guid: 2e3b59ec743d4c64086fadfb32f82c14, type: 3}
-  - {fileID: 3398807621037779704, guid: fb5b197dbced0cd418edc85750783625, type: 3}
-  - {fileID: 3398807621037779704, guid: 64b32bad43cc34449984e40e4a50da5d, type: 3}
+  - {fileID: 8406994192992383321, guid: c78c2489d04ef7042b1045c9079baec5, type: 3}
+  - {fileID: 8406994192992383321, guid: a59935fcfd637b84fbaa72d6eba96eef, type: 3}
+  - {fileID: 2795655155604526668, guid: 1773e798027029549a32eac074db644b, type: 3}
+  - {fileID: 2795655155604526668, guid: 7e1469968025e824b81c11ef2c6f9e19, type: 3}
+  - {fileID: 2795655155604526668, guid: d1c9f7b950304a5419534421e193a288, type: 3}
+  - {fileID: 3398807621037779704, guid: b5ed101ba97e5004bbd6c641437010f6, type: 3}
+  - {fileID: 3794884456335368583, guid: 32964698d44ce6b439b3d5595f6592d5, type: 3}
+  - {fileID: 3398807621037779704, guid: e2da56ed5377bc24a9bc9d5a21630130, type: 3}
+  - {fileID: 3398807621037779704, guid: 949572b38c898de438cb485c3ade4eb0, type: 3}
   endElements:
-  - {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871, type: 3}
+  - {fileID: 8406994192992383321, guid: c78c2489d04ef7042b1045c9079baec5, type: 3}
   continuousSupports:
-  - lastElement: {fileID: 2795655155604526668, guid: 312804f9623d23549a425b4bdca304e3,
+  - lastElement: {fileID: 2795655155604526668, guid: 1773e798027029549a32eac074db644b,
       type: 3}
     canTransformInto:
-    - {fileID: 2795655155604526668, guid: 2a132c0d168ebfb4ca6ab68643e94486, type: 3}
-    - {fileID: 8406994192992383321, guid: a0dfbb2fb9ab97c4b8c105c94e1c7871, type: 3}
-    - {fileID: 2795655155604526668, guid: 91a7ca33bdb90464f9985932170e5506, type: 3}
+    - {fileID: 8406994192992383321, guid: c78c2489d04ef7042b1045c9079baec5, type: 3}
+    - {fileID: 3794884456335368583, guid: 32964698d44ce6b439b3d5595f6592d5, type: 3}
+    - {fileID: 3398807621037779704, guid: b5ed101ba97e5004bbd6c641437010f6, type: 3}
+    - {fileID: 2795655155604526668, guid: d1c9f7b950304a5419534421e193a288, type: 3}
+    - {fileID: 2795655155604526668, guid: 7e1469968025e824b81c11ef2c6f9e19, type: 3}
   blockedSupports:
-  - lastElement: {fileID: 3398807621037779704, guid: f0a09c9eeda85f649a9b63485c27c8c1,
+  - lastElement: {fileID: 3398807621037779704, guid: b5ed101ba97e5004bbd6c641437010f6,
       type: 3}
     canTransformInto:
-    - {fileID: 3398807621037779704, guid: f0a09c9eeda85f649a9b63485c27c8c1, type: 3}
-  - lastElement: {fileID: 3794884456335368583, guid: 2e3b59ec743d4c64086fadfb32f82c14,
+    - {fileID: 3398807621037779704, guid: b5ed101ba97e5004bbd6c641437010f6, type: 3}
+    - {fileID: 2795655155604526668, guid: d1c9f7b950304a5419534421e193a288, type: 3}
+    - {fileID: 2795655155604526668, guid: 7e1469968025e824b81c11ef2c6f9e19, type: 3}
+    - {fileID: 2795655155604526668, guid: 1773e798027029549a32eac074db644b, type: 3}
+  - lastElement: {fileID: 3794884456335368583, guid: 32964698d44ce6b439b3d5595f6592d5,
       type: 3}
     canTransformInto:
-    - {fileID: 3794884456335368583, guid: 2e3b59ec743d4c64086fadfb32f82c14, type: 3}
+    - {fileID: 3794884456335368583, guid: 32964698d44ce6b439b3d5595f6592d5, type: 3}
+    - {fileID: 2795655155604526668, guid: d1c9f7b950304a5419534421e193a288, type: 3}
+    - {fileID: 2795655155604526668, guid: 7e1469968025e824b81c11ef2c6f9e19, type: 3}
+    - {fileID: 2795655155604526668, guid: 1773e798027029549a32eac074db644b, type: 3}
   nextMapGroups:
   - {fileID: 11400000}
   - {fileID: 11400000, guid: ff229369568dbf9458f55884fd1558cb, type: 2}

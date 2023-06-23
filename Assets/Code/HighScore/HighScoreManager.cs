@@ -9,14 +9,14 @@ using UnityEngine.SceneManagement;
 
 public class HighScoreManager : Singleton<HighScoreManager>
 {
-	public delegate List<(string, int)> RequestHighScoreDelegate();
+	private const string FILE_NAME = "high_scores.txt";
 
 	[SerializeField, Scene] private int mainMenuScene;
 
 	public List<HighScoreData> highScoreDatas { get; private set; }
-	public RequestHighScoreDelegate requestHighScoreDelegate { get; set; }
+	
+	private string filePath;
 
-	private string highScoreFilePath;
 
 	public override void Awake()
 	{
@@ -25,7 +25,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 		DontDestroyOnLoad(gameObject);
 		SceneManager.sceneLoaded += OnSceneLoaded;
 
-		highScoreFilePath = string.Concat(Application.persistentDataPath, System.IO.Path.DirectorySeparatorChar, "high_scores.txt");
+		filePath = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, FILE_NAME);
 	}
 
 	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -43,12 +43,13 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	{
 		if (scoreCollection.IsNullOrEmpty()) { return; }
 
-		if (!File.Exists(highScoreFilePath)) { File.Create(highScoreFilePath); }
+		if (!File.Exists(filePath)) { File.Create(filePath).Close(); }
 
 		List<string> linesToWrite = scoreCollection.Select(score => string.Concat(score.Item1, ',', score.Item2)).ToList();
-		
-		File.WriteAllLines(highScoreFilePath, linesToWrite);
-		Debug.Log($"Written {string.Join(", ", scoreCollection)} to file.");
+
+		try { File.WriteAllLines(filePath, linesToWrite); }
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+		// Debug.Log($"Written {string.Join(", ", scoreCollection)} to file.");
 	}
 
 	public void SendHighScoreToServer(string playerName, int score)
@@ -63,26 +64,32 @@ public class HighScoreManager : Singleton<HighScoreManager>
 
 	private IEnumerable<(string, int)> ReadScoresFromFile()
 	{
-		if (!File.Exists(highScoreFilePath)) { return null; }
+		if (!File.Exists(filePath)) { return Array.Empty<(string, int)>(); }
 
 		List<(string, int)> fileEntries = new();
-		foreach (string entry in File.ReadLines(highScoreFilePath))
+
+
+		try
 		{
-			if (string.IsNullOrEmpty(entry)) { continue; }
-
-			try
+			foreach (string entry in File.ReadLines(filePath))
 			{
-				string[] splitEntry = entry.Split(',');
+				if (string.IsNullOrEmpty(entry)) { continue; }
 
-				string playerName = splitEntry[0].Trim();
-				string distanceInString = splitEntry[1].Trim();
+				try
+				{
+					string[] splitEntry = entry.Split(',');
 
-				if (!int.TryParse(distanceInString, out int distanceRan)) { Debug.LogError($"could not parse \'{distanceInString}\' to an int!"); }
+					string playerName = splitEntry[0].Trim();
+					string distanceInString = splitEntry[1].Trim();
 
-				fileEntries.Add((playerName, distanceRan));
+					if (!int.TryParse(distanceInString, out int distanceRan)) { Debug.LogError($"could not parse \'{distanceInString}\' to an int!"); }
+
+					fileEntries.Add((playerName, distanceRan));
+				}
+				catch (IndexOutOfRangeException) { Debug.LogWarning($"Could not process line: \'{entry}\'"); }
 			}
-			catch (IndexOutOfRangeException) { Debug.LogWarning($"Could not process line: \'{entry}\'"); }
 		}
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 
 		return fileEntries;
 	}

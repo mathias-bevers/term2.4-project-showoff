@@ -40,8 +40,7 @@ public class NewMapBuilder : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.M))
         {
             if(buildForEra == Era.Era1) buildForEra = Era.Era2;
-            else if(buildForEra == Era.Era2) buildForEra = Era.Era3;
-            else if (buildForEra == Era.Era3) buildForEra = Era.Era1;
+            else if(buildForEra == Era.Era2) buildForEra = Era.Era1;
         }
     }
 #endif
