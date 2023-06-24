@@ -102,10 +102,9 @@ namespace Code.Tools.Editor
 
 			if (string.IsNullOrEmpty(suffix)) { Debug.LogError("Make sure textfield is not empty"); }
 
-			foreach (GameObject gameObject in Selection.gameObjects)
-			{
-				gameObject.name += $"_{suffix}";
-			}
+			foreach (GameObject gameObject in Selection.gameObjects) { gameObject.name += $"_{suffix}"; }
+
+			suffix = string.Empty;
 		}
 
 		private static string[] FetchSceneNames()

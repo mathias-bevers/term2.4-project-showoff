@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BillboardManager : Singleton<BillboardManager>
 {
-	private const string DEFAULT_MATERIAL_NAME = "Universal Render Pipeline/Lit";
+	private const string DEFAULT_MATERIAL_NAME = "Universal Render Pipeline/Unlit";
 	private const string TXT_FILE_NAME = "chosen_images.txt";
 	private const string IMAGE_DIRECTORY_NAME = "BillboardImages";
 	private Dictionary<string, Material> materialCache;

@@ -20,6 +20,7 @@ public class NameInput : MonoBehaviour
 		cachedTransform = transform;
 
 		letterInputs = new LetterInput[inputGroups.childCount];
+		
 		for (int i = 0; i < letterInputs.Length; ++i)
 		{
 			Transform inputGroup = inputGroups.GetChild(i);
@@ -31,18 +32,18 @@ public class NameInput : MonoBehaviour
 			letterInputs[i] = new LetterInput(upButton, downButton, letterParent);
 			letterInputs[i].CycleLetter(0);
 		}
+		
+		foreach (LetterInput letterInput in letterInputs)
+		{
+			letterInput.upButton.onClick.AddListener(() => letterInput.CycleLetter(1));
+			letterInput.downButton.onClick.AddListener(() => letterInput.CycleLetter(-1));
+		}
 	}
 
 	private void OnEnable()
 	{
 		eventSystem = EventSystem.current;
 		eventSystem.SetSelectedGameObject(letterInputs[0].upButton.gameObject);
-
-		foreach (LetterInput letterInput in letterInputs)
-		{
-			letterInput.upButton.onClick.AddListener(() => letterInput.CycleLetter(1));
-			letterInput.downButton.onClick.AddListener(() => letterInput.CycleLetter(-1));
-		}
 	}
 
 	public string GetName()

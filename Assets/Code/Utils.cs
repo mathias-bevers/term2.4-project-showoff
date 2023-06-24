@@ -54,10 +54,17 @@ public static partial class Utils
 
 		throw new NoComponentFoundException<T>("");
 	}
-
-	public static T GetComponentThrow<T>(this Component gameObject) where T : Component
+	
+	public static T GetComponentThrow<T>(this GameObject gameObject) where T : Component
 	{
 		if (gameObject.TryGetComponent(out T component)) { return component; }
+
+		throw new NoComponentFoundException<T>();
+	}
+
+	public static T GetComponentThrow<T>(this Component component) where T : Component
+	{
+		if (component.TryGetComponent(out T outputComponent)) { return outputComponent; }
 
 		throw new NoComponentFoundException<T>();
 	}

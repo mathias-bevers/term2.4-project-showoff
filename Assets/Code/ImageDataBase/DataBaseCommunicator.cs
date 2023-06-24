@@ -16,9 +16,9 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	[SerializeField] private Transform previewImageParent;
 	[SerializeField] private Sprite oneXone;
 	[SerializeField] private Button confirmSelectionButton;
+	[SerializeField] private DataBaseSelector dataBaseSelector;
 
 	private bool hasSelectedImage;
-	private DataBaseSelector dataBaseSelector;
 	private Image[] previewImages;
 	private string filePath;
 	private string selectedFileName;
@@ -35,7 +35,8 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 		if (ReferenceEquals(confirmSelectionButton, null)) { throw new UnassignedReferenceException($"{nameof(confirmSelectionButton)} is not set in the editor!"); }
 
-		dataBaseSelector = this.GetComponentThrow<DataBaseSelector>();
+		if (ReferenceEquals(dataBaseSelector, null)) { throw new UnassignedReferenceException($"{nameof(dataBaseSelector)} is not set in the editor!"); }
+
 		filePath = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, FILE_NAME);
 		previewImages = new Image[previewImageParent.childCount];
 
@@ -48,7 +49,6 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 			previewImages[i] = image;
 		}
 
-		gameObject.SetActive(false);
 	}
 
 	private void OnEnable()
@@ -101,6 +101,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	private void DisplayPreviewImages()
 	{
 		string[] fileNames = ReadFileNames();
+		Array.Reverse(fileNames);
 
 		previewImages[0].sprite = oneXone;
 
