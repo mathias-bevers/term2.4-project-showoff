@@ -12,6 +12,7 @@ namespace Code.Tools.Editor
 		private const string SCENE_DIRECTORY = "Assets/Scenes/";
 
 		private float spacingY;
+		private GameObject replacer;
 		private int sceneSelectedIndex;
 		private string[] sceneNames;
 
@@ -25,6 +26,10 @@ namespace Code.Tools.Editor
 
 			EditorGUILayout.BeginHorizontal();
 			ReloadScripts();
+			EditorGUILayout.EndHorizontal();
+
+			EditorGUILayout.BeginHorizontal();
+			ReplaceWith();
 			EditorGUILayout.EndHorizontal();
 		}
 
@@ -59,6 +64,30 @@ namespace Code.Tools.Editor
 			EditorUtility.RequestScriptReload();
 		}
 
+		private void ReplaceWith()
+		{
+			replacer = EditorGUILayout.ObjectField(replacer, typeof(GameObject), false) as GameObject;
+
+			if (!GUILayout.Button("Replace")) { return; }
+
+			if (replacer == null) { Debug.LogError($"Make sure the {nameof(replacer)} field is assigned"); }
+
+			foreach (GameObject gameObject in Selection.gameObjects)
+			{
+				Transform transform = gameObject.transform;
+				Transform parent = transform.parent;
+				
+				Vector3 position = transform.position;
+				Vector3 scale = transform.localScale;
+				Quaternion rotation = transform.rotation;
+
+				GameObject instantiatedReplacer = Instantiate(replacer, position, rotation, parent);
+				instantiatedReplacer.transform.localScale = scale;
+				instantiatedReplacer.name = replacer.name;
+				
+				DestroyImmediate(gameObject);
+			}
+		}
 
 		private static string[] FetchSceneNames()
 		{
