@@ -2534,7 +2534,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backgroundPanel: {fileID: 1245824928}
-  textBox: {fileID: 308030782}
   showTime: 1.5
 --- !u!1 &785415369
 GameObject:
@@ -3992,7 +3991,7 @@ PrefabInstance:
     - target: {fileID: 2097607794839207468, guid: ec217401686bb6cf2a0ff79637a2a6e2,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2097607794902153702, guid: ec217401686bb6cf2a0ff79637a2a6e2,
         type: 3}
