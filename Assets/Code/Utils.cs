@@ -70,4 +70,8 @@ public static partial class Utils
 
 		return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
 	}
+
+	public static string Repeat(this string s, int times) => string.Concat(Enumerable.Repeat(s, times));
+	
+	public static string Bold(this string s) => string.Concat("<b>", s, "</b>");
 }
