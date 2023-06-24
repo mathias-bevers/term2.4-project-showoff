@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public static partial class Utils
 {
@@ -17,13 +17,13 @@ public static partial class Utils
 	{
 		if (collection.Count == 0) { return null; }
 
-		int randomIndex = Random.Range(0, collection.Count);
+		int randomIndex = UnityEngine.Random.Range(0, collection.Count);
 		return collection[randomIndex];
 	}
 
 	public static T GetRandomElementStruct<T>(this IList<T> collection) where T : struct
 	{
-		int randomIndex = Random.Range(0, collection.Count);
+		int randomIndex = UnityEngine.Random.Range(0, collection.Count);
 		return collection[randomIndex];
 	}
 
@@ -77,7 +77,12 @@ public static partial class Utils
 		return texture;
 	}
 
-	public static string Repeat(this string s, int times) => string.Concat(Enumerable.Repeat(s, times));
-	
-	public static string Bold(this string s) => string.Concat("<b>", s, "</b>");
+	public static void SetChildrenText(this Transform parent, string message)
+	{
+		foreach (Transform child in parent)
+		{
+			Text childText = child.GetComponentThrow<Text>();
+			childText.text = message;
+		}
+	}
 }

@@ -1,7 +1,5 @@
-﻿using System;
-using saxion_provided;
+﻿using saxion_provided;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class DataProcessor : MonoBehaviour
 {
@@ -9,23 +7,29 @@ public class DataProcessor : MonoBehaviour
 
 	[SerializeField] private Client networkingClient;
 	[SerializeField] private MapWalker walker;
-	[SerializeField] private Text ownDistanceText;
-	[SerializeField] private Text opponentDistanceText;
-
+	[SerializeField] private Transform ownDistanceParent;
+	[SerializeField] private Transform opponentDistanceParent;
 	private bool shouldUpdateOT = true;
 	private bool isDeath;
-
 	private float distTimer;
+
+	private Transform cachedTransform;
 
 	private void Start()
 	{
+		if (ReferenceEquals(ownDistanceParent, null)) { throw new UnassignedReferenceException($"{nameof(ownDistanceParent)} is not set in the editor!"); }
+
+		if (ReferenceEquals(opponentDistanceParent, null)) { throw new UnassignedReferenceException($"{nameof(opponentDistanceParent)} is not set in the editor!"); }
+
+		cachedTransform = transform;
+
 		try
 		{
-			#if UNITY_EDITOR
+#if UNITY_EDITOR
 			networkingClient.Connect(Utils.GetIP4Address(), Settings.SERVER_PORT);
-			#else
-			networkingClient.Connect(); 
-			#endif
+#else
+			networkingClient.Connect();
+#endif
 		}
 		catch (System.Net.WebException e)
 		{
@@ -43,8 +47,8 @@ public class DataProcessor : MonoBehaviour
 
 		distTimer = DISTANCE_SEND_DELAY;
 
-		ownDistanceText.text = "Score: ";
-		opponentDistanceText.text = "NO OPPONENT FOUND";
+		ownDistanceParent.SetChildrenText("YOU: ");
+		opponentDistanceParent.SetChildrenText("NO ENEMY FOUND");
 	}
 
 	private void LateUpdate()
@@ -53,7 +57,7 @@ public class DataProcessor : MonoBehaviour
 
 		if (isDeath) { return; }
 
-		ownDistanceText.text = $"Score: {walker.TotalMetersRan:f2}";
+		ownDistanceParent.SetChildrenText($"YOU: {walker.TotalMetersRan:n0}");
 
 		distTimer -= Time.deltaTime;
 
@@ -79,23 +83,24 @@ public class DataProcessor : MonoBehaviour
 	{
 		if (!shouldUpdateOT) { return; }
 
-		opponentDistanceText.text = $"Opponent: {dst:f2}";
+		opponentDistanceParent.SetChildrenText($"ENEMY {dst:n0}");
 	}
 
 	private void OnOpponentConnection(PlayerConnection.ConnectionType connectionType)
 	{
 		shouldUpdateOT = false;
-		opponentDistanceText.text = $"Opponent has: {connectionType.ToString()}";
+		opponentDistanceParent.SetChildrenText($"ENEMY HAS {connectionType.ToString().ToUpper()}");
+
 		CooldownManager.Cooldown(5f, () => shouldUpdateOT = true);
 	}
 
 	private void OnPlayerDeath()
 	{
-		Packet packet = new(); 
+		Packet packet = new();
 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Died));
 		networkingClient.SendData(packet);
 
-		ownDistanceText.transform.parent.gameObject.SetActive(false);
+		foreach (Transform child in cachedTransform) { child.gameObject.SetActive(false); }
 
 		isDeath = true;
 	}
@@ -109,7 +114,6 @@ public class DataProcessor : MonoBehaviour
 
 	private void OnReceivedDebuff(PickupData data)
 	{
-		// Debug.Log($"Received debuff: {data}");
 		PickupManager.Instance.PickUpPickup(data.identifier, true);
 	}
 }

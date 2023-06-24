@@ -28,20 +28,10 @@ public class HighScorePanel : MonoBehaviour
 		gameObject.SetActive(true);
 		HighScoreData internalData = data.Value;
 
-		SetChildrenText(spotParent, $"{internalData.spot}.");
-		SetChildrenText(nameParent, internalData.name);
-		SetChildrenText(scoreParent, $"{internalData.score:n0}");
+		spotParent.SetChildrenText($"{internalData.spot}.");
+		nameParent.SetChildrenText( internalData.name);
+		scoreParent.SetChildrenText( $"{internalData.score:n0}");
 	}
-
-	private static void SetChildrenText(Transform parent, string value)
-	{
-		foreach (Transform child in parent)
-		{
-			Text childText = child.GetComponentThrow<Text>();
-			childText.text = value;
-		}
-	}
-
 
 	[Button]
 	private void SetDummyScore()
