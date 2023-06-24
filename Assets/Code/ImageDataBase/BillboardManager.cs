@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BillboardManager : Singleton<BillboardManager>
 {
+	private const string DEFAULT_MATERIAL_NAME = "Universal Render Pipeline/Lit";
 	private const string TXT_FILE_NAME = "chosen_images.txt";
 	private const string IMAGE_DIRECTORY_NAME = "BillboardImages";
-
-	[SerializeField] private Sprite oneXone; 
-
-	private Dictionary<string, Sprite> spriteCache;
+	private Dictionary<string, Material> materialCache;
 	private List<string> activeImages;
+
+
+	private Material defaultMaterial;
 	private string txtFilePath;
 	private string imageDirectoryPath;
 	private string[] fileNames;
@@ -24,40 +24,37 @@ public class BillboardManager : Singleton<BillboardManager>
 		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, IMAGE_DIRECTORY_NAME, Path.DirectorySeparatorChar);
 		fileNames = ReadFileNames(txtFilePath);
 		activeImages = new List<string>();
-		spriteCache = new Dictionary<string, Sprite>();
+		materialCache = new Dictionary<string, Material>(); 
+		Shader shader = Shader.Find(DEFAULT_MATERIAL_NAME);
+		defaultMaterial = new Material(shader);
 
-		if (ReferenceEquals(oneXone, null)) { throw new UnassignedReferenceException($"{nameof(oneXone)} is not set in the editor!"); }
-		
-		Player.Instance.deathEvent += spriteCache.Clear; 
+		Player.Instance.deathEvent += materialCache.Clear;
 	}
 
-	public string[] RequestSetup(Billboard billboard)
+	public string RequestSetup(Billboard billboard)
 	{
 		billboard.destroyingEvent += OnBillboardDestroy;
 
-		foreach (Image image in billboard.images)
+		string imageToLoadName = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length ? fileNames.Except(activeImages).ToList().GetRandomElement() : fileNames.GetRandomElement();
+
+		if (string.IsNullOrEmpty(imageToLoadName))
 		{
-			string imageToLoadName = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length ? fileNames.Except(activeImages).ToList().GetRandomElement() : fileNames.GetRandomElement();
-
-			if (string.IsNullOrEmpty(imageToLoadName))
-			{
-				image.sprite = oneXone;
-				continue;
-			}
-			
-			activeImages.Add(imageToLoadName);
-
-			if (spriteCache.TryGetValue(imageToLoadName, out Sprite sprite)) 
-			{
-				image.sprite = sprite;
-				continue;
-			}
-
-			sprite = Utils.LoadSpriteFromDisk(imageDirectoryPath + imageToLoadName);
-			image.sprite = sprite;
+			billboard.GetComponent<Renderer>().material = defaultMaterial;
+			return null;
 		}
 
-		return activeImages.Skip(Math.Max(0, activeImages.Count - billboard.images.Length)).ToArray();
+		activeImages.Add(imageToLoadName);
+
+		if (materialCache.TryGetValue(imageToLoadName, out Material material))
+		{
+			billboard.GetComponent<Renderer>().material = material;
+			return imageToLoadName;
+		}
+
+		material = new Material(Shader.Find(DEFAULT_MATERIAL_NAME)) { mainTexture = Utils.LoadTextureFromDisk(imageDirectoryPath + imageToLoadName) };
+		billboard.renderer.material = material;
+
+		return imageToLoadName;
 	}
 
 	private string[] ReadFileNames(string path)
@@ -72,14 +69,8 @@ public class BillboardManager : Singleton<BillboardManager>
 
 	private void OnBillboardDestroy(Billboard billboard)
 	{
-		foreach (string displayingImageName in billboard.displayingImageNames)
-		{
-			if (!activeImages.Contains(displayingImageName))
-			{
-				continue;
-			}
-			
-			activeImages.Remove(displayingImageName);
-		}
+		if (!activeImages.Contains(billboard.displayingImageName)) { return; }
+
+		activeImages.Remove(billboard.displayingImageName);
 	}
 }

@@ -22,6 +22,10 @@ namespace Code.Tools.Editor
 			EditorGUILayout.BeginHorizontal();
 			LoadScene();
 			EditorGUILayout.EndHorizontal();
+
+			EditorGUILayout.BeginHorizontal();
+			ReloadScripts();
+			EditorGUILayout.EndHorizontal();
 		}
 
 		[MenuItem("Window/MUDFISH/Developer Window")]
@@ -47,6 +51,14 @@ namespace Code.Tools.Editor
 			}
 			catch (ArgumentException e) { Debug.LogError(string.Concat(e.Message)); }
 		}
+
+		private void ReloadScripts()
+		{
+			if (!GUILayout.Button("Reload Scripts")) { return; }
+
+			EditorUtility.RequestScriptReload();
+		}
+
 
 		private static string[] FetchSceneNames()
 		{
