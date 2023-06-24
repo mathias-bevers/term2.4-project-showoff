@@ -13,8 +13,6 @@ public class ModelHelper : MonoBehaviour
     List<MeshFilter> meshFilters = new List<MeshFilter>();
     List<Collider> colliders = new List<Collider>();
     List<GapFiller> gapFiller = new List<GapFiller>();
-    
-    List<Canvas> canvases = new List<Canvas>();
 
     private void Awake()
     {
@@ -23,8 +21,6 @@ public class ModelHelper : MonoBehaviour
         meshFilters = GetComponentsInChildren<MeshFilter>(true).ToList();
         colliders = GetComponentsInChildren<Collider>(true).ToList();
         gapFiller = GetComponentsInChildren<GapFiller>(true).ToList();
-
-        canvases = GetComponentsInChildren<Canvas>(true).Where(canvas => canvas.renderMode == RenderMode.WorldSpace).ToList();
     }
 
     private void OnDrawGizmos()
@@ -70,10 +66,6 @@ public class ModelHelper : MonoBehaviour
 
         foreach (MeshRenderer renderer in allMeshes)
             renderer.enabled = false;
-
-        
-        foreach (Canvas canvas in canvases)
-            canvas.enabled = false;
     }
 
 
@@ -84,8 +76,5 @@ public class ModelHelper : MonoBehaviour
 
         foreach (MeshRenderer renderer in allMeshes)
             renderer.enabled = display;
-
-        foreach (Canvas canvas in canvases)
-            canvas.enabled = display;
     }
 }

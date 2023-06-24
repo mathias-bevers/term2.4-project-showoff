@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GlitchMaterial
+  m_Name: GlitchBright
   m_Shader: {fileID: -6465566751694194690, guid: eaa87f6a3c8ae1447a1906381939c56c,
     type: 3}
   m_ValidKeywords: []
@@ -97,7 +97,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.015
+    - _Alpha: 0.12
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0

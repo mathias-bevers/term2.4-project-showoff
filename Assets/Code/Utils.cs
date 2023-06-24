@@ -64,10 +64,20 @@ public static partial class Utils
 
 	public static Sprite LoadSpriteFromDisk(string filePath)
 	{
+		Texture2D texture = LoadTextureFromDisk(filePath);
+		return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+	}
+
+	public static Texture2D LoadTextureFromDisk(string filePath)
+	{
 		byte[] inBytes = File.ReadAllBytes(filePath);
 		Texture2D texture = new(1, 1);
 		texture.LoadImage(inBytes);
 
-		return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+		return texture;
 	}
+
+	public static string Repeat(this string s, int times) => string.Concat(Enumerable.Repeat(s, times));
+	
+	public static string Bold(this string s) => string.Concat("<b>", s, "</b>");
 }
