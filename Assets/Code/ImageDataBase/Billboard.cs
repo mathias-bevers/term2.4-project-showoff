@@ -12,7 +12,9 @@ public class Billboard : MonoBehaviour
 	private void Start()
 	{
 		if (!renderer.enabled) { return; }
-	
+
+		if (ReferenceEquals(renderer, null)) { throw new UnassignedReferenceException($"{nameof(renderer)} is not set in the editor!"); }
+		
 		displayingImageName = BillboardManager.Instance.RequestSetup(this);
 	}
 	
