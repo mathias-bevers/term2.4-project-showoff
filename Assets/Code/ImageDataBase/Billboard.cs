@@ -5,34 +5,19 @@ using UnityEngine.UI;
 public class Billboard : MonoBehaviour
 {
 	public event Action<Billboard> destroyingEvent;
-
-	private readonly float[] possibleRotations =
-	{
-		-120.0f,
-		0.0f,
-		120.0f,
-	};
-
-	[field: SerializeField] public Image[] images { get; private set; }
-	public string[] displayingImageNames { get; private set; }
-
-	private Canvas parentCanvas;
-	private Transform cachedTransform;
-
+	
+	[field: SerializeField] public new MeshRenderer renderer { get; private set; }
+	public string displayingImageName { get; private set; }
+	
 	private void Start()
 	{
-		cachedTransform = transform;
-		parentCanvas = images[0].transform.parent.GetComponentThrow<Canvas>();
+		if (!renderer.enabled) { return; }
 
-		if (!parentCanvas.enabled) { return; }
-
-		float yRotation = cachedTransform.rotation.y + possibleRotations.GetRandomElementStruct();
-		cachedTransform.rotation = Quaternion.Euler(0, yRotation, 0);
-
-		displayingImageNames = BillboardManager.Instance.RequestSetup(this);
-		Debug.Log("Spawned billboard!!", gameObject);
+		if (ReferenceEquals(renderer, null)) { throw new UnassignedReferenceException($"{nameof(renderer)} is not set in the editor!"); }
+		
+		displayingImageName = BillboardManager.Instance.RequestSetup(this);
 	}
-
+	
 	private void OnDestroy()
 	{
 		destroyingEvent?.Invoke(this);
