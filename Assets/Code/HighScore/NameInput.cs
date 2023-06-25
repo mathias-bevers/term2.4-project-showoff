@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class NameInput : MonoBehaviour
@@ -11,7 +10,7 @@ public class NameInput : MonoBehaviour
 	private const int CHAR_ALPHABET_START = 65;
 
 	[SerializeField] private Transform inputGroups;
-	
+
 	private EventSystem eventSystem;
 	private LetterInput[] letterInputs;
 	private Transform cachedTransform;
@@ -21,24 +20,19 @@ public class NameInput : MonoBehaviour
 		cachedTransform = transform;
 
 		letterInputs = new LetterInput[inputGroups.childCount];
+		
 		for (int i = 0; i < letterInputs.Length; ++i)
 		{
 			Transform inputGroup = inputGroups.GetChild(i);
 
-			Text letterText = inputGroup.GetChild(0).GetComponent<Text>();
+			Transform letterParent = inputGroup.GetChild(0);
 			Button upButton = inputGroup.GetChild(1).GetComponent<Button>();
 			Button downButton = inputGroup.GetChild(2).GetComponent<Button>();
 
-			letterInputs[i] = new LetterInput(upButton, downButton, letterText);
+			letterInputs[i] = new LetterInput(upButton, downButton, letterParent);
 			letterInputs[i].CycleLetter(0);
 		}
-	}
-
-	private void OnEnable()
-	{
-		eventSystem = EventSystem.current;
-		eventSystem.SetSelectedGameObject(letterInputs[0].upButton.gameObject);
-
+		
 		foreach (LetterInput letterInput in letterInputs)
 		{
 			letterInput.upButton.onClick.AddListener(() => letterInput.CycleLetter(1));
@@ -46,34 +40,41 @@ public class NameInput : MonoBehaviour
 		}
 	}
 
+	private void OnEnable()
+	{
+		eventSystem = EventSystem.current;
+		eventSystem.SetSelectedGameObject(letterInputs[0].upButton.gameObject);
+	}
+
 	public string GetName()
 	{
 		StringBuilder sb = new();
 
-		foreach (LetterInput t in letterInputs) { sb.Append(t.letterText.text); }
+		foreach (LetterInput letterInput in letterInputs) { sb.Append(letterInput.displayingChar); }
 
 		return sb.ToString();
 	}
-	
-	private struct LetterInput
+
+	private class LetterInput
 	{
 		public Button upButton { get; }
 		public Button downButton { get; }
-		public Text letterText { get; }
-		
+		public char displayingChar { get; private set; }
+
 		private int letterIndex { get; set; }
+		private readonly Transform letterParent;
 
-
-		public LetterInput(Button upButton, Button downButton, Text letterText)
+		public LetterInput(Button upButton, Button downButton, Transform letterParent)
 		{
 			this.upButton = upButton;
 			this.downButton = downButton;
-			this.letterText = letterText;
+			this.letterParent = letterParent;
 			letterIndex = 0;
 
-			letterText.text = "A";
+			displayingChar = 'A';
+			letterParent.SetChildrenText(displayingChar.ToString());
 		}
-		
+
 		public void CycleLetter(int amount)
 		{
 			letterIndex += amount;
@@ -81,8 +82,8 @@ public class NameInput : MonoBehaviour
 			if (letterIndex < 0) { letterIndex = ALPHABET_COUNT - 1; }
 
 			int indexToChar = letterIndex + CHAR_ALPHABET_START;
-			letterText.text = Convert.ToChar(indexToChar).ToString();
+			displayingChar = Convert.ToChar(indexToChar);
+			letterParent.SetChildrenText(displayingChar.ToString());
 		}
-
 	}
 }

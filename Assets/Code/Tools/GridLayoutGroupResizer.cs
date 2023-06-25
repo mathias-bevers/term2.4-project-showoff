@@ -41,8 +41,7 @@ public class GridLayoutGroupResizer : MonoBehaviour
 
 		Resize();
 	}
-
-	[Button]
+	
 	private void Resize()
 	{
 		Vector2 canvasSize = canvas.rect.size;

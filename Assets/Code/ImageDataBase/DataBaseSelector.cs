@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class DataBaseSelector : MonoBehaviour
 {
+	public event Action<string> imageSelectedEvent;
 	private const string DIRECTORY_NAME = "BillboardImages";
+
 	private readonly string[] acceptedFileFormats =
 	{
 		"jpg",
@@ -26,33 +27,38 @@ public class DataBaseSelector : MonoBehaviour
 
 	public Dictionary<string, Sprite> spriteCache { get; private set; }
 	public string imageDirectoryPath { get; private set; }
-	public event Action<string> imageSelectedEvent; 
 
-	private Image[] uiImages;
+	private DataBaseDisplayElement[] displayElements;
 	private int scrollIndex;
 	private int gridSize;
 	private int pages;
 	private string[] fileNames;
+	private Navigation originalPreviousNavigation;
+	private Navigation originalNextNavigation;
 
 	private void Awake()
 	{
 		spriteCache = new Dictionary<string, Sprite>();
 		gridSize = imagesPerRow * rows;
 		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, DIRECTORY_NAME, Path.DirectorySeparatorChar);
-		// fileNames = acceptedFileFormats.SelectMany(fileFormat => Directory.GetFiles(imageDirectoryPath, $"*.{fileFormat}", SearchOption.AllDirectories)).ToArray();
 		fileNames = GetFileNames();
 		pages = (int)Math.Ceiling((float)fileNames.Length / gridSize);
+		originalPreviousNavigation = previousPage.navigation;
+		originalNextNavigation = nextPage.navigation;
+		
+		nextPage.onClick.AddListener(() => Scroll(1));
+		previousPage.onClick.AddListener(() => Scroll(-1));
+	}
 
+	private void OnEnable()
+	{
 		SetupGrid();
 		DisplayImages();
 
-		nextPage.onClick.AddListener(() => Scroll(1));
-		previousPage.onClick.AddListener(() => Scroll(-1));
-
-		EventSystem.current.SetSelectedGameObject(uiImages[0].transform.parent.gameObject);
+		EventSystem.current.SetSelectedGameObject(displayElements[0].gameObject);
 	}
 
-	private Sprite[] LoadSprites()
+	private List<Sprite> LoadSprites()
 	{
 		int start = gridSize * scrollIndex;
 		int max = start + gridSize;
@@ -69,37 +75,43 @@ public class DataBaseSelector : MonoBehaviour
 				sprites.Add(sprite);
 				continue;
 			}
-			
+
 			sprite = Utils.LoadSpriteFromDisk(imageDirectoryPath + fileName);
 			sprites.Add(sprite);
 			spriteCache.Add(fileName, sprite);
 		}
 
-		return sprites.ToArray();
+		return sprites;
 	}
 
 	private void DisplayImages()
 	{
-		Sprite[] loaded = LoadSprites();
-		for (int i = 0; i < uiImages.Length; ++i)
+		List<Sprite> loaded = LoadSprites();
+		for (int i = 0; i < displayElements.Length; ++i)
 		{
-			Image uiImage = uiImages[i];
-			GameObject imageParent = uiImage.transform.parent.gameObject;
-
-			if (i >= loaded.Length)
+			DataBaseDisplayElement displayElement = displayElements[i];
+			if (i >= loaded.Count)
 			{
-				imageParent.SetActive(false);
+				displayElement.gameObject.SetActive(false);
 				continue;
 			}
 
-			imageParent.SetActive(true);
-			uiImage.sprite = loaded[i];
+			displayElement.gameObject.SetActive(true);
+			displayElement.SetImage(loaded[i]);
+			displayElement.ResetNavigation();
 		}
 
-		SetNavigation(loaded.Length);
+		if (loaded.Count == gridSize)
+		{
+			previousPage.navigation = originalPreviousNavigation;
+			nextPage.navigation = originalNextNavigation;
+			return;
+		}
+
+		SetNavigation(loaded.Count);
 	}
 
-	public void Scroll(int amount)
+	private void Scroll(int amount)
 	{
 		scrollIndex += amount;
 		scrollIndex %= pages;
@@ -111,31 +123,31 @@ public class DataBaseSelector : MonoBehaviour
 
 	private void SetupGrid()
 	{
-		List<Image> images = new();
+		List<DataBaseDisplayElement> dataBaseDisplayElements = new();
 
 		for (int i = 0; i < content.childCount; ++i)
 		{
-			Transform imageBorder = content.GetChild(i);
+			DataBaseDisplayElement displayElement = content.GetChild(i).GetComponentThrow<DataBaseDisplayElement>();
 
-			if (!imageBorder.TryGetComponent(out Button button)) { Debug.Log($"All children in {content.name} need to have a {nameof(Button)} component"); }
+			if (!displayElement.TryGetComponent(out Button button)) { Debug.Log($"All children in {content.name} need to have a {nameof(Button)} component"); }
 
-			if (!imageBorder.GetChild(0).TryGetComponent(out Image image)) { Debug.LogError($"image borders should have 1 child with a {nameof(Image)} component."); }
+			if (displayElement.imageToDisplay == null) { Debug.LogError("image borders should have set the image serialize field"); }
 
 			int gridIndex = i;
 			button.onClick.AddListener(() => SelectImage(gridIndex));
-			images.Add(image);
+			dataBaseDisplayElements.Add(displayElement);
 		}
 
-		uiImages = images.ToArray();
+		displayElements = dataBaseDisplayElements.ToArray();
 	}
 
 	private void SetNavigation(int displayedImages)
 	{
 		Navigation navigation;
 
-		if (displayedImages == gridSize)
+		/*if (displayedImages == gridSize)
 		{
-			Selectable bottomRight = uiImages[gridSize - 1].GetComponentInParent<Selectable>();
+			Selectable bottomRight = displayElements[gridSize - 1].selectable;
 			navigation = bottomRight.navigation;
 			navigation.selectOnRight = nextPage;
 			bottomRight.navigation = navigation;
@@ -144,7 +156,7 @@ public class DataBaseSelector : MonoBehaviour
 			navigation.selectOnLeft = bottomRight;
 			nextPage.navigation = navigation;
 			//--------------------------------------------------------------------------------------------
-			Selectable topRight = uiImages[imagesPerRow - 1].GetComponentInParent<Selectable>();
+			Selectable topRight = displayElements[imagesPerRow - 1].selectable;
 			navigation = topRight.navigation;
 			navigation.selectOnRight = previousPage;
 			topRight.navigation = navigation;
@@ -153,9 +165,9 @@ public class DataBaseSelector : MonoBehaviour
 			navigation.selectOnLeft = topRight;
 			previousPage.navigation = navigation;
 			return;
-		}
+		}*/
 
-		Selectable last = uiImages[displayedImages - 1].GetComponentInParent<Selectable>();
+		Selectable last = displayElements[displayedImages - 1].selectable;
 		navigation = last.navigation;
 		navigation.selectOnRight = nextPage;
 		last.navigation = navigation;
@@ -172,7 +184,7 @@ public class DataBaseSelector : MonoBehaviour
 			return;
 		}
 
-		Selectable topLast = uiImages[imagesPerRow - 1].GetComponentInParent<Selectable>();
+		Selectable topLast = displayElements[imagesPerRow - 1].selectable;
 		navigation = topLast.navigation;
 		navigation.selectOnRight = previousPage;
 		topLast.navigation = navigation;
@@ -192,7 +204,7 @@ public class DataBaseSelector : MonoBehaviour
 	private string[] GetFileNames()
 	{
 		List<string> temp = new();
-		
+
 		foreach (string fileFormat in acceptedFileFormats)
 		{
 			foreach (string fileName in Directory.GetFiles(imageDirectoryPath, $"*.{fileFormat}", SearchOption.AllDirectories))
@@ -201,7 +213,7 @@ public class DataBaseSelector : MonoBehaviour
 				temp.Add(trimmedFileName);
 			}
 		}
-		
+
 		return temp.ToArray();
 	}
 }
