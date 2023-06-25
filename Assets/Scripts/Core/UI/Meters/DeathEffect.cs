@@ -1,16 +1,24 @@
 using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DeathEffect : Singleton<DeathEffect>
 {
+	private const float TIME_OUT = 10.0f;
+
 	[SerializeField] private GameObject dataBaseCanvas;
 	[SerializeField] private Image backgroundPanel;
 	[SerializeField] private Transform distanceRanParent;
 	[SerializeField] private Button continueButton;
 	[SerializeField] private NameInput nameInput;
+	[SerializeField] private Image timerGreen;
+	[SerializeField] private Image timerRed;
+	
 
-
+	private float timerNormalized => timer / TIME_OUT;  
+		
 	private bool animationComplete;
 	private bool sentScoreToServer;
 	private bool dead;
@@ -35,7 +43,22 @@ public class DeathEffect : Singleton<DeathEffect>
 	{
 		if (!dead) { return; }
 
-		if (animationComplete) { return; }
+		if (animationComplete)
+		{
+			if (AnyControllerInput())
+			{
+				timer = TIME_OUT;
+				return;
+			}
+
+			timer -= Time.deltaTime;
+			timerGreen.fillAmount = timerNormalized;
+			timerRed.fillAmount = timerNormalized;
+
+			if (timer <= 0) { UnityEngine.SceneManagement.SceneManager.LoadScene(0); }
+
+			return;
+		}
 
 		backgroundPanel.gameObject.SetActive(true);
 		timer += Time.deltaTime;
@@ -57,6 +80,8 @@ public class DeathEffect : Singleton<DeathEffect>
 		distanceRanParent.SetChildrenText($"YOU RAN {distanceRan:n0} METERS");
 		PowerupDisplayHandler.Instance.gameObject.SetActive(false);
 
+		timer = TIME_OUT;
+
 		animationComplete = true;
 	}
 
@@ -76,4 +101,6 @@ public class DeathEffect : Singleton<DeathEffect>
 	}
 
 	public void Death() { dead = true; }
+
+	private bool AnyControllerInput() => Utils.GetAllAxes().Any(axis => Input.GetAxis(axis) != 0);
 }
