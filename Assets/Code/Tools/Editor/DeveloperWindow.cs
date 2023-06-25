@@ -14,6 +14,7 @@ namespace Code.Tools.Editor
 		private float spacingY;
 		private GameObject replacer;
 		private int sceneSelectedIndex;
+		private string suffix;
 		private string[] sceneNames;
 
 		private void OnEnable() { sceneNames = FetchSceneNames(); }
@@ -30,6 +31,10 @@ namespace Code.Tools.Editor
 
 			EditorGUILayout.BeginHorizontal();
 			ReplaceWith();
+			EditorGUILayout.EndHorizontal();
+
+			EditorGUILayout.BeginHorizontal();
+			AddSuffix();
 			EditorGUILayout.EndHorizontal();
 		}
 
@@ -76,7 +81,7 @@ namespace Code.Tools.Editor
 			{
 				Transform transform = gameObject.transform;
 				Transform parent = transform.parent;
-				
+
 				Vector3 position = transform.position;
 				Vector3 scale = transform.localScale;
 				Quaternion rotation = transform.rotation;
@@ -84,9 +89,22 @@ namespace Code.Tools.Editor
 				GameObject instantiatedReplacer = Instantiate(replacer, position, rotation, parent);
 				instantiatedReplacer.transform.localScale = scale;
 				instantiatedReplacer.name = replacer.name;
-				
+
 				DestroyImmediate(gameObject);
 			}
+		}
+
+		private void AddSuffix()
+		{
+			suffix = EditorGUILayout.TextField(suffix);
+
+			if (!GUILayout.Button("Add suffix")) { return; }
+
+			if (string.IsNullOrEmpty(suffix)) { Debug.LogError("Make sure textfield is not empty"); }
+
+			foreach (GameObject gameObject in Selection.gameObjects) { gameObject.name += $"_{suffix}"; }
+
+			suffix = string.Empty;
 		}
 
 		private static string[] FetchSceneNames()

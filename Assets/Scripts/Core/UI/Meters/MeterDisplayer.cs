@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,20 +7,27 @@ using UnityEngine.UI;
 public class MeterDisplayer : Singleton<MeterDisplayer>
 {
     [SerializeField] Image backgroundPanel;
-    [SerializeField] Text textBox;
-
     [SerializeField] float showTime = 1.5f;
+
+    private Transform textParentTransform;
     float timer = 0;
+
+    private void Start()
+    {
+        if (ReferenceEquals(backgroundPanel, null)) { throw new UnassignedReferenceException($"{nameof(backgroundPanel)} is not set in the editor!"); }
+
+        textParentTransform = backgroundPanel.transform;
+    }
 
     public void DisplayMeters(int meters)
     {
-        textBox.text = meters.ToString() + " meters ran!";
+        textParentTransform.SetChildrenText($"{meters:n0} METERS RAN");
         timer = showTime;
     }
 
     public void DisplayMeters(int meters, float overrideTime)
     {
-        textBox.text = meters.ToString() + " meters ran!";
+        textParentTransform.SetChildrenText($"{meters:n0} METERS RAN");
         timer = overrideTime;
     }
 

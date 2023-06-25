@@ -1,30 +1,34 @@
-using System.Net;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
 	[SerializeField, Scene] private int sceneToLoad;
-	[SerializeField] private Button startButton;
-	[SerializeField] private Button quitButton;
-	[SerializeField] private InputField ipInputField;
+	[SerializeField] private Transform infoTextParent;
 
-	private void Awake()
+	private bool loadingScene = false;
+
+	private void Awake() { Application.runInBackground = true; }
+
+	private void Update()
 	{
-		Application.runInBackground = true;
+		if(loadingScene) {return;}
 		
-		startButton.onClick.AddListener(RunGame);
-		quitButton.onClick.AddListener(Application.Quit);
-
-		ipInputField.text = Settings.SERVER_IP == null ? Utils.GetIP4Address().ToString() : Settings.SERVER_IP.ToString();
+		if (!Input.GetButtonDown("Submit")) { return; }
+		
+		RunGame();
 	}
 
 	private void RunGame()
 	{
-		string ipAddress = ipInputField.text.Trim();
-		Settings.SERVER_IP = IPAddress.Parse(ipAddress);
+		//string ipAddress = ; //TODO: get ip from settings.
+		Settings.SERVER_IP = Utils.GetIP4Address();
+
+		loadingScene = true;
+		infoTextParent.SetChildrenText("LOADING...");
 		
 		SceneManager.LoadScene(sceneToLoad);
 	}
