@@ -39,7 +39,9 @@ public class BillboardManager : Singleton<BillboardManager>
 
 		if (string.IsNullOrEmpty(imageToLoadName))
 		{
-			billboard.GetComponent<Renderer>().material = defaultMaterial;
+			Renderer renderer = billboard.GetComponent<Renderer>();
+			if(renderer != null)
+            renderer.material = defaultMaterial;
 			return null;
 		}
 
