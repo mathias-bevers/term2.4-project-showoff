@@ -5,6 +5,7 @@ using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
@@ -14,7 +15,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	[SerializeField, Scene] private int mainMenuScene;
 	[SerializeField] private Client networkingClient;
 	[SerializeField] private Transform previewImageParent;
-	[SerializeField] private Sprite oneXone;
+	[SerializeField] private Sprite noImageSelectedSprite;
 	[SerializeField] private Button confirmSelectionButton;
 	[SerializeField] private DataBaseSelector dataBaseSelector;
 
@@ -27,11 +28,11 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	{
 		base.Awake();
 
-		if (ReferenceEquals(networkingClient, null)) { throw new UnassignedReferenceException($"{nameof(networkingClient)} is not set in the editor!"); }
+		// if (ReferenceEquals(networkingClient, null)) { throw new UnassignedReferenceException($"{nameof(networkingClient)} is not set in the editor!"); }
 
 		if (ReferenceEquals(previewImageParent, null)) { throw new UnassignedReferenceException($"{nameof(previewImageParent)} is not set in the editor!"); }
 
-		if (ReferenceEquals(oneXone, null)) { throw new UnassignedReferenceException($"{nameof(oneXone)} is not set in the editor!"); }
+		if (ReferenceEquals(noImageSelectedSprite, null)) { throw new UnassignedReferenceException($"{nameof(noImageSelectedSprite)} is not set in the editor!"); }
 
 		if (ReferenceEquals(confirmSelectionButton, null)) { throw new UnassignedReferenceException($"{nameof(confirmSelectionButton)} is not set in the editor!"); }
 
@@ -82,7 +83,8 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	{
 		if (!File.Exists(filePath)) { File.Create(filePath).Close(); }
 
-		try { File.WriteAllLines(filePath, serverObject.fileNames); }
+		try
+		{ File.WriteAllLines(filePath, serverObject.fileNames); }
 		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 
 		if (hasSelectedImage)
@@ -98,12 +100,13 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 	}
 
+	[Button]
 	private void DisplayPreviewImages()
 	{
 		string[] fileNames = ReadFileNames();
 		Array.Reverse(fileNames);
 
-		previewImages[0].sprite = oneXone;
+		previewImages[0].sprite = noImageSelectedSprite;
 
 		for (int i = 0; i < previewImages.Length - 1; ++i)
 		{
@@ -131,8 +134,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	private string[] ReadFileNames()
 	{
 		if (!File.Exists(filePath)) { return Array.Empty<string>(); }
-
-
+		
 		try
 		{
 			List<string> temp = new();

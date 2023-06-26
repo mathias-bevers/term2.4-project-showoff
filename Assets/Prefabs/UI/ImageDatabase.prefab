@@ -326,7 +326,8 @@ MonoBehaviour:
   mainMenuScene: 0
   networkingClient: {fileID: 0}
   previewImageParent: {fileID: 622931678124483314}
-  oneXone: {fileID: 21300000, guid: 43c2f0f88efc40444a196f15a1fbc151, type: 3}
+  noImageSelectedSprite: {fileID: 21300000, guid: 57be69ca57db6ba4ea798964e7025826,
+    type: 3}
   confirmSelectionButton: {fileID: 5417803815606180609}
   dataBaseSelector: {fileID: 8816057207093781117}
 --- !u!1 &1431958137279218336
