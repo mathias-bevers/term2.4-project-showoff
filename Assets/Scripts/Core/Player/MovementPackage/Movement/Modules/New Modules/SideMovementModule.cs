@@ -29,9 +29,10 @@ public class SideMovementModule : MotorModule
 
     void HandleInput()
     {
-        if (Input.GetKey(KeyCode.LeftArrow))
+        float controllerAxis = Input.GetAxisRaw("HorizontalController");
+        if (Input.GetKey(KeyCode.LeftArrow) || controllerAxis < 0)
             registry.Move(registry.transform.right * -speed);
-        if(Input.GetKey(KeyCode.RightArrow))
+        if(Input.GetKey(KeyCode.RightArrow) || controllerAxis > 0)
             registry.Move(registry.transform.right * speed);
     }
 
