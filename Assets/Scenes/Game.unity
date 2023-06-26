@@ -2335,7 +2335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 602144015}
-  pickupSound: {fileID: 8300000, guid: 90dc8b3faf7983845866136253076377, type: 3}
+  clip: {fileID: 8300000, guid: 90dc8b3faf7983845866136253076377, type: 3}
   idClipPairs:
   - <identifier>k__BackingField: 6
     <clip>k__BackingField: {fileID: 8300000, guid: 9146f1c6ad739b0448f9267d53faa7ec,

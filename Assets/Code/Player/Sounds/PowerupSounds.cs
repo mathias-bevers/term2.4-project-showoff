@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PowerupSounds : MonoBehaviour
 {
 	private readonly List<IdSourcePair> activeEffects = new();
-	[SerializeField] private AudioSource source;
-	[SerializeField] private AudioClip pickupSound;
+	
+	[SerializeField] private AudioSource pickupSource;
+	[SerializeField] private AudioClip pickupClip;
 	[SerializeField] private IdClipPair[] idClipPairs;
+	
 	private PickupIdentifier lastPickupIdentifier;
 	private Transform cachedTransform;
 
@@ -24,6 +27,7 @@ public class PowerupSounds : MonoBehaviour
 			{
 				if (activeEffects.Any(pair => pair.id == pickupIdentifier)) { continue; }
 
+				pickupSource.PlayOneShot(pickupClip);
 				IdSourcePair idSourcePair = InitIDSourcePair(idClipPair);
 				activeEffects.Add(idSourcePair);
 				continue;
