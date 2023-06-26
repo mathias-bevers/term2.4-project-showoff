@@ -16,7 +16,7 @@ public class Billboard : MonoBehaviour
 
 		if (ReferenceEquals(renderer, null)) { throw new UnassignedReferenceException($"{nameof(renderer)} is not set in the editor!"); }
 		
-		//BillboardManager.Instance.RequestSetup(this);
+		displayingImageName = BillboardManager.Instance.RequestSetup(this);
 	}
 	
 	private void OnDestroy()

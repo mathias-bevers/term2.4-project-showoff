@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +31,7 @@ public class BillboardManager : Singleton<BillboardManager>
 		Player.Instance.deathEvent += materialCache.Clear;
 	}
 
-	public void RequestSetup(Billboard billboard)
+	public string RequestSetup(Billboard billboard)
 	{
 		billboard.destroyingEvent += OnBillboardDestroy;
 
@@ -39,25 +39,22 @@ public class BillboardManager : Singleton<BillboardManager>
 
 		if (string.IsNullOrEmpty(imageToLoadName))
 		{
-			Renderer renderer = billboard.GetComponent<Renderer>();
-			if(renderer != null)
-            renderer.material = defaultMaterial;
-			return;
+			billboard.renderer.material = defaultMaterial;
+			return null;
 		}
 
 		activeImages.Add(imageToLoadName);
 
 		if (materialCache.TryGetValue(imageToLoadName, out Material material))
 		{
-			billboard.GetComponent<Renderer>().material = material;
-			billboard.displayingImageName = imageToLoadName;
-			return;
+			billboard.renderer.material = material;
+			return imageToLoadName;
 		}
 
 		material = new Material(Shader.Find(DEFAULT_MATERIAL_NAME)) { mainTexture = Utils.LoadTextureFromDisk(imageDirectoryPath + imageToLoadName) };
+		materialCache.Add(imageToLoadName, material);
 		billboard.renderer.material = material;
-
-		billboard.displayingImageName = imageToLoadName;
+		return imageToLoadName;
 	}
 
 	private string[] ReadFileNames(string path)
