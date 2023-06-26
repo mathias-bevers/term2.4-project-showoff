@@ -1519,6 +1519,7 @@ GameObject:
   - component: {fileID: 689430520265110773}
   - component: {fileID: 4494582977418346345}
   - component: {fileID: 5933415736700301257}
+  - component: {fileID: 3001203280197403496}
   m_Layer: 0
   m_Name: Obstacle
   m_TagString: Untagged
@@ -1644,8 +1645,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 624c99e8d5daf4c4295ebd790cecb4cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chanceToSpawnNothing: 0
-  noSpawnChance: 75
+  chanceToSpawnNothing: 1
+  noSpawnChance: 59
   spawnableObjects:
   - forEra: 0
     spawnableObjects:
@@ -1653,6 +1654,105 @@ MonoBehaviour:
         type: 3}
       transformData:
         position: {x: 0, y: 2.2, z: 3}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+  - forEra: 1
+    spawnableObjects:
+    - gameObject: {fileID: 332349921814668955, guid: 3ca471751be80854c8b4c1c436290efe,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 2.2, z: 3}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+--- !u!114 &3001203280197403496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998672732706457496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b194082d60ebe54792d609f44546c64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chanceToSpawnNothing: 1
+  noSpawnChance: 8
+  spawnableObjects:
+  - forEra: 1
+    spawnableObjects:
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 1, y: 0, z: 2}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 1, y: 0, z: 4}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 1, y: 0, z: 1}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 0, z: 4}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 0, z: 4}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 1, y: 0, z: 4}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 1, y: 0, z: 1}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 1, y: 0, z: 2}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+  - forEra: 1
+    spawnableObjects:
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: -1, y: 0, z: 2}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: -1, y: 0, z: 1}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: -1, y: 0, z: 4}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: 0, y: 0, z: 2}
         eulerAngles: {x: 0, y: 0, z: 0}
         scale: {x: 1, y: 1, z: 1}
 --- !u!1 &2143553748534247836

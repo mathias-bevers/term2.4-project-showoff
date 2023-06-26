@@ -10,6 +10,7 @@ public class PowerupDisplay : MonoBehaviour
 
     [SerializeField] Image clockPannel;
 
+
     Image image;
 
     bool hasPickup = false;
@@ -24,6 +25,7 @@ public class PowerupDisplay : MonoBehaviour
         this.identifier = identifier;
         if(image == null) image = GetComponent<Image>();
         image.overrideSprite = Player.Instance.GetSprite(identifier);
+        clockPannel.overrideSprite = Player.Instance.GetSprite(identifier);
         hasPickup = true;
     }
 

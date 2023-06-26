@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -6,7 +8,7 @@ using UnityEngine.UI;
 
 public class DeathEffect : Singleton<DeathEffect>
 {
-	private const float TIME_OUT = 10.0f;
+	private const float TIME_OUT = 120.0f;
 
 	[SerializeField] private GameObject dataBaseCanvas;
 	[SerializeField] private Image backgroundPanel;
@@ -17,8 +19,8 @@ public class DeathEffect : Singleton<DeathEffect>
 	[SerializeField] private Image timerRed;
 	
 
-	private float timerNormalized => timer / TIME_OUT;  
-		
+	private float timerNormalized => timer / TIME_OUT;
+	private string[] axisNames;
 	private bool animationComplete;
 	private bool sentScoreToServer;
 	private bool dead;
@@ -45,10 +47,10 @@ public class DeathEffect : Singleton<DeathEffect>
 
 		if (animationComplete)
 		{
-			if (AnyControllerInput())
+			//if (AnyControllerInput())
 			{
-				timer = TIME_OUT;
-				return;
+				//timer = TIME_OUT;
+				//return;
 			}
 
 			timer -= Time.deltaTime;
@@ -102,5 +104,14 @@ public class DeathEffect : Singleton<DeathEffect>
 
 	public void Death() { dead = true; }
 
-	private bool AnyControllerInput() => Utils.GetAllAxes().Any(axis => Input.GetAxis(axis) != 0);
+	private bool AnyControllerInput()
+	{
+		if (axisNames.IsNullOrEmpty())
+		{
+			IEnumerable<string> readLines = File.ReadLines(string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, "input_axes.txt"));
+			axisNames = readLines.Where(line => !string.IsNullOrEmpty(line)).ToArray();
+		}
+		
+		return axisNames.Any(axis => Input.GetAxis(axis) != 0);
+	}
 }

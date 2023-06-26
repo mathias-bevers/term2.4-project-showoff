@@ -141,7 +141,7 @@ public class NewMapBuilder : MonoBehaviour
         _activeElement.Value.spawnedElement.transform.parent = transform;
         _activeElement.Value.spawnedElement.gameObject.SetActive(true);
 
-        foreach(LevelPoint pp in _activeElement.Value.spawnedElement.baseElement.EndPoints)
+        foreach (LevelPoint pp in _activeElement.Value.spawnedElement.baseElement.EndPoints)
         {
             Transform t = pp.transform.GetChild(0);
             MapGroupElement mapGroupElement = t.GetComponent<MapGroupElement>();
@@ -165,8 +165,12 @@ public class NewMapBuilder : MonoBehaviour
 
         if (optionalRig == null) return;
 
+
+       // optionalRig.transform.rotation = _activeElement.Value.spawnedElement.transform.rotation;
         optionalRig.transform.position = _activeElement.Value.spawnedElement.baseElement.StartPoint.position;
+
         optionalRig.cameraRig.GetComponent<CameraFollowPoint>()?.Teleport();
+      
     }
 
     void DestroyRecursive(MapGroupElement element)
