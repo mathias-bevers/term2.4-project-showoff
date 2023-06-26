@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class DeathEffect : Singleton<DeathEffect>
 {
-	private const float TIME_OUT = 10.0f;
+	private const float TIME_OUT = 120.0f;
 
 	[SerializeField] private GameObject dataBaseCanvas;
 	[SerializeField] private Image backgroundPanel;
