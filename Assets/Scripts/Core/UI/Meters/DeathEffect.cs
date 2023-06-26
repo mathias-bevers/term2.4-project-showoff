@@ -1,29 +1,36 @@
 using System;
-using NaughtyAttributes;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DeathEffect : Singleton<DeathEffect>
 {
-	[SerializeField, Scene] private int mainMenuScene;
+	private const float TIME_OUT = 10.0f;
+
+	[SerializeField] private GameObject dataBaseCanvas;
 	[SerializeField] private Image backgroundPanel;
-	[SerializeField] private Text distanceRanText;
+	[SerializeField] private Transform distanceRanParent;
 	[SerializeField] private Button continueButton;
 	[SerializeField] private NameInput nameInput;
+	[SerializeField] private Image timerGreen;
+	[SerializeField] private Image timerRed;
+	
 
+	private float timerNormalized => timer / TIME_OUT;  
+		
 	private bool animationComplete;
 	private bool sentScoreToServer;
+	private bool dead;
 	private float distanceRan;
-	bool dead = false;
-    float timer = -2;
-    
+	private float timer = -2;
+
 	private Transform[] childTransforms;
 
 	public override void Awake()
 	{
 		base.Awake();
-		
+
 		continueButton.onClick.AddListener(OnContinueClicked);
 
 		backgroundPanel.gameObject.SetActive(false);
@@ -36,7 +43,22 @@ public class DeathEffect : Singleton<DeathEffect>
 	{
 		if (!dead) { return; }
 
-		if (animationComplete) { return; }
+		if (animationComplete)
+		{
+			if (AnyControllerInput())
+			{
+				timer = TIME_OUT;
+				return;
+			}
+
+			timer -= Time.deltaTime;
+			timerGreen.fillAmount = timerNormalized;
+			timerRed.fillAmount = timerNormalized;
+
+			if (timer <= 0) { UnityEngine.SceneManagement.SceneManager.LoadScene(0); }
+
+			return;
+		}
 
 		backgroundPanel.gameObject.SetActive(true);
 		timer += Time.deltaTime;
@@ -55,31 +77,30 @@ public class DeathEffect : Singleton<DeathEffect>
 		foreach (Transform childObject in childTransforms) { childObject.gameObject.SetActive(true); }
 
 		distanceRan = FindObjectOfType<MapWalker>().TotalMetersRan;
-		distanceRanText.text = $"You ran {distanceRan:n0} meters";
+		distanceRanParent.SetChildrenText($"YOU RAN {distanceRan:n0} METERS");
+		PowerupDisplayHandler.Instance.gameObject.SetActive(false);
+
+		timer = TIME_OUT;
 
 		animationComplete = true;
 	}
 
 	private void OnContinueClicked()
 	{
-		if (sentScoreToServer)
-		{
-			SceneManager.LoadScene(mainMenuScene);
-		}
-		
-		string trimmedName = nameInput.GetName().Trim();
-		
+		string trimmedName = nameInput.GetName();
+		trimmedName = trimmedName.Trim();
+
 		try
 		{
 			HighScoreManager.Instance.SendHighScoreToServer(trimmedName, (int)distanceRan);
-			continueButton.GetComponentInChildren<Text>().text = "Back to menu";
-			sentScoreToServer = true;
+			dataBaseCanvas.SetActive(true);
+			gameObject.SetActive(false);
+			continueButton.onClick.RemoveAllListeners();
 		}
-		catch (ArgumentException e)
-		{
-			distanceRanText.text = e.Message.ColorRichText(Color.red);
-		}
+		catch (ArgumentException e) { distanceRanParent.SetChildrenText(e.Message.ColorRichText(Color.red)); }
 	}
 
 	public void Death() { dead = true; }
+
+	private bool AnyControllerInput() => Utils.GetAllAxes().Any(axis => Input.GetAxis(axis) != 0);
 }

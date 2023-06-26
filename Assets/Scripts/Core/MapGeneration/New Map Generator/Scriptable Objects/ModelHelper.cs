@@ -76,6 +76,5 @@ public class ModelHelper : MonoBehaviour
 
         foreach (MeshRenderer renderer in allMeshes)
             renderer.enabled = display;
-
     }
 }

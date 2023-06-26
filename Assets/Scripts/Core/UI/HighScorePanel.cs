@@ -4,9 +4,18 @@ using UnityEngine.UI;
 
 public class HighScorePanel : MonoBehaviour
 {
-	[SerializeField] private Text numberText;
-	[SerializeField] private Text nameText;
-	[SerializeField] private Text scoreText;
+	[SerializeField] private Transform spotParent;
+	[SerializeField] private Transform nameParent;
+	[SerializeField] private Transform scoreParent;
+
+	private void Awake()
+	{
+		if (ReferenceEquals(spotParent, null)) { throw new UnassignedReferenceException($"{nameof(spotParent)} is not set in the editor!"); }
+
+		if (ReferenceEquals(nameParent, null)) { throw new UnassignedReferenceException($"{nameof(nameParent)} is not set in the editor!"); }
+
+		if (ReferenceEquals(scoreParent, null)) { throw new UnassignedReferenceException($"{nameof(scoreParent)} is not set in the editor!"); }
+	}
 
 	public void SetScore(HighScoreData? data)
 	{
@@ -19,18 +28,15 @@ public class HighScorePanel : MonoBehaviour
 		gameObject.SetActive(true);
 		HighScoreData internalData = data.Value;
 
-		if (numberText != null) { numberText.text = internalData.spot.ToString(); }
-
-		if (nameText != null) { nameText.text = internalData.name; }
-
-		if (scoreText != null) { scoreText.text = string.Format("{0:n0}", internalData.score); }
+		spotParent.SetChildrenText($"{internalData.spot}.");
+		nameParent.SetChildrenText( internalData.name);
+		scoreParent.SetChildrenText( $"{internalData.score:n0}");
 	}
 
 	[Button]
 	private void SetDummyScore()
 	{
-		int randomMeters = Random.Range(1, int.MaxValue);
-		HighScoreData data = new HighScoreData(1, "DEBUG", randomMeters);
+		HighScoreData data = new(5, "MMM", int.MaxValue);
 		SetScore(data);
 	}
 }
