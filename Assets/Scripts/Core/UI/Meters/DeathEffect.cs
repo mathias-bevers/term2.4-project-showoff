@@ -47,10 +47,10 @@ public class DeathEffect : Singleton<DeathEffect>
 
 		if (animationComplete)
 		{
-			if (AnyControllerInput())
+			//if (AnyControllerInput())
 			{
-				timer = TIME_OUT;
-				return;
+				//timer = TIME_OUT;
+				//return;
 			}
 
 			timer -= Time.deltaTime;

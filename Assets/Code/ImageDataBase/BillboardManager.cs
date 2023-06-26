@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,9 +39,7 @@ public class BillboardManager : Singleton<BillboardManager>
 
 		if (string.IsNullOrEmpty(imageToLoadName))
 		{
-			Renderer renderer = billboard.GetComponent<Renderer>();
-			if(renderer != null)
-            renderer.material = defaultMaterial;
+			billboard.renderer.material = defaultMaterial;
 			return null;
 		}
 
@@ -49,13 +47,13 @@ public class BillboardManager : Singleton<BillboardManager>
 
 		if (materialCache.TryGetValue(imageToLoadName, out Material material))
 		{
-			billboard.GetComponent<Renderer>().material = material;
+			billboard.renderer.material = material;
 			return imageToLoadName;
 		}
 
 		material = new Material(Shader.Find(DEFAULT_MATERIAL_NAME)) { mainTexture = Utils.LoadTextureFromDisk(imageDirectoryPath + imageToLoadName) };
+		materialCache.Add(imageToLoadName, material);
 		billboard.renderer.material = material;
-
 		return imageToLoadName;
 	}
 
