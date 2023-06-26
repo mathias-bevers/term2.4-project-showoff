@@ -55,7 +55,7 @@ public static partial class Utils
 
 		throw new NoComponentFoundException<T>("");
 	}
-	
+
 	public static T GetComponentThrow<T>(this GameObject gameObject) where T : Component
 	{
 		if (gameObject.TryGetComponent(out T component)) { return component; }
@@ -94,6 +94,7 @@ public static partial class Utils
 		}
 	}
 
+#if UNITY_EDITOR
 	public static string[] GetAllAxes()
 	{
 		List<string> allAxis = new();
@@ -114,4 +115,5 @@ public static partial class Utils
 
 		return allAxis.ToArray();
 	}
+#endif
 }
