@@ -36,7 +36,7 @@ public class BasicJumpModule : MotorModule
 
     public override void OnUpdate(MotorState state)
     {
-        if (Input.GetKeyDown(debugJumpKey))
+        if (Input.GetKeyDown(debugJumpKey) || Input.GetButtonDown("Jump"))
             timer = coyoteSeconds;
         jumpedThisFrame = false;
 

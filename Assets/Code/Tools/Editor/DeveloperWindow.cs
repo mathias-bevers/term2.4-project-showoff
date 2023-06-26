@@ -10,6 +10,7 @@ namespace Code.Tools.Editor
 	public class DeveloperWindow : EditorWindow
 	{
 		private const string SCENE_DIRECTORY = "Assets/Scenes/";
+		private const string AXES_FILE_NAME = "input_axes.txt";
 
 		private float spacingY;
 		private GameObject replacer;
@@ -35,6 +36,10 @@ namespace Code.Tools.Editor
 
 			EditorGUILayout.BeginHorizontal();
 			AddSuffix();
+			EditorGUILayout.EndHorizontal();
+			
+			EditorGUILayout.BeginHorizontal();
+			WriteAxesToFile();
 			EditorGUILayout.EndHorizontal();
 		}
 
@@ -119,6 +124,18 @@ namespace Code.Tools.Editor
 			}
 
 			return temp.ToArray();
+		}
+
+		private void WriteAxesToFile()
+		{
+			if (!GUILayout.Button("Write axes to file"))
+			{
+				return;
+			}
+
+			string filePath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, AXES_FILE_NAME);
+			File.WriteAllLines(filePath, Utils.GetAllAxes());
+			Debug.Log("Written all axes to: " + filePath);
 		}
 	}
 }
