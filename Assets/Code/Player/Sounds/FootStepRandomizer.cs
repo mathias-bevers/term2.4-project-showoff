@@ -4,6 +4,7 @@ using UnityEngine;
 public class FootStepRandomizer : MonoBehaviour
 {
 	[SerializeField] private Motor playerMotor;
+	[SerializeField] private AudioSource source;
 
 	[SerializeField, MinMaxSlider(0.1f, 2.0f)]
 	private Vector2 minMaxTimer;
@@ -13,14 +14,14 @@ public class FootStepRandomizer : MonoBehaviour
 	[Range(0.1f, 0.5f)] public float pitchChange = 0.2f;
 	public AudioClip[] sounds;
 
-	private AudioSource source;
 	private float timer;
 
 	private void Awake()
 	{
 		if (ReferenceEquals(playerMotor, null)) { throw new UnassignedReferenceException($"{nameof(playerMotor)} is not set in the editor!"); }
 
-		source = this.GetComponentThrow<AudioSource>();
+		if (ReferenceEquals(source, null)) { throw new UnassignedReferenceException($"{nameof(source)} is not set in the editor!"); }
+
 		PlaySound();
 	}
 
@@ -42,7 +43,7 @@ public class FootStepRandomizer : MonoBehaviour
 		source.volume = Random.Range(1 - volumeChange, 1);
 		source.pitch = Random.Range(1 - pitchChange, 1 + pitchChange);
 		source.PlayOneShot(source.clip);
-		
+
 		timer = Random.Range(minMaxTimer.x, minMaxTimer.y);
 	}
 }
