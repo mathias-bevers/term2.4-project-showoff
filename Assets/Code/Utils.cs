@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -93,7 +92,7 @@ public static partial class Utils
 			childText.text = message;
 		}
 	}
-
+	/*
 	public static string[] GetAllAxes()
 	{
 		List<string> allAxis = new();
@@ -113,5 +112,5 @@ public static partial class Utils
 		}
 
 		return allAxis.ToArray();
-	}
+	}*/
 }

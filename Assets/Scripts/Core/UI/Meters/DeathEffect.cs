@@ -45,10 +45,10 @@ public class DeathEffect : Singleton<DeathEffect>
 
 		if (animationComplete)
 		{
-			if (AnyControllerInput())
+			//if (AnyControllerInput())
 			{
-				timer = TIME_OUT;
-				return;
+				//timer = TIME_OUT;
+				//return;
 			}
 
 			timer -= Time.deltaTime;
@@ -102,5 +102,5 @@ public class DeathEffect : Singleton<DeathEffect>
 
 	public void Death() { dead = true; }
 
-	private bool AnyControllerInput() => Utils.GetAllAxes().Any(axis => Input.GetAxis(axis) != 0);
+	//private bool AnyControllerInput() => Utils.GetAllAxes().Any(axis => Input.GetAxis(axis) != 0);
 }

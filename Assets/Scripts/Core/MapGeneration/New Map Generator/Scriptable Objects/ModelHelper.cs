@@ -23,6 +23,8 @@ public class ModelHelper : MonoBehaviour
         gapFiller = GetComponentsInChildren<GapFiller>(true).ToList();
     }
 
+    bool wasActive = false;
+
     private void OnDrawGizmos()
     {
         if (!isEditorVisual) return;
@@ -32,8 +34,6 @@ public class ModelHelper : MonoBehaviour
             Gizmos.DrawWireMesh(mesh.sharedMesh, mesh.transform.position, mesh.transform.rotation, mesh.transform.localScale);
         }
     }
-
-    bool wasActive = true;
 
     private void Update()
     {

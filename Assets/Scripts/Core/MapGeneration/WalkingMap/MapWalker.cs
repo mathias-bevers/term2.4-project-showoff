@@ -128,18 +128,23 @@ public class MapWalker : MonoBehaviour
     PathNode? newActiveNode = null;
     float removableDistance = 0;
 
+    bool teleport = false;
+
     void HandleSingleDirection(LevelElement activeElement)
     {
         if (rig.player.oopsIDied)
         {
-            mapBuilder.MoveOverElement(rig);
+
             rig.player.transform.localPosition = Vector3.zero;
             rig.player.oopsIDied = false;
             if (!rig.player.EffectIsActive(PickupIdentifier.Speedup))
             {
                 rig.player.AddPickup((int)PickupIdentifier.Speedup);
                 recoveryTime = 3;
+                teleport = true;
             }
+
+           // mapBuilder.MoveOverElement(rig);
         }
 
         if (activeElement != null) if (activeElement.forceRequestNewPath) activePath = activeElement.GetPath();
@@ -197,6 +202,12 @@ public class MapWalker : MonoBehaviour
 
         float usedDistance = metersRan - removableDistance;
         float calcedDistance = Vector3.Distance(activePos, newActivePos);
+
+        if (teleport) 
+        {
+            teleport = false;
+            metersRan = calcedDistance;
+        }
 
         float zeroToOne = usedDistance / (calcedDistance + 0.001f);
 
