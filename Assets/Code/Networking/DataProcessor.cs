@@ -53,11 +53,13 @@ public class DataProcessor : MonoBehaviour
 
 	private void LateUpdate()
 	{
-		if (!networkingClient.isInitialized) { return; }
-
 		if (isDeath) { return; }
 
 		ownDistanceParent.SetChildrenText($"YOU: {walker.TotalMetersRan:n0}");
+
+		if (networkingClient == null) { return; }
+
+		if (!networkingClient.isInitialized) { return; }
 
 		distTimer -= Time.deltaTime;
 

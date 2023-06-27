@@ -196,6 +196,13 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 	private void WriteSelectionToServer(string fileName)
 	{
+		if (networkingClient == null)
+		{
+			File.AppendAllText(filePath, fileName);
+			SceneManager.LoadScene(mainMenuScene);
+			return;
+		}
+
 		if (string.IsNullOrEmpty(fileName))
 		{
 			Debug.LogWarning("No selection has been made");

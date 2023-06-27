@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class Client : MonoBehaviour
 {
+	private const float MAX_TIME_BETWEEN_HEARTBEAT = 2.5f;
+
+
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
@@ -13,6 +16,8 @@ public class Client : MonoBehaviour
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
 
+
+	private float timer;
 	private bool isAccepted;
 	private TcpClient client;
 
@@ -32,6 +37,16 @@ public class Client : MonoBehaviour
 		try
 		{
 			if (client == null) { return; }
+
+			if (isAccepted)
+			{
+				timer -= Time.deltaTime;
+				if (timer < 0)
+				{
+					Destroy(this);
+					return;
+				}
+			}
 
 			while (client is { Available: > 1 })
 			{
@@ -61,8 +76,6 @@ public class Client : MonoBehaviour
 		client = null;
 		Destroy(gameObject);
 	}
-
-	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
 
 	public void Connect(IPAddress ip, int port, int attempts = 0)
 	{
@@ -136,7 +149,9 @@ public class Client : MonoBehaviour
 
 		switch (serverObject)
 		{
-			case HeartBeat: break;
+			case HeartBeat:
+				timer = MAX_TIME_BETWEEN_HEARTBEAT;
+				break;
 
 			case PlayerDistance playerDistance:
 				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
