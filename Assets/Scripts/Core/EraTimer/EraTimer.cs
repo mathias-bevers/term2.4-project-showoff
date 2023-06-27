@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,6 +9,8 @@ public class EraTimer : Singleton<EraTimer>
 
     Era _currentEra = Era.Era1;
     public Era currentEra => _currentEra;
+
+    public List<EraEvent> events = new List<EraEvent>();
 
     [SerializeField] int hourChangeEraTime = 2;
     [SerializeField] int eraCount = 2;
@@ -46,9 +49,24 @@ public class EraTimer : Singleton<EraTimer>
             lastEra = curEra;
             onEraChange?.Invoke(curEra);
             _currentEra = (Era)curEra;
+
+            foreach(EraEvent e in events)
+            {
+                if(e.forEra == (Era)curEra)
+                {
+                    e.onCurrentEra?.Invoke();
+                }
+            }
         }
     }
 }
 
 [Serializable]
 public class IntUnityEvent : UnityEvent<int> { }
+
+[Serializable]
+public struct EraEvent
+{
+    public UnityEvent onCurrentEra;
+    public Era forEra;
+}

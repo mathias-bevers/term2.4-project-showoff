@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
 
 public class AudioClipGroup : MonoBehaviour
 {
@@ -24,8 +21,6 @@ public class AudioClipGroup : MonoBehaviour
     KeyCode resetKey = KeyCode.None;
 #endif
     bool playing = false;
-
-    bool paused = false;
 
     float _actualVolume = 80;
     public float internalVolume
@@ -78,16 +73,7 @@ public class AudioClipGroup : MonoBehaviour
         ResetValues();
         playing = true;
     }
-    [ContextMenu("Pause")]
-    public void Pause()
-    {
-        paused = true;
-    }
-    [ContextMenu("UnPause")]
-    public void Unpause()
-    {
-        paused = false;
-    }
+
     [ContextMenu("Stop")]
     public void Stop()
     {
