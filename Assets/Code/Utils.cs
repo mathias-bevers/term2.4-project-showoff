@@ -78,6 +78,7 @@ public static partial class Utils
 
 	public static Texture2D LoadTextureFromDisk(string filePath)
 	{
+		if (!File.Exists(filePath)) return null;
 		byte[] inBytes = File.ReadAllBytes(filePath);
 		Texture2D texture = new(1, 1);
 		texture.LoadImage(inBytes);
