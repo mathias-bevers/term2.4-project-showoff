@@ -47,7 +47,22 @@ public class DataBaseSelector : MonoBehaviour
 		gridSize = imagesPerRow * rows;
 		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, DIRECTORY_NAME, Path.DirectorySeparatorChar);
 		fileNames = GetFileNames();
-		chosenImages = File.ReadAllLines(string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, CHOSEN_IMAGES_FILE_NAME)).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+
+
+
+		string path = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, CHOSEN_IMAGES_FILE_NAME);
+
+		try
+		{
+			chosenImages = File.ReadAllLines(path).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+		}
+		catch (FileNotFoundException)
+		{
+			chosenImages = Array.Empty<string>();
+			Debug.LogWarning("Could not find file, creating...");
+			File.Create(path).Close();
+		}
+
 		pages = (int)Math.Ceiling((float)(fileNames.Length - chosenImages.Length) / gridSize);
 		pagesStart = new Dictionary<int, int>();
 		originalPreviousNavigation = previousPage.navigation;

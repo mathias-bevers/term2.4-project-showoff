@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 public static partial class Utils
 {
@@ -18,13 +20,13 @@ public static partial class Utils
 	{
 		if (collection.Count == 0) { return null; }
 
-		int randomIndex = UnityEngine.Random.Range(0, collection.Count);
+		int randomIndex = Random.Range(0, collection.Count);
 		return collection[randomIndex];
 	}
 
 	public static T GetRandomElementStruct<T>(this IList<T> collection) where T : struct
 	{
-		int randomIndex = UnityEngine.Random.Range(0, collection.Count);
+		int randomIndex = Random.Range(0, collection.Count);
 		return collection[randomIndex];
 	}
 
@@ -41,7 +43,8 @@ public static partial class Utils
 
 	public static Transform[] GetAllChildren(this Transform parent) => parent.Cast<Transform>().ToArray();
 
-	public static string ColorRichText(this string str, Color color) => string.Concat("<color=", ColorUtility.ToHtmlStringRGBA(color), ">", str, "</color>");
+	public static string ColorRichText(this string str, Color color) =>
+		string.Concat("<color=", ColorUtility.ToHtmlStringRGBA(color), ">", str, "</color>");
 
 	public static T GetComponentInParents<T>(this Transform start) where T : Component
 	{
@@ -73,11 +76,20 @@ public static partial class Utils
 	public static Sprite LoadSpriteFromDisk(string filePath)
 	{
 		Texture2D texture = LoadTextureFromDisk(filePath);
-		return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+		if (texture != null) { return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f)); }
+
+		Debug.LogError("Texture could not be loaded!");
+		return null;
 	}
 
 	public static Texture2D LoadTextureFromDisk(string filePath)
 	{
+		if (!File.Exists(filePath))
+		{
+			Debug.LogError($"File \'{filePath}\' cannot be found!");
+			return null;
+		}
+
 		byte[] inBytes = File.ReadAllBytes(filePath);
 		Texture2D texture = new(1, 1);
 		texture.LoadImage(inBytes);
@@ -99,7 +111,7 @@ public static partial class Utils
 	{
 		List<string> allAxis = new();
 
-		UnityEngine.Object inputManager = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/InputManager.asset")[0];
+		Object inputManager = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/InputManager.asset")[0];
 		SerializedObject obj = new(inputManager);
 		SerializedProperty axes = obj.FindProperty("m_Axes");
 
