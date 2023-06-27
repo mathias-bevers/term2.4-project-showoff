@@ -70,7 +70,7 @@ public class DataBaseSelector : MonoBehaviour
 		int start = gridSize * scrollIndex;
 		if (pagesStart.TryGetValue(scrollIndex - 1, out int _start)) { start = _start; }
 		
-		List<Sprite> sprites = new(imagesPerRow * rows);
+		List<Sprite> sprites = new List<Sprite>(imagesPerRow * rows);
 
 		int i = start;
 		while (sprites.Count < gridSize && i < fileNames.Length)

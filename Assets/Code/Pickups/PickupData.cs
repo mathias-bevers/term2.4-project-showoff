@@ -39,7 +39,7 @@ public struct PickupData
 
 		public override string ToString()
 		{
-			StringBuilder sb = new();
+			StringBuilder sb = new StringBuilder();
 			sb.AppendLine("\tint: " + wholeNumber);
 			sb.AppendLine("\tfloat: " + decimalNumber);
 			sb.AppendLine($"\tstring: \"{message}\"");
