@@ -21,10 +21,13 @@ public class BillboardManager : Singleton<BillboardManager>
 	public override void Awake()
 	{
 		txtFilePath = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, TXT_FILE_NAME);
-		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, IMAGE_DIRECTORY_NAME, Path.DirectorySeparatorChar);
+		imageDirectoryPath = string.Concat(Application.streamingAssetsPath,
+			Path.DirectorySeparatorChar,
+			IMAGE_DIRECTORY_NAME,
+			Path.DirectorySeparatorChar);
 		fileNames = ReadFileNames(txtFilePath);
 		activeImages = new List<string>();
-		materialCache = new Dictionary<string, Material>(); 
+		materialCache = new Dictionary<string, Material>();
 		Shader shader = Shader.Find(DEFAULT_MATERIAL_NAME);
 		defaultMaterial = new Material(shader);
 
@@ -35,7 +38,9 @@ public class BillboardManager : Singleton<BillboardManager>
 	{
 		billboard.destroyingEvent += OnBillboardDestroy;
 
-		string imageToLoadName = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length ? fileNames.Except(activeImages).ToList().GetRandomElement() : fileNames.GetRandomElement();
+		string imageToLoadName = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length
+			? fileNames.Except(activeImages).ToList().GetRandomElement()
+			: fileNames.GetRandomElement();
 
 		if (string.IsNullOrEmpty(imageToLoadName))
 		{
@@ -51,7 +56,8 @@ public class BillboardManager : Singleton<BillboardManager>
 			return imageToLoadName;
 		}
 
-		material = new Material(Shader.Find(DEFAULT_MATERIAL_NAME)) { mainTexture = Utils.LoadTextureFromDisk(imageDirectoryPath + imageToLoadName) };
+		Texture2D texture = Utils.LoadTextureFromDisk(imageDirectoryPath + imageToLoadName);
+		material = texture != null ? new Material(Shader.Find(DEFAULT_MATERIAL_NAME)) { mainTexture = texture } : defaultMaterial;
 		materialCache.Add(imageToLoadName, material);
 		billboard.renderer.material = material;
 		return imageToLoadName;
@@ -62,7 +68,13 @@ public class BillboardManager : Singleton<BillboardManager>
 		if (!File.Exists(path)) { return Array.Empty<string>(); }
 
 		try { return File.ReadAllLines(txtFilePath).Where(line => !string.IsNullOrEmpty(line)).ToArray(); }
-		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{txtFilePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+		catch (IOException e)
+		{
+			Debug.LogError(string.Concat($"Could not write to file \'{txtFilePath}\', it is probably used by another process!",
+				Environment.NewLine,
+				Environment.NewLine,
+				e));
+		}
 
 		return Array.Empty<string>();
 	}
