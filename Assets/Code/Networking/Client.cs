@@ -116,7 +116,7 @@ public class Client : MonoBehaviour
 
 	private void ProcessData(byte[] dataInBytes)
 	{
-		Packet packet = new(dataInBytes);
+		Packet packet = new Packet(dataInBytes);
 		ServerObject serverObject;
 		try { serverObject = packet.ReadObject(); }
 		catch(Exception e)

@@ -80,7 +80,7 @@ public static partial class Utils
 	{
 		if (!File.Exists(filePath)) return null;
 		byte[] inBytes = File.ReadAllBytes(filePath);
-		Texture2D texture = new(1, 1);
+		Texture2D texture = new Texture2D(1, 1);
 		texture.LoadImage(inBytes);
 
 		return texture;
@@ -98,10 +98,10 @@ public static partial class Utils
 #if UNITY_EDITOR
 	public static string[] GetAllAxes()
 	{
-		List<string> allAxis = new();
+		List<string> allAxis = new List<string>();
 
 		UnityEngine.Object inputManager = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/InputManager.asset")[0];
-		SerializedObject obj = new(inputManager);
+		SerializedObject obj = new SerializedObject(inputManager);
 		SerializedProperty axes = obj.FindProperty("m_Axes");
 
 		if (axes.arraySize == 0) { Debug.LogWarning("No axes found!"); }

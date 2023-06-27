@@ -21,7 +21,7 @@ public struct ReceivedPacket
 	{
 		if (serverObject == null)
 		{
-			StringBuilder sb = new("Trying to write an empty package!\n");
+			StringBuilder sb = new StringBuilder("Trying to write an empty package!\n");
 		
 			StackTrace st = new(true);
 			for (int i = 0; i < st.FrameCount; i++)
@@ -36,7 +36,7 @@ public struct ReceivedPacket
 			throw new NoNullAllowedException(sb.ToString());
 		}
 		
-		Packet packet = new();
+		Packet packet = new Packet();
 		packet.Write(serverObject);
 		return packet;
 	}

@@ -18,14 +18,16 @@ public class MainMenu : MonoBehaviour
 		if(loadingScene) {return;}
 		
 		if (!Input.GetButtonDown("Submit")) { return; }
-		
+
+		GameSettings.ReadFile();
+
 		RunGame();
 	}
 
 	private void RunGame()
 	{
 		//string ipAddress = ; //TODO: get ip from settings.
-		Settings.SERVER_IP = Utils.GetIP4Address();
+		Settings.SERVER_IP = System.Net.IPAddress.Parse(GameSettings.IPString.Trim());
 
 		loadingScene = true;
 		infoTextParent.SetChildrenText("LOADING...");
