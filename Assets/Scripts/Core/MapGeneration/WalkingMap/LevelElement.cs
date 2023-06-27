@@ -8,8 +8,8 @@ using Mudfish;
 public class LevelElement : MonoBehaviour
 {
     [SerializeField] bool hasSideToChose = false;
-    const float stepCount = 0.001f;
-    const int stepAmount = (int)(1 / stepCount);
+    const double stepCount = 0.001f;
+    const int stepAmount = (int)(1.0 / stepCount);
 
     [SerializeField] LevelPoint startPoint;
     [SerializeField] LevelPoint[] endPoints;
@@ -203,7 +203,7 @@ public class LevelElement : MonoBehaviour
 
         for (int i = 0; i < stepAmount; i++)
         {
-            points.Add(CurveInterpolations.CubicBezier(stepCount * i, lastPointPos, lastPointForward, pointForward, pointPosition));
+            points.Add(CurveInterpolations.CubicBezier((float)(stepCount * i), lastPointPos, lastPointForward, pointForward, pointPosition));
         }
 
         return points;

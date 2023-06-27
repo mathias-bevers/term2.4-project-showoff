@@ -99,7 +99,8 @@ public class MapWalker : MonoBehaviour
         {
             lastActiveElement = activeElement;
 
-            metersRan = distShouldRan;
+            if (distShouldRan > 10) metersRan = 0;
+            else metersRan = distShouldRan;
         }
         if (Input.GetKeyDown(KeyCode.D)) activeElement?.ChoseSide(MapSides.Right);
         if (Input.GetKeyDown(KeyCode.A)) activeElement?.ChoseSide(MapSides.Left);
@@ -137,15 +138,20 @@ public class MapWalker : MonoBehaviour
 
             rig.player.transform.localPosition = Vector3.zero;
             rig.player.oopsIDied = false;
+            if (recoveryTime <= 0) teleport = true;
             if (!rig.player.EffectIsActive(PickupIdentifier.Speedup))
             {
                 rig.player.AddPickup((int)PickupIdentifier.Speedup);
                 recoveryTime = 3;
-                teleport = true;
+
             }
+
+            rig.motor.ResetVelocity();
 
            // mapBuilder.MoveOverElement(rig);
         }
+
+        if (recoveryTime > 0) { rig.motor.ResetVelocity(); rig.player.transform.localPosition = new Vector3(rig.player.transform.localPosition.x, rig.player.transform.localPosition.y, 0.05f); }
 
         if (activeElement != null) if (activeElement.forceRequestNewPath) activePath = activeElement.GetPath();
         if (activeNode == null)
@@ -206,7 +212,7 @@ public class MapWalker : MonoBehaviour
         if (teleport) 
         {
             teleport = false;
-            metersRan = calcedDistance;
+            metersRan = 100000;
         }
 
         float zeroToOne = usedDistance / (calcedDistance + 0.001f);
@@ -253,6 +259,7 @@ public class MapWalker : MonoBehaviour
         activeNode = activePath[activePath.Count - 1];
         newActiveNode = activeNode;
         removableDistance = Vector3.Distance(activePath[0].position, activePath[activePath.Count - 1].position);
+        
         distShouldRan = metersRan - removableDistance;
 
         if (!activeNode.Value.isEnd)
