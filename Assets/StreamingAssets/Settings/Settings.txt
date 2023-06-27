@@ -1,2 +1,0 @@
-IsLeftClient:BOOL:True
-IPString:STRING:
