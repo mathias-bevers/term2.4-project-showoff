@@ -6,19 +6,17 @@ using UnityEngine;
 
 public class Client : MonoBehaviour
 {
-	private const float MAX_TIME_BETWEEN_HEARTBEAT = 2.5f;
-
-
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
+	private const float MAX_TIME_BETWEEN_HEARTBEAT = 2.5f;
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
+	private bool isAccepted;
 
 
 	private float timer;
-	private bool isAccepted;
 	private TcpClient client;
 
 	private void Start()
@@ -43,7 +41,7 @@ public class Client : MonoBehaviour
 				timer -= Time.deltaTime;
 				if (timer < 0)
 				{
-					Destroy(this);
+					Close();
 					return;
 				}
 			}
@@ -61,11 +59,7 @@ public class Client : MonoBehaviour
 		}
 	}
 
-	private void OnDestroy()
-	{
-		// Debug.LogWarning("Destroying client instance...");
-		Close();
-	}
+	private void OnDestroy() => Close();
 
 	public void Close()
 	{
@@ -74,6 +68,7 @@ public class Client : MonoBehaviour
 		isAccepted = false;
 		client.Close();
 		client = null;
+
 		Destroy(gameObject);
 	}
 
@@ -129,10 +124,10 @@ public class Client : MonoBehaviour
 
 	private void ProcessData(byte[] dataInBytes)
 	{
-		Packet packet = new Packet(dataInBytes);
+		Packet packet = new(dataInBytes);
 		ServerObject serverObject;
 		try { serverObject = packet.ReadObject(); }
-		catch(Exception e)
+		catch (Exception e)
 		{
 			Debug.LogError("object could not be read.\n" + e.Message);
 			Close();
@@ -156,23 +151,23 @@ public class Client : MonoBehaviour
 			case PlayerDistance playerDistance:
 				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
-			
+
 			case PlayerConnection playerConnection:
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
-			
+
 			case SendPickup sendPickup:
 				receivedDebuffEvent?.Invoke(sendPickup.data);
 				break;
-			
+
 			case GetHighScores getHighScores:
 				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
 				break;
-			
+
 			case GetFileNames fileNames:
 				DataBaseCommunicator.Instance.RewriteDataBaseCache(fileNames);
 				break;
-			
+
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
 	}

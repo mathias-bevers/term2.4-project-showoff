@@ -29,25 +29,13 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 		// if (ReferenceEquals(networkingClient, null)) { throw new UnassignedReferenceException($"{nameof(networkingClient)} is not set in the editor!"); }
 
-		if (ReferenceEquals(previewImageParent, null))
-		{
-			throw new UnassignedReferenceException($"{nameof(previewImageParent)} is not set in the editor!");
-		}
+		if (ReferenceEquals(previewImageParent, null)) { throw new UnassignedReferenceException($"{nameof(previewImageParent)} is not set in the editor!"); }
 
-		if (ReferenceEquals(noImageSelectedSprite, null))
-		{
-			throw new UnassignedReferenceException($"{nameof(noImageSelectedSprite)} is not set in the editor!");
-		}
+		if (ReferenceEquals(noImageSelectedSprite, null)) { throw new UnassignedReferenceException($"{nameof(noImageSelectedSprite)} is not set in the editor!"); }
 
-		if (ReferenceEquals(confirmSelectionButton, null))
-		{
-			throw new UnassignedReferenceException($"{nameof(confirmSelectionButton)} is not set in the editor!");
-		}
+		if (ReferenceEquals(confirmSelectionButton, null)) { throw new UnassignedReferenceException($"{nameof(confirmSelectionButton)} is not set in the editor!"); }
 
-		if (ReferenceEquals(dataBaseSelector, null))
-		{
-			throw new UnassignedReferenceException($"{nameof(dataBaseSelector)} is not set in the editor!");
-		}
+		if (ReferenceEquals(dataBaseSelector, null)) { throw new UnassignedReferenceException($"{nameof(dataBaseSelector)} is not set in the editor!"); }
 
 		filePath = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, FILE_NAME);
 		previewImages = new Image[previewImageParent.childCount];
@@ -65,17 +53,22 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	private void OnEnable()
 	{
 #if UNITY_EDITOR
-		if (!Player.IsInitialized) { return;}
+		if (!Player.IsInitialized) { return; }
 #endif
 
 		if (!Player.Instance.dead) { return; }
 
-		Packet packet = new Packet();
+		if (networkingClient == null)
+		{
+			DisplayPreviewImages();
+			return;
+		}
+
+		Packet packet = new();
 		string[] readFileNames = ReadFileNames();
-		AddFileNames fileNames = new AddFileNames(readFileNames);
+		AddFileNames fileNames = new(readFileNames);
 		packet.Write(fileNames);
 		networkingClient.SendData(packet);
-		Debug.Log("Send local data to server");
 	}
 
 	private void OnImageSelected(string fileName)
@@ -98,13 +91,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 		if (!File.Exists(filePath)) { File.Create(filePath).Close(); }
 
 		try { File.WriteAllLines(filePath, serverObject.fileNames); }
-		catch (IOException e)
-		{
-			Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!",
-				Environment.NewLine,
-				Environment.NewLine,
-				e));
-		}
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 
 		if (hasSelectedImage)
 		{
@@ -115,17 +102,8 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 		if (!gameObject.activeInHierarchy) { return; }
 
 		try { DisplayPreviewImages(); }
-		catch (FileNotFoundException e)
-		{
-			Debug.LogError(string.Concat(e.Message, Environment.NewLine, Environment.NewLine, e.StackTrace));
-		}
-		catch (IOException e)
-		{
-			Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!",
-				Environment.NewLine,
-				Environment.NewLine,
-				e));
-		}
+		catch (FileNotFoundException e) { Debug.LogError(string.Concat(e.Message, Environment.NewLine, Environment.NewLine, e.StackTrace)); }
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 	}
 
 	[Button]
@@ -183,13 +161,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 			return temp.ToArray();
 		}
-		catch (IOException e)
-		{
-			Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!",
-				Environment.NewLine,
-				Environment.NewLine,
-				e));
-		}
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 
 		return Array.Empty<string>();
 	}
@@ -198,7 +170,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	{
 		if (networkingClient == null)
 		{
-			File.AppendAllText(filePath, fileName);
+			File.AppendAllText(filePath, '\n' + fileName);
 			SceneManager.LoadScene(mainMenuScene);
 			return;
 		}
@@ -209,8 +181,8 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 			return;
 		}
 
-		Packet packet = new Packet();
-		AddFileName addFileName = new AddFileName(fileName);
+		Packet packet = new();
+		AddFileName addFileName = new(fileName);
 		packet.Write(addFileName);
 		networkingClient.SendData(packet);
 

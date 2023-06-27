@@ -67,7 +67,7 @@ public class DataProcessor : MonoBehaviour
 
 		distTimer = DISTANCE_SEND_DELAY;
 
-		Packet packet = new Packet();
+		Packet packet = new();
 		packet.Write(new PlayerDistance(walker.TotalMetersRan));
 		networkingClient.SendData(packet);
 	}
@@ -76,7 +76,7 @@ public class DataProcessor : MonoBehaviour
 	{
 		if (isDeath) { return; }
 
-		Packet packet = new Packet();
+		Packet packet = new();
 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Left));
 		networkingClient.SendData(packet);
 	}
@@ -98,7 +98,9 @@ public class DataProcessor : MonoBehaviour
 
 	private void OnPlayerDeath()
 	{
-		Packet packet = new Packet();
+		if (networkingClient == null) { return; }
+
+		Packet packet = new();
 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Died));
 		networkingClient.SendData(packet);
 
@@ -109,13 +111,10 @@ public class DataProcessor : MonoBehaviour
 
 	private void OnPowerupPickup(PickupData data)
 	{
-		Packet packet = new Packet();
+		Packet packet = new();
 		packet.Write(new SendPickup(data));
 		networkingClient.SendData(packet);
 	}
 
-	private void OnReceivedDebuff(PickupData data)
-	{
-		PickupManager.Instance.PickUpPickup(data.identifier, true);
-	}
+	private void OnReceivedDebuff(PickupData data) { PickupManager.Instance.PickUpPickup(data.identifier, true); }
 }

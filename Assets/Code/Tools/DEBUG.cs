@@ -12,6 +12,8 @@ public class DEBUG : MonoBehaviour
 #if !DEBUG
 			Destroy(gameObject);
 #endif
+
+		if (FindObjectsOfType<DEBUG>().Length > 1) { Destroy(gameObject); }
 	}
 
 	private void Update()
