@@ -1861,7 +1861,7 @@ MonoBehaviour:
   mapBuilder: {fileID: 1581505917}
   rig: {fileID: 1080175765}
   startSpeed: 5
-  endSpeed: 7.6
+  endSpeed: 20
   accelerationTime: 120
   minSpawnAmount: 3
   slowedSpeed: 0.1
