@@ -1386,36 +1386,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -115.66406
       objectReference: {fileID: 0}
-    - target: {fileID: 5417803815945863897, guid: 84cd5752628f00d43bc1d8866ddf8e18,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5417803815945863897, guid: 84cd5752628f00d43bc1d8866ddf8e18,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5417803815945863897, guid: 84cd5752628f00d43bc1d8866ddf8e18,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 411.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5417803815945863897, guid: 84cd5752628f00d43bc1d8866ddf8e18,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 231.32812
-      objectReference: {fileID: 0}
-    - target: {fileID: 5417803815945863897, guid: 84cd5752628f00d43bc1d8866ddf8e18,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 205.625
-      objectReference: {fileID: 0}
-    - target: {fileID: 5417803815945863897, guid: 84cd5752628f00d43bc1d8866ddf8e18,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -115.66406
-      objectReference: {fileID: 0}
     - target: {fileID: 5417803815961954030, guid: 84cd5752628f00d43bc1d8866ddf8e18,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -5918,7 +5888,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SendPointerHoverToParent: 1
   m_HorizontalAxis: HorizontalController
-  m_VerticalAxis: HorizontalController
+  m_VerticalAxis: VerticalController
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
