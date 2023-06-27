@@ -64,6 +64,10 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 	private void OnEnable()
 	{
+#if UNITY_EDITOR
+		if (!Player.IsInitialized) { return;}
+#endif
+
 		if (!Player.Instance.dead) { return; }
 
 		Packet packet = new();
