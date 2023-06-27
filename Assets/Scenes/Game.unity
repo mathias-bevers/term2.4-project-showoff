@@ -2356,7 +2356,7 @@ MonoBehaviour:
   enabledWhen: 3
   useExtendedGroundedRange: 0
   speed: 3.5
-  maxStickOut: 1.5
+  maxStickOut: 1.25
 --- !u!114 &631515939
 MonoBehaviour:
   m_ObjectHideFlags: 0
