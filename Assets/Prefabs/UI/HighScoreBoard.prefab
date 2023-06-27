@@ -57,6 +57,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4802254648799630645}
     m_Modifications:
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     - target: {fileID: 7302132923938076616, guid: 8753129e443ed084cbb12d6c36f05ef8,
         type: 3}
       propertyPath: m_Name
@@ -167,6 +187,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8753129e443ed084cbb12d6c36f05ef8, type: 3}
 --- !u!224 &7302132923506757050 stripped
@@ -182,6 +212,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4802254648799630645}
     m_Modifications:
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     - target: {fileID: 7302132923938076616, guid: 8753129e443ed084cbb12d6c36f05ef8,
         type: 3}
       propertyPath: m_Name
@@ -292,6 +342,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8753129e443ed084cbb12d6c36f05ef8, type: 3}
 --- !u!224 &7302132924658209932 stripped
@@ -307,6 +367,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4802254648799630645}
     m_Modifications:
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     - target: {fileID: 7302132923938076616, guid: 8753129e443ed084cbb12d6c36f05ef8,
         type: 3}
       propertyPath: m_Name
@@ -417,6 +497,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8753129e443ed084cbb12d6c36f05ef8, type: 3}
 --- !u!224 &7302132924519135309 stripped
@@ -432,6 +522,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4802254648799630645}
     m_Modifications:
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     - target: {fileID: 7302132923938076616, guid: 8753129e443ed084cbb12d6c36f05ef8,
         type: 3}
       propertyPath: m_Name
@@ -542,6 +652,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8753129e443ed084cbb12d6c36f05ef8, type: 3}
 --- !u!224 &7302132924099687243 stripped
@@ -557,6 +677,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4802254648799630645}
     m_Modifications:
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902141542800279796, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5778278469129845008, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
+      objectReference: {fileID: 0}
     - target: {fileID: 7302132923938076616, guid: 8753129e443ed084cbb12d6c36f05ef8,
         type: 3}
       propertyPath: m_Name
@@ -666,6 +806,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811545646325323082, guid: 8753129e443ed084cbb12d6c36f05ef8,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: -4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8753129e443ed084cbb12d6c36f05ef8, type: 3}
