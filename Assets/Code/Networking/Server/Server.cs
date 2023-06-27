@@ -102,7 +102,7 @@ public class Server : Singleton<Server>
 			if (clients.Count >= 2)
 			{
 				Debug.LogWarning("Refused client, server is full");
-				AccessCallback rejectedCB = new(false);
+				AccessCallback rejectedCB = new AccessCallback(false);
 				packet.Write(rejectedCB);
 
 				try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
@@ -120,7 +120,7 @@ public class Server : Singleton<Server>
 
 			clients.Add(serverClient);
 
-			AccessCallback acceptedCB = new(true, currentID);
+			AccessCallback acceptedCB = new AccessCallback(true, currentID);
 			packet.Write(acceptedCB);
 			WriteToClient(serverClient, packet);
 
@@ -138,7 +138,7 @@ public class Server : Singleton<Server>
 			{
 	
 					byte[] inBytes = StreamUtil.Read(client.stream);
-					Packet packet = new(inBytes);
+					Packet packet = new Packet(inBytes);
 					ServerObject obj = packet.ReadObject();
 					receivedPackets.Add(new ReceivedPacket(client, obj));
 			
@@ -155,7 +155,7 @@ public class Server : Singleton<Server>
 	{
 		foreach (ServerClient client in clients)
 		{
-			Packet packet = new();
+			Packet packet = new Packet();
 			packet.Write(new HeartBeat());
 			WriteToClient(client, packet);
 		}
@@ -196,7 +196,7 @@ public class Server : Singleton<Server>
 
 	public string DEBUG_INFO()
 	{
-		StringBuilder sb = new("SERVER DEBUG:\n\n");
+		StringBuilder sb = new StringBuilder("SERVER DEBUG:\n\n");
 		sb.AppendLine($"Connected clients: {clients.Count}");
 		sb.AppendLine($"Package backlog: {receivedPackets.Count}");
 

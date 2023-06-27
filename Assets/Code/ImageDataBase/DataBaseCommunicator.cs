@@ -70,9 +70,9 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 		if (!Player.Instance.dead) { return; }
 
-		Packet packet = new();
+		Packet packet = new Packet();
 		string[] readFileNames = ReadFileNames();
-		AddFileNames fileNames = new(readFileNames);
+		AddFileNames fileNames = new AddFileNames(readFileNames);
 		packet.Write(fileNames);
 		networkingClient.SendData(packet);
 		Debug.Log("Send local data to server");
@@ -202,8 +202,8 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 			return;
 		}
 
-		Packet packet = new();
-		AddFileName addFileName = new(fileName);
+		Packet packet = new Packet();
+		AddFileName addFileName = new AddFileName(fileName);
 		packet.Write(addFileName);
 		networkingClient.SendData(packet);
 

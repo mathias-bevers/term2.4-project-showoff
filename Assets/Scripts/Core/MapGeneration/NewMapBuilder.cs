@@ -34,16 +34,6 @@ public class NewMapBuilder : MonoBehaviour
         SetMapGroup(startGroup);
     }
 
-#if DEBUG
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            if(buildForEra == Era.Era1) buildForEra = Era.Era2;
-            else if(buildForEra == Era.Era2) buildForEra = Era.Era1;
-        }
-    }
-#endif
 
     public void BuildLevelElement()
     {

@@ -56,7 +56,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	{
 		if (string.IsNullOrEmpty(playerName)) { throw new ArgumentNullException(nameof(playerName), "Cannot be null or empty"); }
 
-		Packet packet = new();
+		Packet packet = new Packet();
 		packet.Write(new AddHighScore(playerName, score));
 		// Debug.Log($"Sending score to server: {name}, {score}");
 		Player.Instance.client.SendData(packet);
@@ -66,7 +66,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	{
 		if (!File.Exists(filePath)) { return Array.Empty<(string, int)>(); }
 
-		List<(string, int)> fileEntries = new();
+		List<(string, int)> fileEntries = new List<(string, int)>();
 
 
 		try
@@ -110,9 +110,9 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	public Packet LocalScoresAsPacket()
 	{
 		IEnumerable<(string, int)> localScores = ReadScoresFromFile();
-		AddHighScores server = new(localScores);
+		AddHighScores server = new AddHighScores(localScores);
 
-		Packet packet = new();
+		Packet packet = new Packet();
 		packet.Write(server);
 		return packet;
 	}

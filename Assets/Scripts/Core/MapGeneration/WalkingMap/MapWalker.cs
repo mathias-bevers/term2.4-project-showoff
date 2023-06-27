@@ -33,6 +33,9 @@ public class MapWalker : MonoBehaviour
                 return currentSpeed - 2;
             else if (Player.Instance.EffectIsActive(PickupIdentifier.SpeedupRework))
                 return currentSpeed + 2;
+
+            if (recoveryTime > 0)
+                currentSpeed = slowedSpeed;
             return currentSpeed; 
         } 
     }
