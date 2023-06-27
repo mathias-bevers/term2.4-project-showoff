@@ -3352,8 +3352,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b194082d60ebe54792d609f44546c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chanceToSpawnNothing: 1
-  noSpawnChance: 35
+  chanceToSpawnNothing: 0
+  noSpawnChance: 1
   spawnableObjects:
   - forEra: 1
     spawnableObjects:
@@ -3370,6 +3370,26 @@ MonoBehaviour:
         eulerAngles: {x: 0, y: 0, z: 0}
         scale: {x: 1, y: 1, z: 1}
     - gameObject: {fileID: 2499655455466691566, guid: 5633f02ba0a12094789dac4b5a5ceffc,
+        type: 3}
+      transformData:
+        position: {x: -0.5, y: 0, z: 2.8}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+  - forEra: 0
+    spawnableObjects:
+    - gameObject: {fileID: 2499655455466691566, guid: abdf873191d60804bb8d5dc55d20bb87,
+        type: 3}
+      transformData:
+        position: {x: 0.4, y: 0, z: 2}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: abdf873191d60804bb8d5dc55d20bb87,
+        type: 3}
+      transformData:
+        position: {x: 2, y: 0, z: 2.7}
+        eulerAngles: {x: 0, y: 0, z: 0}
+        scale: {x: 1, y: 1, z: 1}
+    - gameObject: {fileID: 2499655455466691566, guid: abdf873191d60804bb8d5dc55d20bb87,
         type: 3}
       transformData:
         position: {x: -0.5, y: 0, z: 2.8}
