@@ -9,11 +9,14 @@ public class Client : MonoBehaviour
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
+	private const float MAX_TIME_BETWEEN_HEARTBEAT = 2.5f;
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
-
 	private bool isAccepted;
+
+
+	private float timer;
 	private TcpClient client;
 
 	private void Start()
@@ -33,6 +36,16 @@ public class Client : MonoBehaviour
 		{
 			if (client == null) { return; }
 
+			if (isAccepted)
+			{
+				timer -= Time.deltaTime;
+				if (timer < 0)
+				{
+					Close();
+					return;
+				}
+			}
+
 			while (client is { Available: > 1 })
 			{
 				byte[] inBytes = StreamUtil.Read(client.GetStream());
@@ -46,11 +59,7 @@ public class Client : MonoBehaviour
 		}
 	}
 
-	private void OnDestroy()
-	{
-		// Debug.LogWarning("Destroying client instance...");
-		Close();
-	}
+	private void OnDestroy() => Close();
 
 	public void Close()
 	{
@@ -59,10 +68,9 @@ public class Client : MonoBehaviour
 		isAccepted = false;
 		client.Close();
 		client = null;
+
 		Destroy(gameObject);
 	}
-
-	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
 
 	public void Connect(IPAddress ip, int port, int attempts = 0)
 	{
@@ -116,10 +124,10 @@ public class Client : MonoBehaviour
 
 	private void ProcessData(byte[] dataInBytes)
 	{
-		Packet packet = new Packet(dataInBytes);
+		Packet packet = new(dataInBytes);
 		ServerObject serverObject;
 		try { serverObject = packet.ReadObject(); }
-		catch(Exception e)
+		catch (Exception e)
 		{
 			Debug.LogError("object could not be read.\n" + e.Message);
 			Close();
@@ -136,28 +144,30 @@ public class Client : MonoBehaviour
 
 		switch (serverObject)
 		{
-			case HeartBeat: break;
+			case HeartBeat:
+				timer = MAX_TIME_BETWEEN_HEARTBEAT;
+				break;
 
 			case PlayerDistance playerDistance:
 				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
-			
+
 			case PlayerConnection playerConnection:
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
-			
+
 			case SendPickup sendPickup:
 				receivedDebuffEvent?.Invoke(sendPickup.data);
 				break;
-			
+
 			case GetHighScores getHighScores:
 				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
 				break;
-			
+
 			case GetFileNames fileNames:
 				DataBaseCommunicator.Instance.RewriteDataBaseCache(fileNames);
 				break;
-			
+
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
 	}
