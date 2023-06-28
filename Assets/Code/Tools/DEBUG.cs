@@ -18,48 +18,45 @@ public class DEBUG : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKey(KeyCode.JoystickButton7))
-		{
-			Debug.Break();
-			return;
-		}
+		if (Input.GetKey(KeyCode.JoystickButton7)) { PauseEditor(); }
 
-		if (!Input.GetKey(KeyCode.JoystickButton6)) { return; }
+		if (Input.GetKey(KeyCode.JoystickButton6)) { KillPlayer(); }
 
-		if (!Player.IsInitialized) { return; }
-
-		Player.Instance.Kill();
+		if (Input.GetAxis("Debug Vertical") > 0) { KillServer(); }
 	}
 
 	private void OnGUI()
 	{
-		PauseButton();
-		KillButton();
+		if (GUI.Button(new Rect(10, GetPositionY(1), rectSize.x, rectSize.y), "PAUSE")) { PauseEditor(); }
 
-		if (Server.IsInitialized) { GUI.Label(new Rect(10, GetPositionY(3), rectSize.x * 2, rectSize.y * 3), Server.Instance.DEBUG_INFO(), biggerFont); }
+		if (GUI.Button(new Rect(10, GetPositionY(2), rectSize.x, rectSize.y), "KILL")) { KillPlayer(); }
+
+		if (GUI.Button(new Rect(10, GetPositionY(3), rectSize.x, rectSize.y), "KILL SEVER")) { KillServer(); }
+
+		if (Server.IsInitialized) { GUI.Label(new Rect(Screen.width - rectSize.x * 2, Screen.height - (rectSize.y * 3 + 10), rectSize.x * 2, rectSize.y * 3), Server.Instance.DEBUG_INFO(), biggerFont); }
 	}
 
 	private int GetPositionY(int num)
 	{
 		float result = 0;
-		for (int i = 1; i <= num; ++i) { result += (rectSize.y + OFFSET) * i; }
+		for (int i = 1; i <= num; ++i) { result += rectSize.y + OFFSET; }
 
 		return Screen.height - (int)result;
 	}
 
-	private void PauseButton()
+	private void KillPlayer()
 	{
-		if (!GUI.Button(new Rect(10, GetPositionY(1), rectSize.x, rectSize.y), "PAUSE")) { return; }
-
-		Debug.Break();
-	}
-
-	private void KillButton()
-	{
-		if (!GUI.Button(new Rect(10, GetPositionY(2), rectSize.x, rectSize.y), "KILL")) { return; }
-
 		if (!Player.IsInitialized) { return; }
 
 		Player.Instance.Kill();
+	}
+
+	private void PauseEditor() { Debug.Break(); }
+
+	private void KillServer()
+	{
+		if (!Server.IsInitialized) { return; }
+
+		Destroy(Server.Instance.gameObject);
 	}
 }
