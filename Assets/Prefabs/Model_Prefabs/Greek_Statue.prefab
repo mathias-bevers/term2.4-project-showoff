@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 2536897646077426639}
   - component: {fileID: 346823068333166341}
   - component: {fileID: 6598652137945870064}
-  - component: {fileID: 7408402325537325287}
-  - component: {fileID: 8691178904530279611}
   m_Layer: 0
   m_Name: Greek_Statue
   m_TagString: Untagged
@@ -99,29 +97,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.6569151, y: 6.4814644, z: 0.7192345}
   m_Center: {x: -1.1999307e-17, y: 2.1458068, z: 0.008656874}
---- !u!65 &7408402325537325287
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2292567291294346960}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.9055543, y: 6.4110384, z: 0.107652225}
-  m_Center: {x: -0.12431955, y: 2.1105938, z: 0.45558003}
---- !u!65 &8691178904530279611
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2292567291294346960}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.86531013, y: 6.4814644, z: 0.119999975}
-  m_Center: {x: -0.18234496, y: 2.1458068, z: -0.44}
