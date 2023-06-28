@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,7 +19,7 @@ public class NewMapBuilder : MonoBehaviour
 
 
     ElementRefs? _activeElement;
-    public MapGroupElement activeElement => _activeElement.Value.spawnedElement;
+    public MapGroupElement activeElement => _activeElement?.spawnedElement ?? null;
 
     bool isEnd = false;
 
@@ -34,16 +34,6 @@ public class NewMapBuilder : MonoBehaviour
         SetMapGroup(startGroup);
     }
 
-#if DEBUG
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            if(buildForEra == Era.Era1) buildForEra = Era.Era2;
-            else if(buildForEra == Era.Era2) buildForEra = Era.Era1;
-        }
-    }
-#endif
 
     public void BuildLevelElement()
     {
@@ -227,7 +217,7 @@ public class NewMapBuilder : MonoBehaviour
         buildForEra = (Era)era;
     }
 
-    ElementRefs? HandleOld() => CreateElement(starterElement);
+    ElementRefs? HandleOld() => CreateElement(startGroup.startElements.GetRandomElement());
 }
 
 [System.Serializable]

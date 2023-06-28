@@ -53,11 +53,13 @@ public class DataProcessor : MonoBehaviour
 
 	private void LateUpdate()
 	{
-		if (!networkingClient.isInitialized) { return; }
-
 		if (isDeath) { return; }
 
 		ownDistanceParent.SetChildrenText($"YOU: {walker.TotalMetersRan:n0}");
+
+		if (networkingClient == null) { return; }
+
+		if (!networkingClient.isInitialized) { return; }
 
 		distTimer -= Time.deltaTime;
 
@@ -96,6 +98,8 @@ public class DataProcessor : MonoBehaviour
 
 	private void OnPlayerDeath()
 	{
+		if (networkingClient == null) { return; }
+
 		Packet packet = new();
 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Died));
 		networkingClient.SendData(packet);
@@ -112,8 +116,5 @@ public class DataProcessor : MonoBehaviour
 		networkingClient.SendData(packet);
 	}
 
-	private void OnReceivedDebuff(PickupData data)
-	{
-		PickupManager.Instance.PickUpPickup(data.identifier, true);
-	}
+	private void OnReceivedDebuff(PickupData data) { PickupManager.Instance.PickUpPickup(data.identifier, true); }
 }

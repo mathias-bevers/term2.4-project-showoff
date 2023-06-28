@@ -38,6 +38,7 @@ public class DataBaseSelector : MonoBehaviour
 	private int pages;
 	private Navigation originalPreviousNavigation;
 	private Navigation originalNextNavigation;
+	private List<string> displayingFileNames;
 	private string[] chosenImages;
 	private string[] fileNames;
 
@@ -47,9 +48,23 @@ public class DataBaseSelector : MonoBehaviour
 		gridSize = imagesPerRow * rows;
 		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, DIRECTORY_NAME, Path.DirectorySeparatorChar);
 		fileNames = GetFileNames();
-		chosenImages = File.ReadAllLines(string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, CHOSEN_IMAGES_FILE_NAME)).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+
+		string path = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, CHOSEN_IMAGES_FILE_NAME);
+
+		try
+		{
+			chosenImages = File.ReadAllLines(path).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+		}
+		catch (FileNotFoundException)
+		{
+			chosenImages = Array.Empty<string>();
+			Debug.LogWarning("Could not find file, creating...");
+			File.Create(path).Close();
+		}
+
 		pages = (int)Math.Ceiling((float)(fileNames.Length - chosenImages.Length) / gridSize);
 		pagesStart = new Dictionary<int, int>();
+		displayingFileNames = new List<string>(gridSize);
 		originalPreviousNavigation = previousPage.navigation;
 		originalNextNavigation = nextPage.navigation;
 
@@ -71,6 +86,7 @@ public class DataBaseSelector : MonoBehaviour
 		if (pagesStart.TryGetValue(scrollIndex - 1, out int _start)) { start = _start; }
 		
 		List<Sprite> sprites = new(imagesPerRow * rows);
+		displayingFileNames.Clear();
 
 		int i = start;
 		while (sprites.Count < gridSize && i < fileNames.Length)
@@ -79,6 +95,8 @@ public class DataBaseSelector : MonoBehaviour
 			++i;
 
 			if (chosenImages.Contains(fileName)) { continue; }
+
+			displayingFileNames.Add(fileName);
 
 			if (spriteCache.TryGetValue(fileName, out Sprite sprite))
 			{
@@ -183,8 +201,8 @@ public class DataBaseSelector : MonoBehaviour
 
 	private void SelectImage(int gridIndex)
 	{
-		int listIndex = gridSize * scrollIndex + gridIndex;
-		string fileName = fileNames[listIndex];
+		
+		string fileName = displayingFileNames[gridIndex];
 		imageSelectedEvent?.Invoke(fileName);
 	}
 

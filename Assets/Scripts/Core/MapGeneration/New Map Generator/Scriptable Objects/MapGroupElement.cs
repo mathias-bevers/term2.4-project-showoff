@@ -19,7 +19,7 @@ public class MapGroupElement : MonoBehaviour
         _isEra = era;
         foreach (MapElement element in eraElementList)
         {
-            element.gameObject.SetActive(true);
+            element.gameObject.SetActive(element.era == era);
             element.modelHelper?.Display(element.era == era);
         }
         if (!spawnObstacles) return;

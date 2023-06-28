@@ -31,8 +31,8 @@ public class DataBaseCloud
 				break;
 		}
 
-		Packet packet = new();
-		GetFileNames getFileNames = new(fileNames);
+		Packet packet = new Packet();
+		GetFileNames getFileNames = new GetFileNames(fileNames);
 		packet.Write(getFileNames);
 		parentServer.WriteToClient(sender, packet);
 		Debug.Log($"Writing file-names to client#{sender.id}\n{ToString()}");
@@ -49,7 +49,7 @@ public class DataBaseCloud
 
 	public override string ToString()
 	{
-		StringBuilder sb = new($"There are {fileNames.Count} file-name entries in the cloud:" + Environment.NewLine);
+		StringBuilder sb = new StringBuilder($"There are {fileNames.Count} file-name entries in the cloud:" + Environment.NewLine);
 
 		foreach (string fileName in fileNames)
 		{

@@ -9,11 +9,15 @@ public class Client : MonoBehaviour
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
+	public event Action connectionLostEvent; 
+	private const float MAX_TIME_BETWEEN_HEARTBEAT = 2.5f;
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
-
 	private bool isAccepted;
+
+
+	private float timer;
 	private TcpClient client;
 
 	private void Start()
@@ -33,6 +37,17 @@ public class Client : MonoBehaviour
 		{
 			if (client == null) { return; }
 
+			if (isAccepted)
+			{
+				timer -= Time.deltaTime;
+				if (timer < 0)
+				{
+					Debug.LogWarning("Server timed out, closing client...");
+					Destroy(this);
+					return;
+				}
+			}
+
 			while (client is { Available: > 1 })
 			{
 				byte[] inBytes = StreamUtil.Read(client.GetStream());
@@ -46,20 +61,16 @@ public class Client : MonoBehaviour
 		}
 	}
 
-	private void OnDestroy()
-	{
-		// Debug.LogWarning("Destroying client instance...");
-		Close();
-	}
+	private void OnDestroy() => Close();
 
-	public void Close()
+	private void Close()
 	{
 		if (client == null) { return; }
 
 		isAccepted = false;
 		client.Close();
 		client = null;
-		Destroy(gameObject);
+		Destroy(this);
 	}
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
@@ -85,6 +96,12 @@ public class Client : MonoBehaviour
 		{
 			if (se.SocketErrorCode == SocketError.ConnectionRefused)
 			{
+				if (!GameSettings.IsHost)
+				{
+					Destroy(this);
+					return;
+				}
+
 				Server.Instance.Initialize(ip, port);
 				attempts++;
 				Debug.LogWarning($"Retrying connection attempt: {attempts}");
@@ -119,7 +136,7 @@ public class Client : MonoBehaviour
 		Packet packet = new(dataInBytes);
 		ServerObject serverObject;
 		try { serverObject = packet.ReadObject(); }
-		catch(Exception e)
+		catch (Exception e)
 		{
 			Debug.LogError("object could not be read.\n" + e.Message);
 			Close();
@@ -136,28 +153,30 @@ public class Client : MonoBehaviour
 
 		switch (serverObject)
 		{
-			case HeartBeat: break;
+			case HeartBeat:
+				timer = MAX_TIME_BETWEEN_HEARTBEAT;
+				break;
 
 			case PlayerDistance playerDistance:
 				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
-			
+
 			case PlayerConnection playerConnection:
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
-			
+
 			case SendPickup sendPickup:
 				receivedDebuffEvent?.Invoke(sendPickup.data);
 				break;
-			
+
 			case GetHighScores getHighScores:
 				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
 				break;
-			
+
 			case GetFileNames fileNames:
 				DataBaseCommunicator.Instance.RewriteDataBaseCache(fileNames);
 				break;
-			
+
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
 	}

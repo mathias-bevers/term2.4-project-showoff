@@ -15,6 +15,8 @@ public class EraTimer : Singleton<EraTimer>
     [SerializeField] int hourChangeEraTime = 2;
     [SerializeField] int eraCount = 2;
 
+    int offset = 0;
+
     int lastEra = -1;
     int curEra = -1;
 
@@ -39,8 +41,18 @@ public class EraTimer : Singleton<EraTimer>
 
     private void Update()
     {
+#if DEBUG
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            offset += hourChangeEraTime;
+            
+        }
+
+#endif
+
         DateTime currentTime = System.DateTime.Now;
-        int hours = currentTime.Hour;
+        int hours = currentTime.Hour + offset;
         float cur = hours / (float)hourChangeEraTime;
 
         curEra = (int)(cur % eraCount);
@@ -59,6 +71,9 @@ public class EraTimer : Singleton<EraTimer>
             }
         }
     }
+
+
+
 }
 
 [Serializable]
