@@ -45,8 +45,8 @@ public class EraTimer : Singleton<EraTimer>
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            if (_currentEra == Era.Era1) offset = hourChangeEraTime;
-            else if (_currentEra == Era.Era2) offset = 0;
+            offset += hourChangeEraTime;
+            
         }
 
 #endif
