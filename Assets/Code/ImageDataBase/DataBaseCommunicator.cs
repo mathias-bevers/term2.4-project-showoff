@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NaughtyAttributes;
 using saxion_provided;
 using UnityEngine;
@@ -21,7 +22,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	private Image[] previewImages;
 
 	private string imageDirectoryPath;
-	private string filePath;
+	private string txtFilePath;
 	private string selectedFileName;
 
 	public override void Awake()
@@ -39,7 +40,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 		if (ReferenceEquals(dataBaseSelector, null)) { throw new UnassignedReferenceException($"{nameof(dataBaseSelector)} is not set in the editor!"); }
 
 		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, "BillboardImages", Path.DirectorySeparatorChar);
-		filePath = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, FILE_NAME);
+		txtFilePath = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, FILE_NAME);
 		previewImages = new Image[previewImageParent.childCount];
 
 		dataBaseSelector.imageSelectedEvent += OnImageSelected;
@@ -90,10 +91,10 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 	public void RewriteDataBaseCache(GetFileNames serverObject)
 	{
-		if (!File.Exists(filePath)) { File.Create(filePath).Close(); }
+		if (!File.Exists(txtFilePath)) { File.Create(txtFilePath).Close(); }
 
-		try { File.WriteAllLines(filePath, serverObject.fileNames); }
-		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+		try { File.WriteAllLines(txtFilePath, serverObject.fileNames); }
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{txtFilePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 
 		if (hasSelectedImage)
 		{
@@ -104,8 +105,8 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 		if (!gameObject.activeInHierarchy) { return; }
 
 		try { DisplayPreviewImages(); }
-		catch (FileNotFoundException e) { Debug.LogError(string.Concat(e.Message, Environment.NewLine, Environment.NewLine, e.StackTrace)); }
-		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+		catch (FileNotFoundException e) { Debug.LogError(string.Concat(e.Message, Environment.NewLine.Repeat(2), e.StackTrace)); }
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{txtFilePath}\', it is probably used by another process!", Environment.NewLine.Repeat(2), e)); }
 	}
 
 	[Button]
@@ -153,22 +154,23 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 	private string[] ReadFileNames()
 	{
-		if (!File.Exists(filePath)) { return Array.Empty<string>(); }
+		if (!File.Exists(txtFilePath)) { return Array.Empty<string>(); }
 
 		try
 		{
 			List<string> temp = new();
-			string[] readLines = File.ReadAllLines(filePath);
-			if (readLines.Length <= 0) { return Array.Empty<string>(); }
+			string[] readLines =File.ReadAllLines(txtFilePath).Where(line => !string.IsNullOrEmpty(line)).ToArray();
+			int readLinesLength = readLines.Length;
 
-			int start = 0;
-			if (readLines.Length > Settings.MAX_MEMES) { start = readLines.Length - Settings.MAX_MEMES; }
+			if (readLinesLength <= 0) { return Array.Empty<string>(); }
 
-			for (int i = start; i < readLines.Length; ++i) { temp.Add(readLines[i]); }
+			int start = Math.Max(0, readLinesLength - Settings.MAX_MEMES);
+
+			for (int i = start; i < readLinesLength; ++i) { temp.Add(readLines[i]); }
 
 			return temp.ToArray();
 		}
-		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{txtFilePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 
 		return Array.Empty<string>();
 	}
@@ -177,7 +179,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	{
 		if (networkingClient == null)
 		{
-			File.AppendAllText(filePath, '\n' + fileName);
+			File.AppendAllText(txtFilePath, '\n' + fileName);
 			SceneManager.LoadScene(mainMenuScene);
 			return;
 		}

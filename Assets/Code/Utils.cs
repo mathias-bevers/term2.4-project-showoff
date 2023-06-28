@@ -106,6 +106,8 @@ public static partial class Utils
 		}
 	}
 
+	public static string Repeat(this string original, int times) => string.Concat(Enumerable.Repeat(original, times));
+
 #if UNITY_EDITOR
 	public static string[] GetAllAxes()
 	{
