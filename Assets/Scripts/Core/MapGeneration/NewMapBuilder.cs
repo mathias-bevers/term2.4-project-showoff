@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,7 +19,7 @@ public class NewMapBuilder : MonoBehaviour
 
 
     ElementRefs? _activeElement;
-    public MapGroupElement activeElement => _activeElement.Value.spawnedElement;
+    public MapGroupElement activeElement => _activeElement?.spawnedElement ?? null;
 
     bool isEnd = false;
 
@@ -217,7 +217,7 @@ public class NewMapBuilder : MonoBehaviour
         buildForEra = (Era)era;
     }
 
-    ElementRefs? HandleOld() => CreateElement(starterElement);
+    ElementRefs? HandleOld() => CreateElement(startGroup.startElements.GetRandomElement());
 }
 
 [System.Serializable]
