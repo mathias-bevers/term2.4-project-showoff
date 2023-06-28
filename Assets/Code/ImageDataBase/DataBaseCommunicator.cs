@@ -18,6 +18,7 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 	[SerializeField] private Button confirmSelectionButton;
 	[SerializeField] private DataBaseSelector dataBaseSelector;
 
+	private string imageDirectoryPath;
 	private bool hasSelectedImage;
 	private Image[] previewImages;
 	private string filePath;
@@ -29,14 +30,27 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 		// if (ReferenceEquals(networkingClient, null)) { throw new UnassignedReferenceException($"{nameof(networkingClient)} is not set in the editor!"); }
 
-		if (ReferenceEquals(previewImageParent, null)) { throw new UnassignedReferenceException($"{nameof(previewImageParent)} is not set in the editor!"); }
+		if (ReferenceEquals(previewImageParent, null))
+		{
+			throw new UnassignedReferenceException($"{nameof(previewImageParent)} is not set in the editor!");
+		}
 
-		if (ReferenceEquals(noImageSelectedSprite, null)) { throw new UnassignedReferenceException($"{nameof(noImageSelectedSprite)} is not set in the editor!"); }
+		if (ReferenceEquals(noImageSelectedSprite, null))
+		{
+			throw new UnassignedReferenceException($"{nameof(noImageSelectedSprite)} is not set in the editor!");
+		}
 
-		if (ReferenceEquals(confirmSelectionButton, null)) { throw new UnassignedReferenceException($"{nameof(confirmSelectionButton)} is not set in the editor!"); }
+		if (ReferenceEquals(confirmSelectionButton, null))
+		{
+			throw new UnassignedReferenceException($"{nameof(confirmSelectionButton)} is not set in the editor!");
+		}
 
-		if (ReferenceEquals(dataBaseSelector, null)) { throw new UnassignedReferenceException($"{nameof(dataBaseSelector)} is not set in the editor!"); }
+		if (ReferenceEquals(dataBaseSelector, null))
+		{
+			throw new UnassignedReferenceException($"{nameof(dataBaseSelector)} is not set in the editor!");
+		}
 
+		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, "BillboardImages", Path.DirectorySeparatorChar);
 		filePath = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, FILE_NAME);
 		previewImages = new Image[previewImageParent.childCount];
 
@@ -91,7 +105,13 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 		if (!File.Exists(filePath)) { File.Create(filePath).Close(); }
 
 		try { File.WriteAllLines(filePath, serverObject.fileNames); }
-		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+		catch (IOException e)
+		{
+			Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!",
+				Environment.NewLine,
+				Environment.NewLine,
+				e));
+		}
 
 		if (hasSelectedImage)
 		{
@@ -102,8 +122,17 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 		if (!gameObject.activeInHierarchy) { return; }
 
 		try { DisplayPreviewImages(); }
-		catch (FileNotFoundException e) { Debug.LogError(string.Concat(e.Message, Environment.NewLine, Environment.NewLine, e.StackTrace)); }
-		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+		catch (FileNotFoundException e)
+		{
+			Debug.LogError(string.Concat(e.Message, Environment.NewLine, Environment.NewLine, e.StackTrace));
+		}
+		catch (IOException e)
+		{
+			Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!",
+				Environment.NewLine,
+				Environment.NewLine,
+				e));
+		}
 	}
 
 	[Button]
@@ -127,13 +156,21 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 			previewImageGameObject.SetActive(true);
 
 			string fileName = fileNames[i];
-			if (dataBaseSelector.spriteCache.TryGetValue(fileName, out Sprite sprite))
+			Sprite sprite;
+			if (dataBaseSelector != null && dataBaseSelector.spriteCache != null)
 			{
-				previewImage.sprite = sprite;
-				continue;
+				if (dataBaseSelector.spriteCache.TryGetValue(fileName, out sprite))
+				{
+					previewImage.sprite = sprite;
+					continue;
+				}
+			}
+			else
+			{
+				Debug.Log($"dataBase: {dataBaseSelector}, cache: {dataBaseSelector?.spriteCache}");
 			}
 
-			sprite = Utils.LoadSpriteFromDisk(dataBaseSelector.imageDirectoryPath + fileName);
+			sprite = Utils.LoadSpriteFromDisk(imageDirectoryPath + fileName);
 			if (sprite == null)
 			{
 				previewImageGameObject.SetActive(false);
@@ -161,7 +198,13 @@ public class DataBaseCommunicator : Singleton<DataBaseCommunicator>
 
 			return temp.ToArray();
 		}
-		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
+		catch (IOException e)
+		{
+			Debug.LogError(string.Concat($"Could not write to file \'{filePath}\', it is probably used by another process!",
+				Environment.NewLine,
+				Environment.NewLine,
+				e));
+		}
 
 		return Array.Empty<string>();
 	}
