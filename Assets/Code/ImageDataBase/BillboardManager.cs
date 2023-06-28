@@ -35,7 +35,8 @@ public class BillboardManager : Singleton<BillboardManager>
 	{
 		billboard.destroyingEvent += OnBillboardDestroy;
 
-		string imageToLoadName = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length ? fileNames.Except(activeImages).ToList().GetRandomElement() : fileNames.GetRandomElement();
+		string[] selectableImageNames = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length ? fileNames.Except(activeImages).ToArray() : fileNames;
+		string imageToLoadName = selectableImageNames.Length > 0 ? selectableImageNames.GetRandomElement() : fileNames.GetRandomElement();
 
 		if (string.IsNullOrEmpty(imageToLoadName))
 		{
