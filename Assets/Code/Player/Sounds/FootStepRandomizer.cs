@@ -28,6 +28,8 @@ public class FootStepRandomizer : MonoBehaviour
 
 	private void Update()
 	{
+		if (!Player.IsInitialized || Player.Instance.dead) { return; }
+
 		timer -= Time.deltaTime;
 
 		if (timer > 0) { return; }
