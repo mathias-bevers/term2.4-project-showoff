@@ -68,9 +68,9 @@ public class Client : MonoBehaviour
 		isAccepted = false;
 		client.Close();
 		client = null;
-
-		Destroy(gameObject);
 	}
+
+	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
 
 	public void Connect(IPAddress ip, int port, int attempts = 0)
 	{
@@ -93,6 +93,12 @@ public class Client : MonoBehaviour
 		{
 			if (se.SocketErrorCode == SocketError.ConnectionRefused)
 			{
+				if (!GameSettings.IsHost)
+				{
+					Destroy(this);
+					return;
+				}
+
 				Server.Instance.Initialize(ip, port);
 				attempts++;
 				Debug.LogWarning($"Retrying connection attempt: {attempts}");
