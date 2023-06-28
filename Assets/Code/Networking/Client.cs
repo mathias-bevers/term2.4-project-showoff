@@ -9,6 +9,7 @@ public class Client : MonoBehaviour
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
+	public event Action connectionLostEvent; 
 	private const float MAX_TIME_BETWEEN_HEARTBEAT = 2.5f;
 
 	public int id { get; private set; } = -1;
@@ -41,7 +42,8 @@ public class Client : MonoBehaviour
 				timer -= Time.deltaTime;
 				if (timer < 0)
 				{
-					Close();
+					Debug.LogWarning("Server timed out, closing client...");
+					Destroy(this);
 					return;
 				}
 			}
@@ -61,13 +63,14 @@ public class Client : MonoBehaviour
 
 	private void OnDestroy() => Close();
 
-	public void Close()
+	private void Close()
 	{
 		if (client == null) { return; }
 
 		isAccepted = false;
 		client.Close();
 		client = null;
+		Destroy(this);
 	}
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
