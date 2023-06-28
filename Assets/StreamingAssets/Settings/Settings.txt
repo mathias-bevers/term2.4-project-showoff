@@ -1,2 +1,3 @@
 IsLeftClient:BOOL:False
 IPString:STRING:
+IsHost:BOOL:False

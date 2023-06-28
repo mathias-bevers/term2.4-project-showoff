@@ -1802,7 +1802,7 @@ MonoBehaviour:
   rig: {fileID: 1080175765}
   startSpeed: 5
   endSpeed: 20
-  accelerationTime: 120
+  accelerationTime: 300
   minSpawnAmount: 3
   slowedSpeed: 0.1
 --- !u!4 &473837549
