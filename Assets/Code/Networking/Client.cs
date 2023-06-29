@@ -9,7 +9,6 @@ public class Client : MonoBehaviour
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
-	public event Action connectionLostEvent; 
 	private const float MAX_TIME_BETWEEN_HEARTBEAT = 2.5f;
 
 	public int id { get; private set; } = -1;
