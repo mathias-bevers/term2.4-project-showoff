@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class PowerupSounds : MonoBehaviour
+public class PowerupSounds : Singleton<PowerupSounds>
 {
 	private readonly List<IdSourcePair> activeEffects = new();
 	
@@ -27,7 +27,6 @@ public class PowerupSounds : MonoBehaviour
 			{
 				if (activeEffects.Any(pair => pair.id == pickupIdentifier)) { continue; }
 
-				pickupSource.PlayOneShot(pickupClip);
 				IdSourcePair idSourcePair = InitIDSourcePair(idClipPair);
 				activeEffects.Add(idSourcePair);
 				continue;
@@ -65,6 +64,8 @@ public class PowerupSounds : MonoBehaviour
 		IdSourcePair idSourcePair = InitIDSourcePair(idpair);
 		activeEffects.Add(idSourcePair);
 	}
+
+	public void PlayPickupSound() =>  pickupSource.PlayOneShot(pickupClip);
 
 	[Serializable]
 	private class IdClipPair
