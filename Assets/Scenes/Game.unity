@@ -4600,16 +4600,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4442856068420710515, guid: 2b04222d26c586d4d846a09bca5c308a,
-        type: 3}
-      propertyPath: fadeInDuration
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4442856068420710515, guid: 2b04222d26c586d4d846a09bca5c308a,
-        type: 3}
-      propertyPath: fadeOutDuration
-      value: 2.5
-      objectReference: {fileID: 0}
     - target: {fileID: 4636323692549062451, guid: 2b04222d26c586d4d846a09bca5c308a,
         type: 3}
       propertyPath: m_RootOrder
@@ -4618,17 +4608,17 @@ PrefabInstance:
     - target: {fileID: 4636323692549062451, guid: 2b04222d26c586d4d846a09bca5c308a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.4347332
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4636323692549062451, guid: 2b04222d26c586d4d846a09bca5c308a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.581501
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4636323692549062451, guid: 2b04222d26c586d4d846a09bca5c308a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -12.547933
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4636323692549062451, guid: 2b04222d26c586d4d846a09bca5c308a,
         type: 3}
@@ -4669,11 +4659,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Music
-      objectReference: {fileID: 0}
-    - target: {fileID: 8555475544299223319, guid: 2b04222d26c586d4d846a09bca5c308a,
-        type: 3}
-      propertyPath: m_Volume
-      value: 0.055
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b04222d26c586d4d846a09bca5c308a, type: 3}
