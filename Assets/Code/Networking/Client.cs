@@ -56,7 +56,7 @@ public class Client : MonoBehaviour
 		catch (Exception e)
 		{
 			Debug.LogError(string.Concat(e.Message, '\n', e.StackTrace));
-			Close();
+			Destroy(this);
 		}
 	}
 
@@ -74,41 +74,41 @@ public class Client : MonoBehaviour
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
 
-	public void Connect(IPAddress ip, int port, int attempts = 0)
+	private void Connect(IPAddress ip, int port, int attempts = 0)
 	{
-		if (isAccepted) { return; }
-
-		if (ip == null) { throw new ArgumentNullException(nameof(ip), "ip cannot be null"); }
-
-		if (attempts >= 5)
+		while (true)
 		{
-			Destroy(this);
-			throw new WebException("FAILED TO CONNECT TO SERVER");
-		}
+			if (isAccepted) { return; }
 
-		try
-		{
+			if (ip == null) { throw new ArgumentNullException(nameof(ip), "ip cannot be null"); }
+
+			if (attempts >= 5) { throw new WebException("FAILED TO CONNECT TO SERVER: too many attempts"); }
+
 			client ??= new TcpClient();
-			client.Connect(ip, port);
-		}
-		catch (SocketException se)
-		{
-			if (se.SocketErrorCode == SocketError.ConnectionRefused)
-			{
-				if (!GameSettings.IsHost)
-				{
-					Destroy(this);
-					return;
-				}
+			IAsyncResult result = client.BeginConnect(ip, port, null, null);
+			bool success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2));
 
-				Server.Instance.Initialize(ip, port);
-				attempts++;
-				Debug.LogWarning($"Retrying connection attempt: {attempts}");
-				Connect(ip, port, attempts);
-				return;
+			if (!success)
+			{
+				if (!GameSettings.IsHost) { throw new WebException("FAILED TO CONNECT TO SERVER: Server timed out..."); }
+
+
+				try
+				{
+					Server.Instance.Initialize(ip, port);
+					attempts++;
+					Debug.LogWarning($"Retrying connection attempt: {attempts}");
+					continue;
+				}
+				catch (InvalidOperationException e)
+				{
+					Debug.LogError(e.ToString());
+					throw new WebException("FAILED TO CONNECT TO SERVER: server cannot be created!");
+				}
 			}
 
-			Debug.LogError($"Failed to connect to server!\n{se.Message}");
+			client.EndConnect(result);
+			break;
 		}
 	}
 

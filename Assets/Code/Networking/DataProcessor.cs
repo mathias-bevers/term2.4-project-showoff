@@ -1,4 +1,5 @@
-﻿using saxion_provided;
+﻿using System;
+using saxion_provided;
 using UnityEngine;
 
 public class DataProcessor : MonoBehaviour
@@ -23,26 +24,28 @@ public class DataProcessor : MonoBehaviour
 
 		cachedTransform = transform;
 
-		try
-		{
-#if UNITY_EDITOR
-			networkingClient.Connect(Utils.GetIP4Address(), Settings.SERVER_PORT);
-#else
-			networkingClient.Connect();
-#endif
-		}
+		try { networkingClient.Connect(); }
 		catch (System.Net.WebException e)
 		{
+			Destroy(networkingClient);
 			Debug.LogError(e);
 			return;
+		}
+		catch (ArgumentException e)
+		{
+			Destroy(networkingClient);
+			Debug.LogError($"[{e.ParamName}]: {e.Message}");
 		}
 
 		Player.Instance.deathEvent += OnPlayerDeath;
 		PickupManager.Instance.pickedupPowerupEvent += OnPowerupPickup;
 
-		networkingClient.opponentDistanceReceivedEvent += OnReceivedOpponentDistance;
-		networkingClient.connectionEvent += OnOpponentConnection;
-		networkingClient.receivedDebuffEvent += OnReceivedDebuff;
+		if (networkingClient != null)
+		{
+			networkingClient.opponentDistanceReceivedEvent += OnReceivedOpponentDistance;
+			networkingClient.connectionEvent += OnOpponentConnection;
+			networkingClient.receivedDebuffEvent += OnReceivedDebuff;
+		}
 
 
 		distTimer = DISTANCE_SEND_DELAY;

@@ -15,7 +15,11 @@ public class PowerupSounds : Singleton<PowerupSounds>
 	private PickupIdentifier lastPickupIdentifier;
 	private Transform cachedTransform;
 
-	private void Awake() { cachedTransform = transform; }
+	public override void Awake()
+	{
+		base.Awake();
+		cachedTransform = transform;
+	}
 
 	private void Update()
 	{
