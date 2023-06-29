@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -11,7 +12,7 @@ public class PowerupSounds : Singleton<PowerupSounds>
 	[SerializeField] private AudioSource pickupSource;
 	[SerializeField] private AudioClip pickupClip;
 	[SerializeField] private IdClipPair[] idClipPairs;
-	
+
 	private PickupIdentifier lastPickupIdentifier;
 	private Transform cachedTransform;
 
@@ -64,9 +65,10 @@ public class PowerupSounds : Singleton<PowerupSounds>
 
 	public void ForcePlaySound(PickupIdentifier identifier)
 	{
-		IdClipPair idpair = idClipPairs.FirstOrDefault(p => p.identifier == identifier);
-		IdSourcePair idSourcePair = InitIDSourcePair(idpair);
+		IdClipPair clipPair = idClipPairs.FirstOrDefault(p => p.identifier == identifier);
+		IdSourcePair idSourcePair = InitIDSourcePair(clipPair);
 		activeEffects.Add(idSourcePair);
+		Debug.Log($"playing clip: {clipPair?.clip.name}");
 	}
 
 	public void PlayPickupSound() =>  pickupSource.PlayOneShot(pickupClip);
