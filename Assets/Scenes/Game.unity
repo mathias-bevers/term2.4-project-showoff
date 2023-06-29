@@ -2304,11 +2304,11 @@ MonoBehaviour:
   - <identifier>k__BackingField: 6
     <clip>k__BackingField: {fileID: 8300000, guid: 9146f1c6ad739b0448f9267d53faa7ec,
       type: 3}
-    <volume>k__BackingField: 1
+    <volume>k__BackingField: 0.25
   - <identifier>k__BackingField: 4
     <clip>k__BackingField: {fileID: 8300000, guid: 9500ad5114d8d2e45848228962e3e80e,
       type: 3}
-    <volume>k__BackingField: 1
+    <volume>k__BackingField: 0.5
   - <identifier>k__BackingField: 5
     <clip>k__BackingField: {fileID: 8300000, guid: 3d74d873f8ea1b84aa476b2a37791a9e,
       type: 3}
@@ -2316,19 +2316,19 @@ MonoBehaviour:
   - <identifier>k__BackingField: 1
     <clip>k__BackingField: {fileID: 8300000, guid: 6e98716a75a93224e8edff1942a6a2d8,
       type: 3}
-    <volume>k__BackingField: 1
+    <volume>k__BackingField: 0.25
   - <identifier>k__BackingField: 0
     <clip>k__BackingField: {fileID: 8300000, guid: eed538638040bba448d4500ac16ee25e,
       type: 3}
-    <volume>k__BackingField: 1
+    <volume>k__BackingField: 0.25
   - <identifier>k__BackingField: 8
     <clip>k__BackingField: {fileID: 8300000, guid: 4228d07010f8ea94ba3bbbf851fc11b9,
       type: 3}
-    <volume>k__BackingField: 1
+    <volume>k__BackingField: 0.25
   - <identifier>k__BackingField: 9
     <clip>k__BackingField: {fileID: 8300000, guid: 9146f1c6ad739b0448f9267d53faa7ec,
       type: 3}
-    <volume>k__BackingField: 1
+    <volume>k__BackingField: 0.25
 --- !u!1001 &614830768
 PrefabInstance:
   m_ObjectHideFlags: 0
