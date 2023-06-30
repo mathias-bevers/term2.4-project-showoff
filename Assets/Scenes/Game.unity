@@ -2773,6 +2773,7 @@ MonoBehaviour:
       <message>k__BackingField: 
       <toggle>k__BackingField: 0
   animationImage: {fileID: 785415371}
+  forcePickup: 8
 --- !u!114 &631515944
 MonoBehaviour:
   m_ObjectHideFlags: 0
