@@ -14,7 +14,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	[SerializeField, Scene] private int mainMenuScene;
 
 	public List<HighScoreData> highScoreDatas { get; private set; }
-	
+
 	private string filePath;
 
 
@@ -56,7 +56,13 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	{
 		if (string.IsNullOrEmpty(playerName)) { throw new ArgumentNullException(nameof(playerName), "Cannot be null or empty"); }
 
-		Packet packet = new Packet();
+		if (Player.Instance.client == null)
+		{
+			File.AppendAllText(filePath, $"\n{playerName},{score}");
+			return;
+		}
+
+		Packet packet = new();
 		packet.Write(new AddHighScore(playerName, score));
 		// Debug.Log($"Sending score to server: {name}, {score}");
 		Player.Instance.client.SendData(packet);
@@ -66,7 +72,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	{
 		if (!File.Exists(filePath)) { return Array.Empty<(string, int)>(); }
 
-		List<(string, int)> fileEntries = new List<(string, int)>();
+		List<(string, int)> fileEntries = new();
 
 
 		try
@@ -96,8 +102,9 @@ public class HighScoreManager : Singleton<HighScoreManager>
 
 	private void SetScores()
 	{
-		HighScorePanel highScorePanel  = FindObjectOfType<HighScorePanel>();
-		if (highScorePanel == null) return;
+		HighScorePanel highScorePanel = FindObjectOfType<HighScorePanel>();
+		if (highScorePanel == null) { return; }
+
 		Transform hsBoard = highScorePanel.transform.parent;
 
 		for (int i = 0; i < hsBoard.childCount; ++i)
@@ -110,9 +117,9 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	public Packet LocalScoresAsPacket()
 	{
 		IEnumerable<(string, int)> localScores = ReadScoresFromFile();
-		AddHighScores server = new AddHighScores(localScores);
+		AddHighScores server = new(localScores);
 
-		Packet packet = new Packet();
+		Packet packet = new();
 		packet.Write(server);
 		return packet;
 	}

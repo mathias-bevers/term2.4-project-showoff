@@ -41,10 +41,11 @@ public class Server : Singleton<Server>
 		ProcessReceivedPackets();
 	}
 
-	private void OnDestroy()
+	protected override void OnDestroy()
 	{
-		listener.Server.Close();
-		// Debug.LogWarning("Closing server!");
+		base.OnDestroy();
+
+		listener?.Server.Close();
 	}
 
 	private void ProcessReceivedPackets()
@@ -60,14 +61,17 @@ public class Server : Singleton<Server>
 				case HighScoreServerObject asHighScore:
 					try { highScoreCloud.ProcessPacket(receivedPacket.sender, asHighScore); }
 					catch (ArgumentException e) { Debug.LogError(e); }
+
 					break;
-				
+
 				case DataBaseObject dataBaseObject:
 					try { dataBaseCloud.ProcessPacket(receivedPacket.sender, dataBaseObject); }
 					catch (Exception e) { Debug.Log(e); }
+
 					break;
-				
-				default: WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
+
+				default:
+					WriteToOthers(receivedPacket.sender, receivedPacket.AsPacket());
 					break;
 			}
 
@@ -77,6 +81,13 @@ public class Server : Singleton<Server>
 
 	public void Initialize(IPAddress ip, int port)
 	{
+		IPAddress ip4Address = Utils.GetIP4Address();
+		if (!Equals(ip, ip4Address))
+		{
+			Destroy(gameObject);
+			throw new InvalidOperationException("Cannot setup server on different ip address");
+		}
+
 		listener = new TcpListener(ip, port);
 		listener.Start();
 
@@ -102,7 +113,7 @@ public class Server : Singleton<Server>
 			if (clients.Count >= 2)
 			{
 				Debug.LogWarning("Refused client, server is full");
-				AccessCallback rejectedCB = new AccessCallback(false);
+				AccessCallback rejectedCB = new(false);
 				packet.Write(rejectedCB);
 
 				try { StreamUtil.Write(client.GetStream(), packet.GetBytes()); }
@@ -120,7 +131,7 @@ public class Server : Singleton<Server>
 
 			clients.Add(serverClient);
 
-			AccessCallback acceptedCB = new AccessCallback(true, currentID);
+			AccessCallback acceptedCB = new(true, currentID);
 			packet.Write(acceptedCB);
 			WriteToClient(serverClient, packet);
 
@@ -136,12 +147,10 @@ public class Server : Singleton<Server>
 
 			try
 			{
-	
-					byte[] inBytes = StreamUtil.Read(client.stream);
-					Packet packet = new Packet(inBytes);
-					ServerObject obj = packet.ReadObject();
-					receivedPackets.Add(new ReceivedPacket(client, obj));
-			
+				byte[] inBytes = StreamUtil.Read(client.stream);
+				Packet packet = new(inBytes);
+				ServerObject obj = packet.ReadObject();
+				receivedPackets.Add(new ReceivedPacket(client, obj));
 			}
 			catch (Exception)
 			{
@@ -155,7 +164,7 @@ public class Server : Singleton<Server>
 	{
 		foreach (ServerClient client in clients)
 		{
-			Packet packet = new Packet();
+			Packet packet = new();
 			packet.Write(new HeartBeat());
 			WriteToClient(client, packet);
 		}
@@ -196,7 +205,7 @@ public class Server : Singleton<Server>
 
 	public string DEBUG_INFO()
 	{
-		StringBuilder sb = new StringBuilder("SERVER DEBUG:\n\n");
+		StringBuilder sb = new("SERVER DEBUG:\n\n");
 		sb.AppendLine($"Connected clients: {clients.Count}");
 		sb.AppendLine($"Package backlog: {receivedPackets.Count}");
 

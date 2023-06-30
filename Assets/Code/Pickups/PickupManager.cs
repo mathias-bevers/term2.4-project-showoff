@@ -17,6 +17,8 @@ public class PickupManager : Singleton<PickupManager>
         if (helper.isPendingDestroy) { return; }
 
         PickUpPickup(helper.pickupType);
+        
+        PowerupSounds.Instance.PlayPickupSound();
 
         helper.isPendingDestroy = true;
         Destroy(hit.transform.gameObject);

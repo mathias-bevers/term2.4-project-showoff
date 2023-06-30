@@ -1,4 +1,5 @@
-﻿using saxion_provided;
+﻿using System;
+using saxion_provided;
 using UnityEngine;
 
 public class DataProcessor : MonoBehaviour
@@ -23,26 +24,28 @@ public class DataProcessor : MonoBehaviour
 
 		cachedTransform = transform;
 
-		try
-		{
-#if UNITY_EDITOR
-			networkingClient.Connect(Utils.GetIP4Address(), Settings.SERVER_PORT);
-#else
-			networkingClient.Connect();
-#endif
-		}
+		try { networkingClient.Connect(); }
 		catch (System.Net.WebException e)
 		{
+			Destroy(networkingClient);
 			Debug.LogError(e);
 			return;
+		}
+		catch (ArgumentException e)
+		{
+			Destroy(networkingClient);
+			Debug.LogError($"[{e.ParamName}]: {e.Message}");
 		}
 
 		Player.Instance.deathEvent += OnPlayerDeath;
 		PickupManager.Instance.pickedupPowerupEvent += OnPowerupPickup;
 
-		networkingClient.opponentDistanceReceivedEvent += OnReceivedOpponentDistance;
-		networkingClient.connectionEvent += OnOpponentConnection;
-		networkingClient.receivedDebuffEvent += OnReceivedDebuff;
+		if (networkingClient != null)
+		{
+			networkingClient.opponentDistanceReceivedEvent += OnReceivedOpponentDistance;
+			networkingClient.connectionEvent += OnOpponentConnection;
+			networkingClient.receivedDebuffEvent += OnReceivedDebuff;
+		}
 
 
 		distTimer = DISTANCE_SEND_DELAY;
@@ -53,11 +56,13 @@ public class DataProcessor : MonoBehaviour
 
 	private void LateUpdate()
 	{
-		if (!networkingClient.isInitialized) { return; }
-
 		if (isDeath) { return; }
 
 		ownDistanceParent.SetChildrenText($"YOU: {walker.TotalMetersRan:n0}");
+
+		if (networkingClient == null) { return; }
+
+		if (!networkingClient.isInitialized) { return; }
 
 		distTimer -= Time.deltaTime;
 
@@ -65,7 +70,7 @@ public class DataProcessor : MonoBehaviour
 
 		distTimer = DISTANCE_SEND_DELAY;
 
-		Packet packet = new Packet();
+		Packet packet = new();
 		packet.Write(new PlayerDistance(walker.TotalMetersRan));
 		networkingClient.SendData(packet);
 	}
@@ -74,7 +79,7 @@ public class DataProcessor : MonoBehaviour
 	{
 		if (isDeath) { return; }
 
-		Packet packet = new Packet();
+		Packet packet = new();
 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Left));
 		networkingClient.SendData(packet);
 	}
@@ -96,7 +101,9 @@ public class DataProcessor : MonoBehaviour
 
 	private void OnPlayerDeath()
 	{
-		Packet packet = new Packet();
+		if (networkingClient == null) { return; }
+
+		Packet packet = new();
 		packet.Write(new PlayerConnection(PlayerConnection.ConnectionType.Died));
 		networkingClient.SendData(packet);
 
@@ -107,13 +114,10 @@ public class DataProcessor : MonoBehaviour
 
 	private void OnPowerupPickup(PickupData data)
 	{
-		Packet packet = new Packet();
+		Packet packet = new();
 		packet.Write(new SendPickup(data));
 		networkingClient.SendData(packet);
 	}
 
-	private void OnReceivedDebuff(PickupData data)
-	{
-		PickupManager.Instance.PickUpPickup(data.identifier, true);
-	}
+	private void OnReceivedDebuff(PickupData data) { PickupManager.Instance.PickUpPickup(data.identifier, true); }
 }

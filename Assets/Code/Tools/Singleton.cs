@@ -14,6 +14,8 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
 		else { Destroy(gameObject); }
 	}
 
+	protected virtual void OnDestroy() { instance = null; }
+
 	private static T GetInstance()
 	{
 		if (instance != null) { return instance; }
@@ -21,7 +23,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
 		instance = FindObjectOfType<T>();
 		if (instance != null) { return instance; }
 
-		GameObject obj = new GameObject();
+		GameObject obj = new();
 		obj.name = typeof(T).Name;
 		instance = obj.AddComponent<T>();
 		return instance;
