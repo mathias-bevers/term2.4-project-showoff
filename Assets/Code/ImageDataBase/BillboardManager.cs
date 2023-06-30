@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +24,7 @@ public class BillboardManager : Singleton<BillboardManager>
 		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, IMAGE_DIRECTORY_NAME, Path.DirectorySeparatorChar);
 		fileNames = ReadFileNames(txtFilePath);
 		activeImages = new List<string>();
-		materialCache = new Dictionary<string, Material>(); 
+		materialCache = new Dictionary<string, Material>();
 		Shader shader = Shader.Find(DEFAULT_MATERIAL_NAME);
 		defaultMaterial = new Material(shader);
 
@@ -35,13 +35,12 @@ public class BillboardManager : Singleton<BillboardManager>
 	{
 		billboard.destroyingEvent += OnBillboardDestroy;
 
-		string imageToLoadName = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length ? fileNames.Except(activeImages).ToList().GetRandomElement() : fileNames.GetRandomElement();
+		string[] selectableImageNames = activeImages.IsNullOrEmpty() || activeImages.Count < fileNames.Length ? fileNames.Except(activeImages).ToArray() : fileNames;
+		string imageToLoadName = selectableImageNames.Length > 0 ? selectableImageNames.GetRandomElement() : fileNames.GetRandomElement();
 
 		if (string.IsNullOrEmpty(imageToLoadName))
 		{
-			Renderer renderer = billboard.GetComponent<Renderer>();
-			if(renderer != null)
-            renderer.material = defaultMaterial;
+			billboard.renderer.material = defaultMaterial;
 			return null;
 		}
 
@@ -49,13 +48,14 @@ public class BillboardManager : Singleton<BillboardManager>
 
 		if (materialCache.TryGetValue(imageToLoadName, out Material material))
 		{
-			billboard.GetComponent<Renderer>().material = material;
+			billboard.renderer.material = material;
 			return imageToLoadName;
 		}
 
-		material = new Material(Shader.Find(DEFAULT_MATERIAL_NAME)) { mainTexture = Utils.LoadTextureFromDisk(imageDirectoryPath + imageToLoadName) };
+		Texture2D texture = Utils.LoadTextureFromDisk(imageDirectoryPath + imageToLoadName);
+		material = texture != null ? new Material(Shader.Find(DEFAULT_MATERIAL_NAME)) { mainTexture = texture } : defaultMaterial;
+		materialCache.Add(imageToLoadName, material);
 		billboard.renderer.material = material;
-
 		return imageToLoadName;
 	}
 
@@ -63,7 +63,20 @@ public class BillboardManager : Singleton<BillboardManager>
 	{
 		if (!File.Exists(path)) { return Array.Empty<string>(); }
 
-		try { return File.ReadAllLines(txtFilePath).Where(line => !string.IsNullOrEmpty(line)).ToArray(); }
+		try
+		{
+			List<string> tmp = new();
+			string[] readLines = File.ReadAllLines(txtFilePath).Where(line => !string.IsNullOrEmpty(line)).ToArray();
+			int readLinesLength = readLines.Length;
+
+			if (readLinesLength < 1) { return Array.Empty<string>(); }
+
+			int start = Math.Max(0, readLinesLength - Settings.MAX_MEMES);
+
+			for (int i = start; i < readLinesLength; ++i) { tmp.Add(readLines[i]); }
+
+			return tmp.ToArray();
+		}
 		catch (IOException e) { Debug.LogError(string.Concat($"Could not write to file \'{txtFilePath}\', it is probably used by another process!", Environment.NewLine, Environment.NewLine, e)); }
 
 		return Array.Empty<string>();

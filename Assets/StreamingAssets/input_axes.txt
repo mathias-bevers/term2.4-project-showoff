@@ -1,0 +1,30 @@
+Horizontal
+Vertical
+Fire1
+Fire2
+Fire3
+Jump
+Mouse X
+Mouse Y
+Mouse ScrollWheel
+Horizontal
+Vertical
+Fire1
+Fire2
+Fire3
+Jump
+Submit
+Submit
+Cancel
+Enable Debug Button 1
+Enable Debug Button 2
+Debug Reset
+Debug Next
+Debug Previous
+Debug Validate
+Debug Persistent
+Debug Multiplier
+Debug Horizontal
+Debug Vertical
+Debug Vertical
+Debug Horizontal

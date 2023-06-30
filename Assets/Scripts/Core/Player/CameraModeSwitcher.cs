@@ -14,7 +14,7 @@ public class CameraModeSwitcher : MonoBehaviour
     {
         Display();
     }
-
+    /*
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -24,7 +24,7 @@ public class CameraModeSwitcher : MonoBehaviour
                 current = 0;
             Display();
         }
-    }
+    }*/
 
     void Display()
     {

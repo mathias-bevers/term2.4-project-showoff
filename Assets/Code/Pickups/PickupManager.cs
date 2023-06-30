@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using NaughtyAttributes;
 
 public class PickupManager : Singleton<PickupManager>
 {
@@ -17,6 +18,8 @@ public class PickupManager : Singleton<PickupManager>
         if (helper.isPendingDestroy) { return; }
 
         PickUpPickup(helper.pickupType);
+        
+        PowerupSounds.Instance.PlayPickupSound();
 
         helper.isPendingDestroy = true;
         Destroy(hit.transform.gameObject);
@@ -107,6 +110,11 @@ public class PickupManager : Singleton<PickupManager>
             }
         }
     }
+    
+#if DEBUG
+    [SerializeField] private PickupIdentifier forcePickup;
+    [Button] private void ForcePickup() => PickUpPickup(forcePickup, true);
+#endif
 }
 
 [Serializable]

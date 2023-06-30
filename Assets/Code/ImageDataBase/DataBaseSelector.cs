@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ public class DataBaseSelector : MonoBehaviour
 {
 	public event Action<string> imageSelectedEvent;
 	private const string DIRECTORY_NAME = "BillboardImages";
+	private const string CHOSEN_IMAGES_FILE_NAME = "chosen_images.txt";
 
 	private readonly string[] acceptedFileFormats =
 	{
@@ -24,17 +26,22 @@ public class DataBaseSelector : MonoBehaviour
 	[SerializeField] private Transform content;
 	[SerializeField] private Button previousPage;
 	[SerializeField] private Button nextPage;
+	[SerializeField] private Button selectButton;
 
 	public Dictionary<string, Sprite> spriteCache { get; private set; }
 	public string imageDirectoryPath { get; private set; }
 
+
 	private DataBaseDisplayElement[] displayElements;
+	private Dictionary<int, int> pagesStart;
 	private int scrollIndex;
 	private int gridSize;
 	private int pages;
-	private string[] fileNames;
 	private Navigation originalPreviousNavigation;
 	private Navigation originalNextNavigation;
+	private List<string> displayingFileNames;
+	private string[] chosenImages;
+	private string[] fileNames;
 
 	private void Awake()
 	{
@@ -42,10 +49,26 @@ public class DataBaseSelector : MonoBehaviour
 		gridSize = imagesPerRow * rows;
 		imageDirectoryPath = string.Concat(Application.streamingAssetsPath, Path.DirectorySeparatorChar, DIRECTORY_NAME, Path.DirectorySeparatorChar);
 		fileNames = GetFileNames();
-		pages = (int)Math.Ceiling((float)fileNames.Length / gridSize);
+
+		string path = string.Concat(Application.persistentDataPath, Path.DirectorySeparatorChar, CHOSEN_IMAGES_FILE_NAME);
+
+		try
+		{
+			chosenImages = File.ReadAllLines(path).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+		}
+		catch (FileNotFoundException)
+		{
+			chosenImages = Array.Empty<string>();
+			Debug.LogWarning("Could not find file, creating...");
+			File.Create(path).Close();
+		}
+
+		pages = (int)Math.Ceiling((float)(fileNames.Length - chosenImages.Length) / gridSize);
+		pagesStart = new Dictionary<int, int>();
+		displayingFileNames = new List<string>(gridSize);
 		originalPreviousNavigation = previousPage.navigation;
 		originalNextNavigation = nextPage.navigation;
-		
+
 		nextPage.onClick.AddListener(() => Scroll(1));
 		previousPage.onClick.AddListener(() => Scroll(-1));
 	}
@@ -61,14 +84,20 @@ public class DataBaseSelector : MonoBehaviour
 	private List<Sprite> LoadSprites()
 	{
 		int start = gridSize * scrollIndex;
-		int max = start + gridSize;
-		int end = Math.Min(max, fileNames.Length);
-
+		if (pagesStart.TryGetValue(scrollIndex - 1, out int _start)) { start = _start; }
+		
 		List<Sprite> sprites = new(imagesPerRow * rows);
+		displayingFileNames.Clear();
 
-		for (int i = start; i < end; ++i)
+		int i = start;
+		while (sprites.Count < gridSize && i < fileNames.Length)
 		{
 			string fileName = fileNames[i];
+			++i;
+
+			if (chosenImages.Contains(fileName)) { continue; }
+
+			displayingFileNames.Add(fileName);
 
 			if (spriteCache.TryGetValue(fileName, out Sprite sprite))
 			{
@@ -81,6 +110,7 @@ public class DataBaseSelector : MonoBehaviour
 			spriteCache.Add(fileName, sprite);
 		}
 
+		pagesStart.TryAdd(scrollIndex, i);
 		return sprites;
 	}
 
@@ -145,28 +175,15 @@ public class DataBaseSelector : MonoBehaviour
 	{
 		Navigation navigation;
 
-		/*if (displayedImages == gridSize)
+		int start = Math.Min(displayedImages, imagesPerRow);
+		for (int i = start; i >= 0; --i)
 		{
-			Selectable bottomRight = displayElements[gridSize - 1].selectable;
-			navigation = bottomRight.navigation;
-			navigation.selectOnRight = nextPage;
-			bottomRight.navigation = navigation;
-
-			navigation = nextPage.navigation;
-			navigation.selectOnLeft = bottomRight;
-			nextPage.navigation = navigation;
-			//--------------------------------------------------------------------------------------------
-			Selectable topRight = displayElements[imagesPerRow - 1].selectable;
-			navigation = topRight.navigation;
-			navigation.selectOnRight = previousPage;
-			topRight.navigation = navigation;
-
-			navigation = previousPage.navigation;
-			navigation.selectOnLeft = topRight;
-			previousPage.navigation = navigation;
-			return;
-		}*/
-
+			Selectable cur = displayElements[displayedImages - i].selectable;
+			navigation = cur.navigation;
+			navigation.selectOnDown = selectButton;
+			cur.navigation = navigation;
+		}
+		
 		Selectable last = displayElements[displayedImages - 1].selectable;
 		navigation = last.navigation;
 		navigation.selectOnRight = nextPage;
@@ -196,8 +213,8 @@ public class DataBaseSelector : MonoBehaviour
 
 	private void SelectImage(int gridIndex)
 	{
-		int listIndex = gridSize * scrollIndex + gridIndex;
-		string fileName = fileNames[listIndex];
+		
+		string fileName = displayingFileNames[gridIndex];
 		imageSelectedEvent?.Invoke(fileName);
 	}
 

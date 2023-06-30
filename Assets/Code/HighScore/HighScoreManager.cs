@@ -14,7 +14,7 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	[SerializeField, Scene] private int mainMenuScene;
 
 	public List<HighScoreData> highScoreDatas { get; private set; }
-	
+
 	private string filePath;
 
 
@@ -56,6 +56,12 @@ public class HighScoreManager : Singleton<HighScoreManager>
 	{
 		if (string.IsNullOrEmpty(playerName)) { throw new ArgumentNullException(nameof(playerName), "Cannot be null or empty"); }
 
+		if (Player.Instance.client == null)
+		{
+			File.AppendAllText(filePath, $"\n{playerName},{score}");
+			return;
+		}
+
 		Packet packet = new();
 		packet.Write(new AddHighScore(playerName, score));
 		// Debug.Log($"Sending score to server: {name}, {score}");
@@ -96,8 +102,9 @@ public class HighScoreManager : Singleton<HighScoreManager>
 
 	private void SetScores()
 	{
-		HighScorePanel highScorePanel  = FindObjectOfType<HighScorePanel>();
-		if (highScorePanel == null) return;
+		HighScorePanel highScorePanel = FindObjectOfType<HighScorePanel>();
+		if (highScorePanel == null) { return; }
+
 		Transform hsBoard = highScorePanel.transform.parent;
 
 		for (int i = 0; i < hsBoard.childCount; ++i)

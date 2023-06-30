@@ -221,7 +221,7 @@ public class Player : Singleton<Player>
             RemoveHeart(false);
             Discard(PickupIdentifier.RemoveHeart);
         }
-        if (transform.localPosition.z <= -1 || transform.localPosition.y <= -1)
+        if (transform.localPosition.z <= -0.5f || transform.localPosition.y <= -1)
         {
             if (EffectIsActive(PickupIdentifier.Invincible))
             {

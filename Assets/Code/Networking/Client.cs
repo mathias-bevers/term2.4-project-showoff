@@ -9,11 +9,14 @@ public class Client : MonoBehaviour
 	public event Action<PlayerConnection.ConnectionType> connectionEvent;
 	public event Action<float> opponentDistanceReceivedEvent;
 	public event Action<PickupData> receivedDebuffEvent;
+	private const float MAX_TIME_BETWEEN_HEARTBEAT = 2.5f;
 
 	public int id { get; private set; } = -1;
 	public bool isInitialized => id >= 0;
-
 	private bool isAccepted;
+
+
+	private float timer;
 	private TcpClient client;
 
 	private void Start()
@@ -33,6 +36,17 @@ public class Client : MonoBehaviour
 		{
 			if (client == null) { return; }
 
+			if (isAccepted)
+			{
+				timer -= Time.deltaTime;
+				if (timer < 0)
+				{
+					Debug.LogWarning("Server timed out, closing client...");
+					Destroy(this);
+					return;
+				}
+			}
+
 			while (client is { Available: > 1 })
 			{
 				byte[] inBytes = StreamUtil.Read(client.GetStream());
@@ -42,57 +56,59 @@ public class Client : MonoBehaviour
 		catch (Exception e)
 		{
 			Debug.LogError(string.Concat(e.Message, '\n', e.StackTrace));
-			Close();
+			Destroy(this);
 		}
 	}
 
-	private void OnDestroy()
-	{
-		// Debug.LogWarning("Destroying client instance...");
-		Close();
-	}
+	private void OnDestroy() => Close();
 
-	public void Close()
+	private void Close()
 	{
 		if (client == null) { return; }
 
 		isAccepted = false;
 		client.Close();
 		client = null;
-		Destroy(gameObject);
+		Destroy(this);
 	}
 
 	public void Connect() => Connect(Settings.SERVER_IP, Settings.SERVER_PORT);
 
-	public void Connect(IPAddress ip, int port, int attempts = 0)
+	private void Connect(IPAddress ip, int port, int attempts = 0)
 	{
-		if (isAccepted) { return; }
-
-		if (ip == null) { throw new ArgumentNullException(nameof(ip), "ip cannot be null"); }
-
-		if (attempts >= 5)
+		while (true)
 		{
-			Destroy(this);
-			throw new WebException("FAILED TO CONNECT TO SERVER");
-		}
+			if (isAccepted) { return; }
 
-		try
-		{
+			if (ip == null) { throw new ArgumentNullException(nameof(ip), "ip cannot be null"); }
+
+			if (attempts >= 5) { throw new WebException("FAILED TO CONNECT TO SERVER: too many attempts"); }
+
 			client ??= new TcpClient();
-			client.Connect(ip, port);
-		}
-		catch (SocketException se)
-		{
-			if (se.SocketErrorCode == SocketError.ConnectionRefused)
+			IAsyncResult result = client.BeginConnect(ip, port, null, null);
+			bool success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2));
+
+			if (!success)
 			{
-				Server.Instance.Initialize(ip, port);
-				attempts++;
-				Debug.LogWarning($"Retrying connection attempt: {attempts}");
-				Connect(ip, port, attempts);
-				return;
+				if (!GameSettings.IsHost) { throw new WebException("FAILED TO CONNECT TO SERVER: Server timed out..."); }
+
+
+				try
+				{
+					Server.Instance.Initialize(ip, port);
+					attempts++;
+					Debug.LogWarning($"Retrying connection attempt: {attempts}");
+					continue;
+				}
+				catch (InvalidOperationException e)
+				{
+					Debug.LogError(e.ToString());
+					throw new WebException("FAILED TO CONNECT TO SERVER: server cannot be created!");
+				}
 			}
 
-			Debug.LogError($"Failed to connect to server!\n{se.Message}");
+			client.EndConnect(result);
+			break;
 		}
 	}
 
@@ -119,7 +135,7 @@ public class Client : MonoBehaviour
 		Packet packet = new(dataInBytes);
 		ServerObject serverObject;
 		try { serverObject = packet.ReadObject(); }
-		catch(Exception e)
+		catch (Exception e)
 		{
 			Debug.LogError("object could not be read.\n" + e.Message);
 			Close();
@@ -136,28 +152,30 @@ public class Client : MonoBehaviour
 
 		switch (serverObject)
 		{
-			case HeartBeat: break;
+			case HeartBeat:
+				timer = MAX_TIME_BETWEEN_HEARTBEAT;
+				break;
 
 			case PlayerDistance playerDistance:
 				opponentDistanceReceivedEvent?.Invoke(playerDistance.distance);
 				break;
-			
+
 			case PlayerConnection playerConnection:
 				connectionEvent?.Invoke(playerConnection.connectionType);
 				break;
-			
+
 			case SendPickup sendPickup:
 				receivedDebuffEvent?.Invoke(sendPickup.data);
 				break;
-			
+
 			case GetHighScores getHighScores:
 				HighScoreManager.Instance.RewriteScoresToFile(getHighScores.scores);
 				break;
-			
+
 			case GetFileNames fileNames:
 				DataBaseCommunicator.Instance.RewriteDataBaseCache(fileNames);
 				break;
-			
+
 			default: throw new NotSupportedException($"Cannot process ISerializable type {serverObject.GetType().Name}");
 		}
 	}

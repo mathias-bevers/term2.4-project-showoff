@@ -1250,7 +1250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3398807621003918999
 Transform:
   m_ObjectHideFlags: 0
@@ -1351,7 +1351,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3398807621413081666
 Transform:
   m_ObjectHideFlags: 0
@@ -2367,7 +2367,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3b5ac1c2a273cef44a67c5a4f2d162cd, type: 2}
+  - {fileID: 2100000, guid: 922f8c2426e2c9b46b017f4c1ecbefc2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3031,7 +3031,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3b5ac1c2a273cef44a67c5a4f2d162cd, type: 2}
+  - {fileID: 2100000, guid: 922f8c2426e2c9b46b017f4c1ecbefc2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5042,7 +5042,8 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1391975328674068725, guid: 9bf66465970c2b34593b4b1e3b1047c1, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9bf66465970c2b34593b4b1e3b1047c1, type: 3}
 --- !u!4 &6245308770278092137 stripped
 Transform:
@@ -10162,7 +10163,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180.262
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2574652785149337629, guid: 2368670caeb3ebc45a744b19bc41df6c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2368670caeb3ebc45a744b19bc41df6c, type: 3}
 --- !u!4 &6396966747988770295 stripped
 Transform:
@@ -11057,7 +11059,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 110.844
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2574652785149337629, guid: 2368670caeb3ebc45a744b19bc41df6c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2368670caeb3ebc45a744b19bc41df6c, type: 3}
 --- !u!4 &3412593325345996301 stripped
 Transform:
@@ -11561,6 +11564,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3406653368979025350, guid: 109be8748dde37e4fa1419bf9ac7e08b,
+        type: 3}
+      propertyPath: m_Name
+      value: ColliderCube
       objectReference: {fileID: 0}
     - target: {fileID: 3406653368979025350, guid: 109be8748dde37e4fa1419bf9ac7e08b,
         type: 3}
@@ -13146,7 +13154,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 9.867
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2574652785149337629, guid: 2368670caeb3ebc45a744b19bc41df6c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2368670caeb3ebc45a744b19bc41df6c, type: 3}
 --- !u!4 &4595808744803313072 stripped
 Transform:
@@ -15206,7 +15215,8 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1391975328674068725, guid: 9bf66465970c2b34593b4b1e3b1047c1, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9bf66465970c2b34593b4b1e3b1047c1, type: 3}
 --- !u!4 &4450237985844758642 stripped
 Transform:
