@@ -80,7 +80,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: TO LEAVE YOUR OUR MARK ON THE INTERNET, YOU CAN CHOSE AN IMAGE FROM OUR
+  m_Text: TO LEAVE YOUR OUR MARK ON THE INTERNET, YOU CAN CHOOSE AN IMAGE FROM OUR
     DATABASE. THIS IMAGE WILL BE DISPLAYED IN THE GAME!
 --- !u!114 &2839908272947335223
 MonoBehaviour:
@@ -1158,6 +1158,7 @@ MonoBehaviour:
   content: {fileID: 5417803815886621542}
   previousPage: {fileID: 5417803815708995561}
   nextPage: {fileID: 5417803816913778883}
+  selectButton: {fileID: 4803711957622206040}
 --- !u!1 &5417803816901433355
 GameObject:
   m_ObjectHideFlags: 0
@@ -1330,7 +1331,7 @@ MonoBehaviour:
     m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 5417803815708995561}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnDown: {fileID: 4803711957622206040}
     m_SelectOnLeft: {fileID: 575684629622185877}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1

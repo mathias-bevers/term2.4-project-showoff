@@ -26,6 +26,7 @@ public class DataBaseSelector : MonoBehaviour
 	[SerializeField] private Transform content;
 	[SerializeField] private Button previousPage;
 	[SerializeField] private Button nextPage;
+	[SerializeField] private Button selectButton;
 
 	public Dictionary<string, Sprite> spriteCache { get; private set; }
 	public string imageDirectoryPath { get; private set; }
@@ -172,8 +173,19 @@ public class DataBaseSelector : MonoBehaviour
 
 	private void SetNavigation(int displayedImages)
 	{
+		Navigation navigation;
+
+		int start = Math.Min(displayedImages, imagesPerRow);
+		for (int i = start; i >= 0; --i)
+		{
+			Selectable cur = displayElements[displayedImages - i].selectable;
+			navigation = cur.navigation;
+			navigation.selectOnDown = selectButton;
+			cur.navigation = navigation;
+		}
+		
 		Selectable last = displayElements[displayedImages - 1].selectable;
-		Navigation navigation = last.navigation;
+		navigation = last.navigation;
 		navigation.selectOnRight = nextPage;
 		last.navigation = navigation;
 
