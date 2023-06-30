@@ -34,14 +34,17 @@ public class SlipperyModule : MotorModule
     void HandleInput()
     {
         bool hitKey = false;
-        if (Input.GetKey(KeyCode.LeftArrow))
+        float controllerAxis = Input.GetAxisRaw("HorizontalController");
+        if (Input.GetKey(KeyCode.LeftArrow)  || controllerAxis < 0)
         {
             hitKey = true;
             sidePusher += -speed * accSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.RightArrow)) {
+        if (Input.GetKey(KeyCode.RightArrow) || controllerAxis > 0) 
+        {
             hitKey = true;
-        sidePusher += speed * accSpeed * Time.deltaTime; }
+            sidePusher += speed * accSpeed * Time.deltaTime; 
+        }
 
         if (sidePusher > speed) sidePusher = speed;
         if(sidePusher < -speed) sidePusher = -speed;
